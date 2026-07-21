@@ -1,0 +1,5566 @@
+{
+  "info": {
+    "title": "OpenAPI definition",
+    "version": "v0"
+  },
+  "server": "http://localhost:12000",
+  "endpointCount": 147,
+  "endpoints": [
+    {
+      "method": "POST",
+      "path": "/api/user/page",
+      "operationId": "page",
+      "tag": "用户",
+      "summary": "分页查询",
+      "reqRef": "UserQuery",
+      "respRef": "ResultVoPageVoUserDto",
+      "pathParams": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/user/list",
+      "operationId": "list",
+      "tag": "用户",
+      "summary": "列表查询",
+      "reqRef": "UserQuery",
+      "respRef": "ResultVoListUserDto",
+      "pathParams": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/user/form",
+      "operationId": "formItem",
+      "tag": "用户",
+      "summary": "获取表单数据",
+      "reqRef": "integer",
+      "respRef": "ResultVoUserForm",
+      "pathParams": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/user/edit",
+      "operationId": "edit",
+      "tag": "用户",
+      "summary": "编辑",
+      "reqRef": "UserForm",
+      "respRef": "ResultVoUserForm",
+      "pathParams": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/user/delete",
+      "operationId": "delete",
+      "tag": "用户",
+      "summary": "删除",
+      "reqRef": "integer",
+      "respRef": "ResultVoVoid",
+      "pathParams": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/user/deleteAll",
+      "operationId": "deleteAll",
+      "tag": "用户",
+      "summary": "批量删除",
+      "reqRef": "array",
+      "respRef": "ResultVoVoid",
+      "pathParams": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/user/add",
+      "operationId": "add",
+      "tag": "用户",
+      "summary": "新增",
+      "reqRef": "UserForm",
+      "respRef": "ResultVoUserForm",
+      "pathParams": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/user-pool/users/page",
+      "operationId": "poolUsers",
+      "tag": "用户池",
+      "summary": "用户池用户列表",
+      "reqRef": "UserPoolQuery",
+      "respRef": "ResultVoPageVoUserDto",
+      "pathParams": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/user-pool/page",
+      "operationId": "page_1",
+      "tag": "用户池",
+      "summary": "分页查询",
+      "reqRef": "UserPoolQuery",
+      "respRef": "ResultVoPageVoUserPoolDto",
+      "pathParams": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/user-pool/list",
+      "operationId": "list_1",
+      "tag": "用户池",
+      "summary": "列表查询",
+      "reqRef": "UserPoolQuery",
+      "respRef": "ResultVoListUserPoolDto",
+      "pathParams": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/user-pool/form",
+      "operationId": "formItem_1",
+      "tag": "用户池",
+      "summary": "获取表单数据",
+      "reqRef": "integer",
+      "respRef": "ResultVoUserPoolForm",
+      "pathParams": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/user-pool/edit",
+      "operationId": "edit_1",
+      "tag": "用户池",
+      "summary": "编辑",
+      "reqRef": "UserPoolForm",
+      "respRef": "ResultVoUserPoolForm",
+      "pathParams": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/user-pool/delete",
+      "operationId": "delete_1",
+      "tag": "用户池",
+      "summary": "删除",
+      "reqRef": "integer",
+      "respRef": "ResultVoVoid",
+      "pathParams": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/user-pool/deleteAll",
+      "operationId": "deleteAll_1",
+      "tag": "用户池",
+      "summary": "批量删除",
+      "reqRef": "array",
+      "respRef": "ResultVoVoid",
+      "pathParams": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/user-pool/add",
+      "operationId": "add_1",
+      "tag": "用户池",
+      "summary": "新增",
+      "reqRef": "UserPoolForm",
+      "respRef": "ResultVoUserPoolForm",
+      "pathParams": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/tenant/page",
+      "operationId": "page_2",
+      "tag": "租户",
+      "summary": "分页查询",
+      "reqRef": "TenantQuery",
+      "respRef": "ResultVoPageVoTenantDto",
+      "pathParams": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/tenant/list",
+      "operationId": "list_2",
+      "tag": "租户",
+      "summary": "列表查询",
+      "reqRef": "TenantQuery",
+      "respRef": "ResultVoListTenantDto",
+      "pathParams": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/tenant/init-menu-from-template",
+      "operationId": "initMenuFromTemplate",
+      "tag": "租户",
+      "summary": "按菜单模板初始化租户菜单",
+      "reqRef": "TenantMenuInitForm",
+      "respRef": "ResultVoVoid",
+      "pathParams": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/tenant/form",
+      "operationId": "formItem_2",
+      "tag": "租户",
+      "summary": "获取表单数据",
+      "reqRef": "integer",
+      "respRef": "ResultVoTenantForm",
+      "pathParams": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/tenant/edit",
+      "operationId": "edit_2",
+      "tag": "租户",
+      "summary": "编辑",
+      "reqRef": "TenantForm",
+      "respRef": "ResultVoTenantForm",
+      "pathParams": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/tenant/delete",
+      "operationId": "delete_2",
+      "tag": "租户",
+      "summary": "删除",
+      "reqRef": "integer",
+      "respRef": "ResultVoVoid",
+      "pathParams": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/tenant/deleteAll",
+      "operationId": "deleteAll_2",
+      "tag": "租户",
+      "summary": "批量删除",
+      "reqRef": "array",
+      "respRef": "ResultVoVoid",
+      "pathParams": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/tenant/add",
+      "operationId": "add_2",
+      "tag": "租户",
+      "summary": "新增",
+      "reqRef": "TenantForm",
+      "respRef": "ResultVoTenantForm",
+      "pathParams": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/tenant-user/page",
+      "operationId": "page_3",
+      "tag": "租户用户",
+      "summary": "分页查询",
+      "reqRef": "TenantUserQuery",
+      "respRef": "ResultVoPageVoTenantUserDto",
+      "pathParams": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/tenant-user/list",
+      "operationId": "list_3",
+      "tag": "租户用户",
+      "summary": "列表查询",
+      "reqRef": "TenantUserQuery",
+      "respRef": "ResultVoListTenantUserDto",
+      "pathParams": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/tenant-user/form",
+      "operationId": "formItem_3",
+      "tag": "租户用户",
+      "summary": "获取表单数据",
+      "reqRef": "integer",
+      "respRef": "ResultVoTenantUserForm",
+      "pathParams": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/tenant-user/edit",
+      "operationId": "edit_3",
+      "tag": "租户用户",
+      "summary": "编辑",
+      "reqRef": "TenantUserForm",
+      "respRef": "ResultVoTenantUserForm",
+      "pathParams": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/tenant-user/delete",
+      "operationId": "delete_3",
+      "tag": "租户用户",
+      "summary": "删除",
+      "reqRef": "integer",
+      "respRef": "ResultVoVoid",
+      "pathParams": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/tenant-user/deleteAll",
+      "operationId": "deleteAll_3",
+      "tag": "租户用户",
+      "summary": "批量删除",
+      "reqRef": "array",
+      "respRef": "ResultVoVoid",
+      "pathParams": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/tenant-user/add",
+      "operationId": "add_3",
+      "tag": "租户用户",
+      "summary": "新增",
+      "reqRef": "TenantUserForm",
+      "respRef": "ResultVoTenantUserForm",
+      "pathParams": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/tenant-user-role/page",
+      "operationId": "page_4",
+      "tag": "租户用户角色",
+      "summary": "分页查询",
+      "reqRef": "TenantUserRoleQuery",
+      "respRef": "ResultVoPageVoTenantUserRoleDto",
+      "pathParams": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/tenant-user-role/list",
+      "operationId": "list_4",
+      "tag": "租户用户角色",
+      "summary": "列表查询",
+      "reqRef": "TenantUserRoleQuery",
+      "respRef": "ResultVoListTenantUserRoleDto",
+      "pathParams": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/tenant-user-role/form",
+      "operationId": "formItem_4",
+      "tag": "租户用户角色",
+      "summary": "获取表单数据",
+      "reqRef": "integer",
+      "respRef": "ResultVoTenantUserRoleForm",
+      "pathParams": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/tenant-user-role/edit",
+      "operationId": "edit_4",
+      "tag": "租户用户角色",
+      "summary": "编辑",
+      "reqRef": "TenantUserRoleForm",
+      "respRef": "ResultVoTenantUserRoleForm",
+      "pathParams": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/tenant-user-role/delete",
+      "operationId": "delete_4",
+      "tag": "租户用户角色",
+      "summary": "删除",
+      "reqRef": "integer",
+      "respRef": "ResultVoVoid",
+      "pathParams": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/tenant-user-role/deleteAll",
+      "operationId": "deleteAll_4",
+      "tag": "租户用户角色",
+      "summary": "批量删除",
+      "reqRef": "array",
+      "respRef": "ResultVoVoid",
+      "pathParams": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/tenant-user-role/add",
+      "operationId": "add_4",
+      "tag": "租户用户角色",
+      "summary": "新增",
+      "reqRef": "TenantUserRoleForm",
+      "respRef": "ResultVoTenantUserRoleForm",
+      "pathParams": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/system/init",
+      "operationId": "init",
+      "tag": "系统初始化",
+      "summary": "初始化基础数据",
+      "reqRef": null,
+      "respRef": "ResultVoMapStringObject",
+      "pathParams": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/sys/log/page",
+      "operationId": "page_5",
+      "tag": "系统日志",
+      "summary": "分页查询",
+      "reqRef": "SysLogQuery",
+      "respRef": "ResultVoPageVoSysLogDto",
+      "pathParams": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/sys/log/list",
+      "operationId": "list_5",
+      "tag": "系统日志",
+      "summary": "列表查询",
+      "reqRef": "SysLogQuery",
+      "respRef": "ResultVoListSysLogDto",
+      "pathParams": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/sys/log/form",
+      "operationId": "formItem_5",
+      "tag": "系统日志",
+      "summary": "获取表单数据",
+      "reqRef": "integer",
+      "respRef": "ResultVoSysLogForm",
+      "pathParams": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/sys/log/edit",
+      "operationId": "edit_5",
+      "tag": "系统日志",
+      "summary": "编辑",
+      "reqRef": "SysLogForm",
+      "respRef": "ResultVoSysLogForm",
+      "pathParams": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/sys/log/delete",
+      "operationId": "delete_5",
+      "tag": "系统日志",
+      "summary": "删除",
+      "reqRef": "integer",
+      "respRef": "ResultVoVoid",
+      "pathParams": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/sys/log/deleteAll",
+      "operationId": "deleteAll_5",
+      "tag": "系统日志",
+      "summary": "批量删除",
+      "reqRef": "array",
+      "respRef": "ResultVoVoid",
+      "pathParams": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/sys/log/add",
+      "operationId": "add_5",
+      "tag": "系统日志",
+      "summary": "新增",
+      "reqRef": "SysLogForm",
+      "respRef": "ResultVoSysLogForm",
+      "pathParams": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/role/page",
+      "operationId": "page_6",
+      "tag": "角色",
+      "summary": "分页查询",
+      "reqRef": "RoleQuery",
+      "respRef": "ResultVoPageVoRoleDto",
+      "pathParams": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/role/list",
+      "operationId": "list_6",
+      "tag": "角色",
+      "summary": "列表查询",
+      "reqRef": "RoleQuery",
+      "respRef": "ResultVoListRoleDto",
+      "pathParams": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/role/form",
+      "operationId": "formItem_6",
+      "tag": "角色",
+      "summary": "获取表单数据",
+      "reqRef": "integer",
+      "respRef": "ResultVoRoleForm",
+      "pathParams": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/role/edit",
+      "operationId": "edit_6",
+      "tag": "角色",
+      "summary": "编辑",
+      "reqRef": "RoleForm",
+      "respRef": "ResultVoRoleForm",
+      "pathParams": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/role/delete",
+      "operationId": "delete_6",
+      "tag": "角色",
+      "summary": "删除",
+      "reqRef": "integer",
+      "respRef": "ResultVoVoid",
+      "pathParams": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/role/deleteAll",
+      "operationId": "deleteAll_6",
+      "tag": "角色",
+      "summary": "批量删除",
+      "reqRef": "array",
+      "respRef": "ResultVoVoid",
+      "pathParams": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/role/add",
+      "operationId": "add_6",
+      "tag": "角色",
+      "summary": "新增",
+      "reqRef": "RoleForm",
+      "respRef": "ResultVoRoleForm",
+      "pathParams": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/role-template/page",
+      "operationId": "page_7",
+      "tag": "角色模板",
+      "summary": "分页查询",
+      "reqRef": "RoleTemplateQuery",
+      "respRef": "ResultVoPageVoRoleTemplateDto",
+      "pathParams": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/role-template/list",
+      "operationId": "list_7",
+      "tag": "角色模板",
+      "summary": "列表查询",
+      "reqRef": "RoleTemplateQuery",
+      "respRef": "ResultVoListRoleTemplateDto",
+      "pathParams": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/role-template/form",
+      "operationId": "formItem_7",
+      "tag": "角色模板",
+      "summary": "获取表单数据",
+      "reqRef": "integer",
+      "respRef": "ResultVoRoleTemplateForm",
+      "pathParams": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/role-template/edit",
+      "operationId": "edit_7",
+      "tag": "角色模板",
+      "summary": "编辑",
+      "reqRef": "RoleTemplateForm",
+      "respRef": "ResultVoRoleTemplateForm",
+      "pathParams": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/role-template/delete",
+      "operationId": "delete_7",
+      "tag": "角色模板",
+      "summary": "删除",
+      "reqRef": "integer",
+      "respRef": "ResultVoVoid",
+      "pathParams": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/role-template/deleteAll",
+      "operationId": "deleteAll_7",
+      "tag": "角色模板",
+      "summary": "批量删除",
+      "reqRef": "array",
+      "respRef": "ResultVoVoid",
+      "pathParams": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/role-template/add",
+      "operationId": "add_7",
+      "tag": "角色模板",
+      "summary": "新增",
+      "reqRef": "RoleTemplateForm",
+      "respRef": "ResultVoRoleTemplateForm",
+      "pathParams": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/role-menu/assign",
+      "operationId": "assign",
+      "tag": "角色菜单授权",
+      "summary": "保存角色菜单授权",
+      "reqRef": "RoleMenuAssignForm",
+      "respRef": "ResultVoVoid",
+      "pathParams": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/role-group/tree",
+      "operationId": "tree",
+      "tag": "role-group-controller",
+      "summary": "树形查询",
+      "reqRef": "RoleGroupQuery",
+      "respRef": "ResultVoListRoleGroupDto",
+      "pathParams": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/role-group/page",
+      "operationId": "page_8",
+      "tag": "role-group-controller",
+      "summary": "分页查询",
+      "reqRef": "RoleGroupQuery",
+      "respRef": "ResultVoPageVoRoleGroupDto",
+      "pathParams": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/role-group/list",
+      "operationId": "list_8",
+      "tag": "role-group-controller",
+      "summary": "列表查询",
+      "reqRef": "RoleGroupQuery",
+      "respRef": "ResultVoListRoleGroupDto",
+      "pathParams": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/role-group/form",
+      "operationId": "formItem_8",
+      "tag": "role-group-controller",
+      "summary": "获取表单数据",
+      "reqRef": "integer",
+      "respRef": "ResultVoRoleGroupForm",
+      "pathParams": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/role-group/edit",
+      "operationId": "edit_8",
+      "tag": "role-group-controller",
+      "summary": "编辑",
+      "reqRef": "RoleGroupForm",
+      "respRef": "ResultVoRoleGroupForm",
+      "pathParams": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/role-group/delete",
+      "operationId": "delete_8",
+      "tag": "role-group-controller",
+      "summary": "删除",
+      "reqRef": "integer",
+      "respRef": "ResultVoVoid",
+      "pathParams": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/role-group/deleteAll",
+      "operationId": "deleteAll_8",
+      "tag": "role-group-controller",
+      "summary": "批量删除",
+      "reqRef": "array",
+      "respRef": "ResultVoVoid",
+      "pathParams": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/role-group/add",
+      "operationId": "add_8",
+      "tag": "role-group-controller",
+      "summary": "新增",
+      "reqRef": "RoleGroupForm",
+      "respRef": "ResultVoRoleGroupForm",
+      "pathParams": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/org/unit/tree",
+      "operationId": "tree_1",
+      "tag": "组织单元",
+      "summary": "树形查询",
+      "reqRef": "OrgUnitQuery",
+      "respRef": "ResultVoListOrgUnitDto",
+      "pathParams": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/org/unit/page",
+      "operationId": "page_9",
+      "tag": "组织单元",
+      "summary": "分页查询",
+      "reqRef": "OrgUnitQuery",
+      "respRef": "ResultVoPageVoOrgUnitDto",
+      "pathParams": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/org/unit/list",
+      "operationId": "list_9",
+      "tag": "组织单元",
+      "summary": "列表查询",
+      "reqRef": "OrgUnitQuery",
+      "respRef": "ResultVoListOrgUnitDto",
+      "pathParams": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/org/unit/form",
+      "operationId": "formItem_9",
+      "tag": "组织单元",
+      "summary": "获取表单数据",
+      "reqRef": "integer",
+      "respRef": "ResultVoOrgUnitForm",
+      "pathParams": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/org/unit/edit",
+      "operationId": "edit_9",
+      "tag": "组织单元",
+      "summary": "编辑",
+      "reqRef": "OrgUnitForm",
+      "respRef": "ResultVoOrgUnitForm",
+      "pathParams": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/org/unit/delete",
+      "operationId": "delete_9",
+      "tag": "组织单元",
+      "summary": "删除",
+      "reqRef": "integer",
+      "respRef": "ResultVoVoid",
+      "pathParams": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/org/unit/deleteAll",
+      "operationId": "deleteAll_9",
+      "tag": "组织单元",
+      "summary": "批量删除",
+      "reqRef": "array",
+      "respRef": "ResultVoVoid",
+      "pathParams": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/org/unit/add",
+      "operationId": "add_9",
+      "tag": "组织单元",
+      "summary": "新增",
+      "reqRef": "OrgUnitForm",
+      "respRef": "ResultVoOrgUnitForm",
+      "pathParams": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/menu/tree",
+      "operationId": "tree_2",
+      "tag": "菜单",
+      "summary": "树形查询",
+      "reqRef": "MenuQuery",
+      "respRef": "ResultVoListMenuDto",
+      "pathParams": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/menu/page",
+      "operationId": "page_10",
+      "tag": "菜单",
+      "summary": "分页查询",
+      "reqRef": "MenuQuery",
+      "respRef": "ResultVoPageVoMenuDto",
+      "pathParams": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/menu/list",
+      "operationId": "list_10",
+      "tag": "菜单",
+      "summary": "列表查询",
+      "reqRef": "MenuQuery",
+      "respRef": "ResultVoListMenuDto",
+      "pathParams": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/menu/form",
+      "operationId": "formItem_10",
+      "tag": "菜单",
+      "summary": "获取表单数据",
+      "reqRef": "integer",
+      "respRef": "ResultVoMenuForm",
+      "pathParams": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/menu/edit",
+      "operationId": "edit_10",
+      "tag": "菜单",
+      "summary": "编辑",
+      "reqRef": "MenuForm",
+      "respRef": "ResultVoMenuForm",
+      "pathParams": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/menu/delete",
+      "operationId": "delete_10",
+      "tag": "菜单",
+      "summary": "删除",
+      "reqRef": "integer",
+      "respRef": "ResultVoVoid",
+      "pathParams": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/menu/deleteAll",
+      "operationId": "deleteAll_10",
+      "tag": "菜单",
+      "summary": "批量删除",
+      "reqRef": "array",
+      "respRef": "ResultVoVoid",
+      "pathParams": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/menu/add",
+      "operationId": "add_10",
+      "tag": "菜单",
+      "summary": "新增",
+      "reqRef": "MenuForm",
+      "respRef": "ResultVoMenuForm",
+      "pathParams": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/menu-template/page",
+      "operationId": "page_11",
+      "tag": "菜单模板",
+      "summary": "分页查询",
+      "reqRef": "MenuTemplateQuery",
+      "respRef": "ResultVoPageVoMenuTemplateDto",
+      "pathParams": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/menu-template/list",
+      "operationId": "list_11",
+      "tag": "菜单模板",
+      "summary": "列表查询",
+      "reqRef": "MenuTemplateQuery",
+      "respRef": "ResultVoListMenuTemplateDto",
+      "pathParams": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/menu-template/form",
+      "operationId": "formItem_11",
+      "tag": "菜单模板",
+      "summary": "获取表单数据",
+      "reqRef": "integer",
+      "respRef": "ResultVoMenuTemplateForm",
+      "pathParams": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/menu-template/edit",
+      "operationId": "edit_11",
+      "tag": "菜单模板",
+      "summary": "编辑",
+      "reqRef": "MenuTemplateForm",
+      "respRef": "ResultVoMenuTemplateForm",
+      "pathParams": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/menu-template/delete",
+      "operationId": "delete_11",
+      "tag": "菜单模板",
+      "summary": "删除",
+      "reqRef": "integer",
+      "respRef": "ResultVoVoid",
+      "pathParams": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/menu-template/deleteAll",
+      "operationId": "deleteAll_11",
+      "tag": "菜单模板",
+      "summary": "批量删除",
+      "reqRef": "array",
+      "respRef": "ResultVoVoid",
+      "pathParams": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/menu-template/add",
+      "operationId": "add_11",
+      "tag": "菜单模板",
+      "summary": "新增",
+      "reqRef": "MenuTemplateForm",
+      "respRef": "ResultVoMenuTemplateForm",
+      "pathParams": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/menu-template-item/tree",
+      "operationId": "tree_3",
+      "tag": "菜单模板项",
+      "summary": "树形查询",
+      "reqRef": "MenuTemplateItemQuery",
+      "respRef": "ResultVoListMenuTemplateItemDto",
+      "pathParams": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/menu-template-item/page",
+      "operationId": "page_12",
+      "tag": "菜单模板项",
+      "summary": "分页查询",
+      "reqRef": "MenuTemplateItemQuery",
+      "respRef": "ResultVoPageVoMenuTemplateItemDto",
+      "pathParams": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/menu-template-item/list",
+      "operationId": "list_12",
+      "tag": "菜单模板项",
+      "summary": "列表查询",
+      "reqRef": "MenuTemplateItemQuery",
+      "respRef": "ResultVoListMenuTemplateItemDto",
+      "pathParams": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/menu-template-item/form",
+      "operationId": "formItem_12",
+      "tag": "菜单模板项",
+      "summary": "获取表单数据",
+      "reqRef": "integer",
+      "respRef": "ResultVoMenuTemplateItemForm",
+      "pathParams": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/menu-template-item/edit",
+      "operationId": "edit_12",
+      "tag": "菜单模板项",
+      "summary": "编辑",
+      "reqRef": "MenuTemplateItemForm",
+      "respRef": "ResultVoMenuTemplateItemForm",
+      "pathParams": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/menu-template-item/delete",
+      "operationId": "delete_12",
+      "tag": "菜单模板项",
+      "summary": "删除",
+      "reqRef": "integer",
+      "respRef": "ResultVoVoid",
+      "pathParams": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/menu-template-item/deleteAll",
+      "operationId": "deleteAll_12",
+      "tag": "菜单模板项",
+      "summary": "批量删除",
+      "reqRef": "array",
+      "respRef": "ResultVoVoid",
+      "pathParams": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/menu-template-item/add",
+      "operationId": "add_12",
+      "tag": "菜单模板项",
+      "summary": "新增",
+      "reqRef": "MenuTemplateItemForm",
+      "respRef": "ResultVoMenuTemplateItemForm",
+      "pathParams": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/login/log/page",
+      "operationId": "page_13",
+      "tag": "登录日志",
+      "summary": "分页查询",
+      "reqRef": "LoginLogQuery",
+      "respRef": "ResultVoPageVoLoginLogDto",
+      "pathParams": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/login/log/list",
+      "operationId": "list_13",
+      "tag": "登录日志",
+      "summary": "列表查询",
+      "reqRef": "LoginLogQuery",
+      "respRef": "ResultVoListLoginLogDto",
+      "pathParams": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/login/log/form",
+      "operationId": "formItem_13",
+      "tag": "登录日志",
+      "summary": "获取表单数据",
+      "reqRef": "integer",
+      "respRef": "ResultVoLoginLogForm",
+      "pathParams": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/login/log/edit",
+      "operationId": "edit_13",
+      "tag": "登录日志",
+      "summary": "编辑",
+      "reqRef": "LoginLogForm",
+      "respRef": "ResultVoLoginLogForm",
+      "pathParams": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/login/log/delete",
+      "operationId": "delete_13",
+      "tag": "登录日志",
+      "summary": "删除",
+      "reqRef": "integer",
+      "respRef": "ResultVoVoid",
+      "pathParams": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/login/log/deleteAll",
+      "operationId": "deleteAll_13",
+      "tag": "登录日志",
+      "summary": "批量删除",
+      "reqRef": "array",
+      "respRef": "ResultVoVoid",
+      "pathParams": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/login/log/add",
+      "operationId": "add_13",
+      "tag": "登录日志",
+      "summary": "新增",
+      "reqRef": "LoginLogForm",
+      "respRef": "ResultVoLoginLogForm",
+      "pathParams": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/dict/type/tree",
+      "operationId": "tree_4",
+      "tag": "字典类型",
+      "summary": "树形查询",
+      "reqRef": "DictTypeQuery",
+      "respRef": "ResultVoListDictTypeDto",
+      "pathParams": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/dict/type/page",
+      "operationId": "page_14",
+      "tag": "字典类型",
+      "summary": "分页查询",
+      "reqRef": "DictTypeQuery",
+      "respRef": "ResultVoPageVoDictTypeDto",
+      "pathParams": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/dict/type/list",
+      "operationId": "list_14",
+      "tag": "字典类型",
+      "summary": "列表查询",
+      "reqRef": "DictTypeQuery",
+      "respRef": "ResultVoListDictTypeDto",
+      "pathParams": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/dict/type/form",
+      "operationId": "formItem_14",
+      "tag": "字典类型",
+      "summary": "获取表单数据",
+      "reqRef": "integer",
+      "respRef": "ResultVoDictTypeForm",
+      "pathParams": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/dict/type/edit",
+      "operationId": "edit_14",
+      "tag": "字典类型",
+      "summary": "编辑",
+      "reqRef": "DictTypeForm",
+      "respRef": "ResultVoDictTypeForm",
+      "pathParams": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/dict/type/delete",
+      "operationId": "delete_14",
+      "tag": "字典类型",
+      "summary": "删除",
+      "reqRef": "integer",
+      "respRef": "ResultVoVoid",
+      "pathParams": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/dict/type/deleteAll",
+      "operationId": "deleteAll_14",
+      "tag": "字典类型",
+      "summary": "批量删除",
+      "reqRef": "array",
+      "respRef": "ResultVoVoid",
+      "pathParams": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/dict/type/add",
+      "operationId": "add_14",
+      "tag": "字典类型",
+      "summary": "新增",
+      "reqRef": "DictTypeForm",
+      "respRef": "ResultVoDictTypeForm",
+      "pathParams": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/dict/entry/page",
+      "operationId": "page_15",
+      "tag": "字典项",
+      "summary": "分页查询",
+      "reqRef": "DictEntryQuery",
+      "respRef": "ResultVoPageVoDictEntryDto",
+      "pathParams": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/dict/entry/list",
+      "operationId": "list_15",
+      "tag": "字典项",
+      "summary": "列表查询",
+      "reqRef": "DictEntryQuery",
+      "respRef": "ResultVoListDictEntryDto",
+      "pathParams": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/dict/entry/form",
+      "operationId": "formItem_15",
+      "tag": "字典项",
+      "summary": "获取表单数据",
+      "reqRef": "integer",
+      "respRef": "ResultVoDictEntryForm",
+      "pathParams": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/dict/entry/edit",
+      "operationId": "edit_15",
+      "tag": "字典项",
+      "summary": "编辑",
+      "reqRef": "DictEntryForm",
+      "respRef": "ResultVoDictEntryForm",
+      "pathParams": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/dict/entry/delete",
+      "operationId": "delete_15",
+      "tag": "字典项",
+      "summary": "删除",
+      "reqRef": "integer",
+      "respRef": "ResultVoVoid",
+      "pathParams": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/dict/entry/deleteAll",
+      "operationId": "deleteAll_15",
+      "tag": "字典项",
+      "summary": "批量删除",
+      "reqRef": "array",
+      "respRef": "ResultVoVoid",
+      "pathParams": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/dict/entry/add",
+      "operationId": "add_15",
+      "tag": "字典项",
+      "summary": "新增",
+      "reqRef": "DictEntryForm",
+      "respRef": "ResultVoDictEntryForm",
+      "pathParams": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/dict-template/tree",
+      "operationId": "tree_5",
+      "tag": "字典模板",
+      "summary": "树形查询",
+      "reqRef": "DictTemplateQuery",
+      "respRef": "ResultVoListDictTemplateDto",
+      "pathParams": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/dict-template/page",
+      "operationId": "page_16",
+      "tag": "字典模板",
+      "summary": "分页查询",
+      "reqRef": "DictTemplateQuery",
+      "respRef": "ResultVoPageVoDictTemplateDto",
+      "pathParams": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/dict-template/list",
+      "operationId": "list_16",
+      "tag": "字典模板",
+      "summary": "列表查询",
+      "reqRef": "DictTemplateQuery",
+      "respRef": "ResultVoListDictTemplateDto",
+      "pathParams": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/dict-template/form",
+      "operationId": "formItem_16",
+      "tag": "字典模板",
+      "summary": "获取表单数据",
+      "reqRef": "integer",
+      "respRef": "ResultVoDictTemplateForm",
+      "pathParams": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/dict-template/edit",
+      "operationId": "edit_16",
+      "tag": "字典模板",
+      "summary": "编辑",
+      "reqRef": "DictTemplateForm",
+      "respRef": "ResultVoDictTemplateForm",
+      "pathParams": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/dict-template/delete",
+      "operationId": "delete_16",
+      "tag": "字典模板",
+      "summary": "删除",
+      "reqRef": "integer",
+      "respRef": "ResultVoVoid",
+      "pathParams": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/dict-template/deleteAll",
+      "operationId": "deleteAll_16",
+      "tag": "字典模板",
+      "summary": "批量删除",
+      "reqRef": "array",
+      "respRef": "ResultVoVoid",
+      "pathParams": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/dict-template/add",
+      "operationId": "add_16",
+      "tag": "字典模板",
+      "summary": "新增",
+      "reqRef": "DictTemplateForm",
+      "respRef": "ResultVoDictTemplateForm",
+      "pathParams": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/dict-template-entry/page",
+      "operationId": "page_17",
+      "tag": "字典模板项",
+      "summary": "分页查询",
+      "reqRef": "DictTemplateEntryQuery",
+      "respRef": "ResultVoPageVoDictTemplateEntryDto",
+      "pathParams": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/dict-template-entry/list",
+      "operationId": "list_17",
+      "tag": "字典模板项",
+      "summary": "列表查询",
+      "reqRef": "DictTemplateEntryQuery",
+      "respRef": "ResultVoListDictTemplateEntryDto",
+      "pathParams": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/dict-template-entry/form",
+      "operationId": "formItem_17",
+      "tag": "字典模板项",
+      "summary": "获取表单数据",
+      "reqRef": "integer",
+      "respRef": "ResultVoDictTemplateEntryForm",
+      "pathParams": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/dict-template-entry/edit",
+      "operationId": "edit_17",
+      "tag": "字典模板项",
+      "summary": "编辑",
+      "reqRef": "DictTemplateEntryForm",
+      "respRef": "ResultVoDictTemplateEntryForm",
+      "pathParams": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/dict-template-entry/delete",
+      "operationId": "delete_17",
+      "tag": "字典模板项",
+      "summary": "删除",
+      "reqRef": "integer",
+      "respRef": "ResultVoVoid",
+      "pathParams": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/dict-template-entry/deleteAll",
+      "operationId": "deleteAll_17",
+      "tag": "字典模板项",
+      "summary": "批量删除",
+      "reqRef": "array",
+      "respRef": "ResultVoVoid",
+      "pathParams": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/dict-template-entry/add",
+      "operationId": "add_17",
+      "tag": "字典模板项",
+      "summary": "新增",
+      "reqRef": "DictTemplateEntryForm",
+      "respRef": "ResultVoDictTemplateEntryForm",
+      "pathParams": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/auth/token/revoke-user",
+      "operationId": "revokeUser",
+      "tag": "令牌管理 TokenAdmin",
+      "summary": "",
+      "reqRef": "TokenAdminRequest",
+      "respRef": "ResultVoVoid",
+      "pathParams": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/auth/token/revoke-tenant",
+      "operationId": "revokeTenant",
+      "tag": "令牌管理 TokenAdmin",
+      "summary": "吊销租户令牌",
+      "reqRef": "TokenAdminRequest",
+      "respRef": "ResultVoVoid",
+      "pathParams": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/auth/token/list-by-user",
+      "operationId": "listByUser",
+      "tag": "令牌管理 TokenAdmin",
+      "summary": "按用户查询令牌",
+      "reqRef": "TokenAdminRequest",
+      "respRef": "ResultVoListTokenSummary",
+      "pathParams": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/auth/token/list-by-tenant",
+      "operationId": "listByTenant",
+      "tag": "令牌管理 TokenAdmin",
+      "summary": "按租户查询令牌",
+      "reqRef": "TokenAdminRequest",
+      "respRef": "ResultVoListTokenSummary",
+      "pathParams": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/auth/refresh",
+      "operationId": "refresh",
+      "tag": "认证 Auth",
+      "summary": "刷新令牌",
+      "reqRef": "RefreshRequest",
+      "respRef": "ResultVoLoginResult",
+      "pathParams": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/auth/logout",
+      "operationId": "logout",
+      "tag": "认证 Auth",
+      "summary": "登出",
+      "reqRef": "LogoutRequest",
+      "respRef": "ResultVoVoid",
+      "pathParams": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/auth/login",
+      "operationId": "login",
+      "tag": "认证 Auth",
+      "summary": "登录",
+      "reqRef": "LoginRequest",
+      "respRef": "ResultVoLoginResult",
+      "pathParams": []
+    },
+    {
+      "method": "GET",
+      "path": "/api/role-menu",
+      "operationId": "listByRole",
+      "tag": "角色菜单授权",
+      "summary": "查询角色已授权菜单ID",
+      "reqRef": null,
+      "respRef": "ResultVoListLong",
+      "pathParams": []
+    },
+    {
+      "method": "GET",
+      "path": "/api/frame/menu",
+      "operationId": "menus",
+      "tag": "应用外壳 Frame",
+      "summary": "导航菜单树",
+      "reqRef": null,
+      "respRef": null,
+      "pathParams": []
+    },
+    {
+      "method": "GET",
+      "path": "/api/frame/me",
+      "operationId": "user",
+      "tag": "应用外壳 Frame",
+      "summary": "当前用户资料",
+      "reqRef": null,
+      "respRef": "FrameUserVO",
+      "pathParams": []
+    },
+    {
+      "method": "GET",
+      "path": "/api/frame/bootstrap",
+      "operationId": "bootstrap",
+      "tag": "应用外壳 Frame",
+      "summary": "应用引导数据",
+      "reqRef": null,
+      "respRef": "FrameBootstrapVO",
+      "pathParams": []
+    }
+  ],
+  "schemaCount": 143,
+  "schemaNames": [
+    "QuerySort",
+    "UserQuery",
+    "PageVoUserDto",
+    "ResultVoPageVoUserDto",
+    "UserDto",
+    "ResultVoListUserDto",
+    "ResultVoUserForm",
+    "UserForm",
+    "ResultVoVoid",
+    "UserPoolQuery",
+    "PageVoUserPoolDto",
+    "ResultVoPageVoUserPoolDto",
+    "UserPoolDto",
+    "ResultVoListUserPoolDto",
+    "ResultVoUserPoolForm",
+    "UserPoolForm",
+    "TenantQuery",
+    "PageVoTenantDto",
+    "ResultVoPageVoTenantDto",
+    "TenantDto",
+    "ResultVoListTenantDto",
+    "TenantMenuInitForm",
+    "ResultVoTenantForm",
+    "TenantForm",
+    "TenantUserQuery",
+    "PageVoTenantUserDto",
+    "ResultVoPageVoTenantUserDto",
+    "TenantUserDto",
+    "ResultVoListTenantUserDto",
+    "ResultVoTenantUserForm",
+    "TenantUserForm",
+    "TenantUserRoleQuery",
+    "PageVoTenantUserRoleDto",
+    "ResultVoPageVoTenantUserRoleDto",
+    "TenantUserRoleDto",
+    "ResultVoListTenantUserRoleDto",
+    "ResultVoTenantUserRoleForm",
+    "TenantUserRoleForm",
+    "ResultVoMapStringObject",
+    "SysLogQuery",
+    "PageVoSysLogDto",
+    "ResultVoPageVoSysLogDto",
+    "SysLogDto",
+    "ResultVoListSysLogDto",
+    "ResultVoSysLogForm",
+    "SysLogForm",
+    "RoleQuery",
+    "PageVoRoleDto",
+    "ResultVoPageVoRoleDto",
+    "RoleDto",
+    "ResultVoListRoleDto",
+    "ResultVoRoleForm",
+    "RoleForm",
+    "RoleTemplateQuery",
+    "PageVoRoleTemplateDto",
+    "ResultVoPageVoRoleTemplateDto",
+    "RoleTemplateDto",
+    "ResultVoListRoleTemplateDto",
+    "ResultVoRoleTemplateForm",
+    "RoleTemplateForm",
+    "RoleMenuAssignForm",
+    "RoleGroupQuery",
+    "ResultVoListRoleGroupDto",
+    "RoleGroupDto",
+    "PageVoRoleGroupDto",
+    "ResultVoPageVoRoleGroupDto",
+    "ResultVoRoleGroupForm",
+    "RoleGroupForm",
+    "OrgUnitQuery",
+    "OrgUnitDto",
+    "ResultVoListOrgUnitDto",
+    "PageVoOrgUnitDto",
+    "ResultVoPageVoOrgUnitDto",
+    "OrgUnitForm",
+    "ResultVoOrgUnitForm",
+    "MenuQuery",
+    "MenuDto",
+    "ResultVoListMenuDto",
+    "PageVoMenuDto",
+    "ResultVoPageVoMenuDto",
+    "MenuForm",
+    "ResultVoMenuForm",
+    "MenuTemplateQuery",
+    "MenuTemplateDto",
+    "PageVoMenuTemplateDto",
+    "ResultVoPageVoMenuTemplateDto",
+    "ResultVoListMenuTemplateDto",
+    "MenuTemplateForm",
+    "ResultVoMenuTemplateForm",
+    "MenuTemplateItemQuery",
+    "MenuTemplateItemDto",
+    "ResultVoListMenuTemplateItemDto",
+    "PageVoMenuTemplateItemDto",
+    "ResultVoPageVoMenuTemplateItemDto",
+    "MenuTemplateItemForm",
+    "ResultVoMenuTemplateItemForm",
+    "LoginLogQuery",
+    "LoginLogDto",
+    "PageVoLoginLogDto",
+    "ResultVoPageVoLoginLogDto",
+    "ResultVoListLoginLogDto",
+    "LoginLogForm",
+    "ResultVoLoginLogForm",
+    "DictTypeQuery",
+    "DictTypeDto",
+    "ResultVoListDictTypeDto",
+    "PageVoDictTypeDto",
+    "ResultVoPageVoDictTypeDto",
+    "DictTypeForm",
+    "ResultVoDictTypeForm",
+    "DictEntryQuery",
+    "DictEntryDto",
+    "PageVoDictEntryDto",
+    "ResultVoPageVoDictEntryDto",
+    "ResultVoListDictEntryDto",
+    "DictEntryForm",
+    "ResultVoDictEntryForm",
+    "DictTemplateQuery",
+    "DictTemplateDto",
+    "ResultVoListDictTemplateDto",
+    "PageVoDictTemplateDto",
+    "ResultVoPageVoDictTemplateDto",
+    "DictTemplateForm",
+    "ResultVoDictTemplateForm",
+    "DictTemplateEntryQuery",
+    "DictTemplateEntryDto",
+    "PageVoDictTemplateEntryDto",
+    "ResultVoPageVoDictTemplateEntryDto",
+    "ResultVoListDictTemplateEntryDto",
+    "DictTemplateEntryForm",
+    "ResultVoDictTemplateEntryForm",
+    "TokenAdminRequest",
+    "ResultVoListTokenSummary",
+    "TokenSummary",
+    "RefreshRequest",
+    "LoginResult",
+    "ResultVoLoginResult",
+    "LogoutRequest",
+    "LoginRequest",
+    "ResultVoListLong",
+    "MenuTreeVO",
+    "FrameUserVO",
+    "FrameBootstrapVO"
+  ],
+  "schemaSummary": {
+    "QuerySort": {
+      "type": "object",
+      "desc": "排序项",
+      "propCount": 2,
+      "props": {
+        "key": {
+          "type": "string"
+        },
+        "order": {
+          "type": "string",
+          "enum": [
+            "ASC",
+            "DESC"
+          ]
+        }
+      }
+    },
+    "UserQuery": {
+      "type": "object",
+      "desc": "查询条件",
+      "propCount": 5,
+      "props": {
+        "pageNo": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "pageSize": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "sorts": {
+          "type": "array"
+        },
+        "keyword": {
+          "type": "string"
+        },
+        "userPoolId": {
+          "type": "integer",
+          "format": "int64"
+        }
+      }
+    },
+    "PageVoUserDto": {
+      "type": "object",
+      "desc": "分页响应包装体",
+      "propCount": 2,
+      "props": {
+        "total": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "data": {
+          "type": "array"
+        }
+      }
+    },
+    "ResultVoPageVoUserDto": {
+      "type": "object",
+      "desc": "统一 API 响应包装体",
+      "propCount": 3,
+      "props": {
+        "errorNo": {
+          "type": "string"
+        },
+        "errorMsg": {
+          "type": "string"
+        },
+        "data": {
+          "type": "ref:PageVoUserDto"
+        }
+      }
+    },
+    "UserDto": {
+      "type": "object",
+      "desc": "用户数据传输对象",
+      "propCount": 15,
+      "props": {
+        "orderNum": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "createdTime": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "lastModifiedTime": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "id": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "userPoolId": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "loginId": {
+          "type": "string"
+        },
+        "nickName": {
+          "type": "string"
+        },
+        "mobile": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string"
+        },
+        "gender": {
+          "type": "string",
+          "enum": [
+            "0",
+            "1",
+            "2",
+            "9"
+          ]
+        },
+        "avatar": {
+          "type": "string"
+        },
+        "orgUnitId": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "orgUnitPath": {
+          "type": "string"
+        },
+        "userStatus": {
+          "type": "string",
+          "enum": [
+            "0",
+            "1"
+          ]
+        },
+        "encType": {
+          "type": "string"
+        }
+      }
+    },
+    "ResultVoListUserDto": {
+      "type": "object",
+      "desc": "统一 API 响应包装体",
+      "propCount": 3,
+      "props": {
+        "errorNo": {
+          "type": "string"
+        },
+        "errorMsg": {
+          "type": "string"
+        },
+        "data": {
+          "type": "array"
+        }
+      }
+    },
+    "ResultVoUserForm": {
+      "type": "object",
+      "desc": "统一 API 响应包装体",
+      "propCount": 3,
+      "props": {
+        "errorNo": {
+          "type": "string"
+        },
+        "errorMsg": {
+          "type": "string"
+        },
+        "data": {
+          "type": "ref:UserForm"
+        }
+      }
+    },
+    "UserForm": {
+      "type": "object",
+      "desc": "新增表单对象",
+      "propCount": 14,
+      "props": {
+        "id": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "loginId": {
+          "type": "string"
+        },
+        "nickName": {
+          "type": "string"
+        },
+        "mobile": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string"
+        },
+        "gender": {
+          "type": "string",
+          "enum": [
+            "0",
+            "1",
+            "2",
+            "9"
+          ]
+        },
+        "avatar": {
+          "type": "string"
+        },
+        "orgUnitId": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "orgUnitPath": {
+          "type": "string"
+        },
+        "userStatus": {
+          "type": "string",
+          "enum": [
+            "0",
+            "1"
+          ]
+        },
+        "encType": {
+          "type": "string"
+        },
+        "salt": {
+          "type": "string"
+        },
+        "passwd": {
+          "type": "string"
+        },
+        "userPoolId": {
+          "type": "integer",
+          "format": "int64"
+        }
+      }
+    },
+    "ResultVoVoid": {
+      "type": "object",
+      "desc": "统一 API 响应包装体",
+      "propCount": 3,
+      "props": {
+        "errorNo": {
+          "type": "string"
+        },
+        "errorMsg": {
+          "type": "string"
+        },
+        "data": {
+          "type": "?"
+        }
+      }
+    },
+    "UserPoolQuery": {
+      "type": "object",
+      "desc": "查询条件",
+      "propCount": 5,
+      "props": {
+        "pageNo": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "pageSize": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "sorts": {
+          "type": "array"
+        },
+        "keyword": {
+          "type": "string"
+        },
+        "userPoolId": {
+          "type": "integer",
+          "format": "int64"
+        }
+      }
+    },
+    "PageVoUserPoolDto": {
+      "type": "object",
+      "desc": "分页响应包装体",
+      "propCount": 2,
+      "props": {
+        "total": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "data": {
+          "type": "array"
+        }
+      }
+    },
+    "ResultVoPageVoUserPoolDto": {
+      "type": "object",
+      "desc": "统一 API 响应包装体",
+      "propCount": 3,
+      "props": {
+        "errorNo": {
+          "type": "string"
+        },
+        "errorMsg": {
+          "type": "string"
+        },
+        "data": {
+          "type": "ref:PageVoUserPoolDto"
+        }
+      }
+    },
+    "UserPoolDto": {
+      "type": "object",
+      "desc": "用户池数据传输对象",
+      "propCount": 7,
+      "props": {
+        "orderNum": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "createdTime": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "lastModifiedTime": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "id": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "userPoolName": {
+          "type": "string"
+        },
+        "remark": {
+          "type": "string"
+        },
+        "userPoolStatus": {
+          "type": "string",
+          "enum": [
+            "0",
+            "1"
+          ]
+        }
+      }
+    },
+    "ResultVoListUserPoolDto": {
+      "type": "object",
+      "desc": "统一 API 响应包装体",
+      "propCount": 3,
+      "props": {
+        "errorNo": {
+          "type": "string"
+        },
+        "errorMsg": {
+          "type": "string"
+        },
+        "data": {
+          "type": "array"
+        }
+      }
+    },
+    "ResultVoUserPoolForm": {
+      "type": "object",
+      "desc": "统一 API 响应包装体",
+      "propCount": 3,
+      "props": {
+        "errorNo": {
+          "type": "string"
+        },
+        "errorMsg": {
+          "type": "string"
+        },
+        "data": {
+          "type": "ref:UserPoolForm"
+        }
+      }
+    },
+    "UserPoolForm": {
+      "type": "object",
+      "desc": "新增表单对象",
+      "propCount": 4,
+      "props": {
+        "id": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "userPoolName": {
+          "type": "string"
+        },
+        "remark": {
+          "type": "string"
+        },
+        "userPoolStatus": {
+          "type": "string",
+          "enum": [
+            "0",
+            "1"
+          ]
+        }
+      }
+    },
+    "TenantQuery": {
+      "type": "object",
+      "desc": "查询条件",
+      "propCount": 4,
+      "props": {
+        "pageNo": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "pageSize": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "sorts": {
+          "type": "array"
+        },
+        "keyword": {
+          "type": "string"
+        }
+      }
+    },
+    "PageVoTenantDto": {
+      "type": "object",
+      "desc": "分页响应包装体",
+      "propCount": 2,
+      "props": {
+        "total": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "data": {
+          "type": "array"
+        }
+      }
+    },
+    "ResultVoPageVoTenantDto": {
+      "type": "object",
+      "desc": "统一 API 响应包装体",
+      "propCount": 3,
+      "props": {
+        "errorNo": {
+          "type": "string"
+        },
+        "errorMsg": {
+          "type": "string"
+        },
+        "data": {
+          "type": "ref:PageVoTenantDto"
+        }
+      }
+    },
+    "TenantDto": {
+      "type": "object",
+      "desc": "租户数据传输对象",
+      "propCount": 17,
+      "props": {
+        "id": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "parentId": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "code": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "nodeDesc": {
+          "type": "string"
+        },
+        "parentTreePath": {
+          "type": "string"
+        },
+        "treeLevel": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "parent": {
+          "type": "ref:TenantDto"
+        },
+        "children": {
+          "type": "array"
+        },
+        "orderNum": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "createdTime": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "lastModifiedTime": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "tenantType": {
+          "type": "string"
+        },
+        "tenantStatus": {
+          "type": "string",
+          "enum": [
+            "0",
+            "1"
+          ]
+        },
+        "userPoolType": {
+          "type": "string",
+          "enum": [
+            "1"
+          ]
+        },
+        "userPoolId": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "userPoolTreePath": {
+          "type": "string"
+        }
+      }
+    },
+    "ResultVoListTenantDto": {
+      "type": "object",
+      "desc": "统一 API 响应包装体",
+      "propCount": 3,
+      "props": {
+        "errorNo": {
+          "type": "string"
+        },
+        "errorMsg": {
+          "type": "string"
+        },
+        "data": {
+          "type": "array"
+        }
+      }
+    },
+    "TenantMenuInitForm": {
+      "type": "object",
+      "desc": "租户ID与模板ID",
+      "propCount": 3,
+      "props": {
+        "id": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "tenantId": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "templateId": {
+          "type": "integer",
+          "format": "int64"
+        }
+      }
+    },
+    "ResultVoTenantForm": {
+      "type": "object",
+      "desc": "统一 API 响应包装体",
+      "propCount": 3,
+      "props": {
+        "errorNo": {
+          "type": "string"
+        },
+        "errorMsg": {
+          "type": "string"
+        },
+        "data": {
+          "type": "ref:TenantForm"
+        }
+      }
+    },
+    "TenantForm": {
+      "type": "object",
+      "desc": "新增表单对象",
+      "propCount": 12,
+      "props": {
+        "id": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "name": {
+          "type": "string"
+        },
+        "code": {
+          "type": "string"
+        },
+        "nodeDesc": {
+          "type": "string"
+        },
+        "parentId": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "orderNum": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "tenantType": {
+          "type": "string"
+        },
+        "tenantStatus": {
+          "type": "string",
+          "enum": [
+            "0",
+            "1"
+          ]
+        },
+        "userPoolType": {
+          "type": "string",
+          "enum": [
+            "1"
+          ]
+        },
+        "userPoolId": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "userPoolTreePath": {
+          "type": "string"
+        },
+        "templateId": {
+          "type": "integer",
+          "format": "int64"
+        }
+      }
+    },
+    "TenantUserQuery": {
+      "type": "object",
+      "desc": "查询条件",
+      "propCount": 6,
+      "props": {
+        "pageNo": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "pageSize": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "sorts": {
+          "type": "array"
+        },
+        "keyword": {
+          "type": "string"
+        },
+        "userId": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "tenantId": {
+          "type": "integer",
+          "format": "int64"
+        }
+      }
+    },
+    "PageVoTenantUserDto": {
+      "type": "object",
+      "desc": "分页响应包装体",
+      "propCount": 2,
+      "props": {
+        "total": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "data": {
+          "type": "array"
+        }
+      }
+    },
+    "ResultVoPageVoTenantUserDto": {
+      "type": "object",
+      "desc": "统一 API 响应包装体",
+      "propCount": 3,
+      "props": {
+        "errorNo": {
+          "type": "string"
+        },
+        "errorMsg": {
+          "type": "string"
+        },
+        "data": {
+          "type": "ref:PageVoTenantUserDto"
+        }
+      }
+    },
+    "TenantUserDto": {
+      "type": "object",
+      "desc": "租户用户数据传输对象",
+      "propCount": 14,
+      "props": {
+        "orderNum": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "createdTime": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "lastModifiedTime": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "id": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "tenantId": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "userId": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "tenantUserStatus": {
+          "type": "string",
+          "enum": [
+            "0",
+            "1"
+          ]
+        },
+        "displayName": {
+          "type": "string"
+        },
+        "joinSource": {
+          "type": "string"
+        },
+        "joinTime": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "inviterId": {
+          "type": "string"
+        },
+        "lastLoginTime": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "userPoolId": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "orgUnitId": {
+          "type": "integer",
+          "format": "int64"
+        }
+      }
+    },
+    "ResultVoListTenantUserDto": {
+      "type": "object",
+      "desc": "统一 API 响应包装体",
+      "propCount": 3,
+      "props": {
+        "errorNo": {
+          "type": "string"
+        },
+        "errorMsg": {
+          "type": "string"
+        },
+        "data": {
+          "type": "array"
+        }
+      }
+    },
+    "ResultVoTenantUserForm": {
+      "type": "object",
+      "desc": "统一 API 响应包装体",
+      "propCount": 3,
+      "props": {
+        "errorNo": {
+          "type": "string"
+        },
+        "errorMsg": {
+          "type": "string"
+        },
+        "data": {
+          "type": "ref:TenantUserForm"
+        }
+      }
+    },
+    "TenantUserForm": {
+      "type": "object",
+      "desc": "新增表单对象",
+      "propCount": 10,
+      "props": {
+        "id": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "userId": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "tenantUserStatus": {
+          "type": "string",
+          "enum": [
+            "0",
+            "1"
+          ]
+        },
+        "displayName": {
+          "type": "string"
+        },
+        "joinSource": {
+          "type": "string"
+        },
+        "joinTime": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "inviterId": {
+          "type": "string"
+        },
+        "lastLoginTime": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "tenantId": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "userPoolId": {
+          "type": "integer",
+          "format": "int64"
+        }
+      }
+    },
+    "TenantUserRoleQuery": {
+      "type": "object",
+      "desc": "查询条件",
+      "propCount": 6,
+      "props": {
+        "pageNo": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "pageSize": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "sorts": {
+          "type": "array"
+        },
+        "keyword": {
+          "type": "string"
+        },
+        "tenantUserId": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "roleId": {
+          "type": "integer",
+          "format": "int64"
+        }
+      }
+    },
+    "PageVoTenantUserRoleDto": {
+      "type": "object",
+      "desc": "分页响应包装体",
+      "propCount": 2,
+      "props": {
+        "total": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "data": {
+          "type": "array"
+        }
+      }
+    },
+    "ResultVoPageVoTenantUserRoleDto": {
+      "type": "object",
+      "desc": "统一 API 响应包装体",
+      "propCount": 3,
+      "props": {
+        "errorNo": {
+          "type": "string"
+        },
+        "errorMsg": {
+          "type": "string"
+        },
+        "data": {
+          "type": "ref:PageVoTenantUserRoleDto"
+        }
+      }
+    },
+    "TenantUserRoleDto": {
+      "type": "object",
+      "desc": "租户用户角色数据传输对象",
+      "propCount": 7,
+      "props": {
+        "orderNum": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "createdTime": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "lastModifiedTime": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "id": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "tenantId": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "tenantUserId": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "roleId": {
+          "type": "integer",
+          "format": "int64"
+        }
+      }
+    },
+    "ResultVoListTenantUserRoleDto": {
+      "type": "object",
+      "desc": "统一 API 响应包装体",
+      "propCount": 3,
+      "props": {
+        "errorNo": {
+          "type": "string"
+        },
+        "errorMsg": {
+          "type": "string"
+        },
+        "data": {
+          "type": "array"
+        }
+      }
+    },
+    "ResultVoTenantUserRoleForm": {
+      "type": "object",
+      "desc": "统一 API 响应包装体",
+      "propCount": 3,
+      "props": {
+        "errorNo": {
+          "type": "string"
+        },
+        "errorMsg": {
+          "type": "string"
+        },
+        "data": {
+          "type": "ref:TenantUserRoleForm"
+        }
+      }
+    },
+    "TenantUserRoleForm": {
+      "type": "object",
+      "desc": "新增表单对象",
+      "propCount": 4,
+      "props": {
+        "id": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "tenantUserId": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "roleId": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "tenantId": {
+          "type": "integer",
+          "format": "int64"
+        }
+      }
+    },
+    "ResultVoMapStringObject": {
+      "type": "object",
+      "desc": "统一 API 响应包装体",
+      "propCount": 3,
+      "props": {
+        "errorNo": {
+          "type": "string"
+        },
+        "errorMsg": {
+          "type": "string"
+        },
+        "data": {
+          "type": "object"
+        }
+      }
+    },
+    "SysLogQuery": {
+      "type": "object",
+      "desc": "查询条件",
+      "propCount": 4,
+      "props": {
+        "pageNo": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "pageSize": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "sorts": {
+          "type": "array"
+        },
+        "keyword": {
+          "type": "string"
+        }
+      }
+    },
+    "PageVoSysLogDto": {
+      "type": "object",
+      "desc": "分页响应包装体",
+      "propCount": 2,
+      "props": {
+        "total": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "data": {
+          "type": "array"
+        }
+      }
+    },
+    "ResultVoPageVoSysLogDto": {
+      "type": "object",
+      "desc": "统一 API 响应包装体",
+      "propCount": 3,
+      "props": {
+        "errorNo": {
+          "type": "string"
+        },
+        "errorMsg": {
+          "type": "string"
+        },
+        "data": {
+          "type": "ref:PageVoSysLogDto"
+        }
+      }
+    },
+    "SysLogDto": {
+      "type": "object",
+      "desc": "操作日志数据传输对象",
+      "propCount": 7,
+      "props": {
+        "orderNum": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "createdTime": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "lastModifiedTime": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "id": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "tenantId": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "operateType": {
+          "type": "string",
+          "enum": [
+            "AUTHORIZE",
+            "ACCESS",
+            "OPERATE",
+            "ERROR"
+          ]
+        },
+        "logContent": {
+          "type": "string"
+        }
+      }
+    },
+    "ResultVoListSysLogDto": {
+      "type": "object",
+      "desc": "统一 API 响应包装体",
+      "propCount": 3,
+      "props": {
+        "errorNo": {
+          "type": "string"
+        },
+        "errorMsg": {
+          "type": "string"
+        },
+        "data": {
+          "type": "array"
+        }
+      }
+    },
+    "ResultVoSysLogForm": {
+      "type": "object",
+      "desc": "统一 API 响应包装体",
+      "propCount": 3,
+      "props": {
+        "errorNo": {
+          "type": "string"
+        },
+        "errorMsg": {
+          "type": "string"
+        },
+        "data": {
+          "type": "ref:SysLogForm"
+        }
+      }
+    },
+    "SysLogForm": {
+      "type": "object",
+      "desc": "新增表单对象",
+      "propCount": 4,
+      "props": {
+        "id": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "operateType": {
+          "type": "string",
+          "enum": [
+            "AUTHORIZE",
+            "ACCESS",
+            "OPERATE",
+            "ERROR"
+          ]
+        },
+        "logContent": {
+          "type": "string"
+        },
+        "tenantId": {
+          "type": "integer",
+          "format": "int64"
+        }
+      }
+    },
+    "RoleQuery": {
+      "type": "object",
+      "desc": "查询条件",
+      "propCount": 4,
+      "props": {
+        "pageNo": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "pageSize": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "sorts": {
+          "type": "array"
+        },
+        "keyword": {
+          "type": "string"
+        }
+      }
+    },
+    "PageVoRoleDto": {
+      "type": "object",
+      "desc": "分页响应包装体",
+      "propCount": 2,
+      "props": {
+        "total": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "data": {
+          "type": "array"
+        }
+      }
+    },
+    "ResultVoPageVoRoleDto": {
+      "type": "object",
+      "desc": "统一 API 响应包装体",
+      "propCount": 3,
+      "props": {
+        "errorNo": {
+          "type": "string"
+        },
+        "errorMsg": {
+          "type": "string"
+        },
+        "data": {
+          "type": "ref:PageVoRoleDto"
+        }
+      }
+    },
+    "RoleDto": {
+      "type": "object",
+      "desc": "角色数据传输对象",
+      "propCount": 13,
+      "props": {
+        "orderNum": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "createdTime": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "lastModifiedTime": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "id": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "tenantId": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "roleCode": {
+          "type": "string"
+        },
+        "roleName": {
+          "type": "string"
+        },
+        "roleDesc": {
+          "type": "string"
+        },
+        "enableStatus": {
+          "type": "string",
+          "enum": [
+            "0",
+            "1"
+          ]
+        },
+        "roleType": {
+          "type": "string",
+          "enum": [
+            "1",
+            "2"
+          ]
+        },
+        "orgUnitId": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "orgUnitPath": {
+          "type": "string"
+        },
+        "locked": {
+          "type": "string",
+          "enum": [
+            "0",
+            "1"
+          ]
+        }
+      }
+    },
+    "ResultVoListRoleDto": {
+      "type": "object",
+      "desc": "统一 API 响应包装体",
+      "propCount": 3,
+      "props": {
+        "errorNo": {
+          "type": "string"
+        },
+        "errorMsg": {
+          "type": "string"
+        },
+        "data": {
+          "type": "array"
+        }
+      }
+    },
+    "ResultVoRoleForm": {
+      "type": "object",
+      "desc": "统一 API 响应包装体",
+      "propCount": 3,
+      "props": {
+        "errorNo": {
+          "type": "string"
+        },
+        "errorMsg": {
+          "type": "string"
+        },
+        "data": {
+          "type": "ref:RoleForm"
+        }
+      }
+    },
+    "RoleForm": {
+      "type": "object",
+      "desc": "新增表单对象",
+      "propCount": 9,
+      "props": {
+        "id": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "roleCode": {
+          "type": "string"
+        },
+        "roleName": {
+          "type": "string"
+        },
+        "roleDesc": {
+          "type": "string"
+        },
+        "enableStatus": {
+          "type": "string",
+          "enum": [
+            "0",
+            "1"
+          ]
+        },
+        "tenantId": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "roleType": {
+          "type": "string",
+          "enum": [
+            "1",
+            "2"
+          ]
+        },
+        "orgUnitId": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "orgUnitPath": {
+          "type": "string"
+        }
+      }
+    },
+    "RoleTemplateQuery": {
+      "type": "object",
+      "desc": "查询条件",
+      "propCount": 5,
+      "props": {
+        "pageNo": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "pageSize": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "sorts": {
+          "type": "array"
+        },
+        "keyword": {
+          "type": "string"
+        },
+        "isSystem": {
+          "type": "string",
+          "enum": [
+            "0",
+            "1"
+          ]
+        }
+      }
+    },
+    "PageVoRoleTemplateDto": {
+      "type": "object",
+      "desc": "分页响应包装体",
+      "propCount": 2,
+      "props": {
+        "total": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "data": {
+          "type": "array"
+        }
+      }
+    },
+    "ResultVoPageVoRoleTemplateDto": {
+      "type": "object",
+      "desc": "统一 API 响应包装体",
+      "propCount": 3,
+      "props": {
+        "errorNo": {
+          "type": "string"
+        },
+        "errorMsg": {
+          "type": "string"
+        },
+        "data": {
+          "type": "ref:PageVoRoleTemplateDto"
+        }
+      }
+    },
+    "RoleTemplateDto": {
+      "type": "object",
+      "desc": "角色模板数据传输对象",
+      "propCount": 13,
+      "props": {
+        "orderNum": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "createdTime": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "lastModifiedTime": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "id": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "tenantId": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "roleCode": {
+          "type": "string"
+        },
+        "roleName": {
+          "type": "string"
+        },
+        "roleDesc": {
+          "type": "string"
+        },
+        "enableStatus": {
+          "type": "string",
+          "enum": [
+            "0",
+            "1"
+          ]
+        },
+        "roleType": {
+          "type": "string",
+          "enum": [
+            "1",
+            "2"
+          ]
+        },
+        "orgUnitId": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "orgUnitPath": {
+          "type": "string"
+        },
+        "isSystem": {
+          "type": "string",
+          "enum": [
+            "0",
+            "1"
+          ]
+        }
+      }
+    },
+    "ResultVoListRoleTemplateDto": {
+      "type": "object",
+      "desc": "统一 API 响应包装体",
+      "propCount": 3,
+      "props": {
+        "errorNo": {
+          "type": "string"
+        },
+        "errorMsg": {
+          "type": "string"
+        },
+        "data": {
+          "type": "array"
+        }
+      }
+    },
+    "ResultVoRoleTemplateForm": {
+      "type": "object",
+      "desc": "统一 API 响应包装体",
+      "propCount": 3,
+      "props": {
+        "errorNo": {
+          "type": "string"
+        },
+        "errorMsg": {
+          "type": "string"
+        },
+        "data": {
+          "type": "ref:RoleTemplateForm"
+        }
+      }
+    },
+    "RoleTemplateForm": {
+      "type": "object",
+      "desc": "新增表单对象",
+      "propCount": 10,
+      "props": {
+        "id": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "roleCode": {
+          "type": "string"
+        },
+        "roleName": {
+          "type": "string"
+        },
+        "roleDesc": {
+          "type": "string"
+        },
+        "enableStatus": {
+          "type": "string",
+          "enum": [
+            "0",
+            "1"
+          ]
+        },
+        "roleType": {
+          "type": "string",
+          "enum": [
+            "1",
+            "2"
+          ]
+        },
+        "orgUnitId": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "orgUnitPath": {
+          "type": "string"
+        },
+        "isSystem": {
+          "type": "string",
+          "enum": [
+            "0",
+            "1"
+          ]
+        },
+        "tenantId": {
+          "type": "integer",
+          "format": "int64"
+        }
+      }
+    },
+    "RoleMenuAssignForm": {
+      "type": "object",
+      "desc": "角色、租户与菜单ID集合",
+      "propCount": 3,
+      "props": {
+        "tenantId": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "roleId": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "menuIds": {
+          "type": "array"
+        }
+      }
+    },
+    "RoleGroupQuery": {
+      "type": "object",
+      "desc": "查询条件",
+      "propCount": 4,
+      "props": {
+        "pageNo": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "pageSize": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "sorts": {
+          "type": "array"
+        },
+        "keyword": {
+          "type": "string"
+        }
+      }
+    },
+    "ResultVoListRoleGroupDto": {
+      "type": "object",
+      "desc": "统一 API 响应包装体",
+      "propCount": 3,
+      "props": {
+        "errorNo": {
+          "type": "string"
+        },
+        "errorMsg": {
+          "type": "string"
+        },
+        "data": {
+          "type": "array"
+        }
+      }
+    },
+    "RoleGroupDto": {
+      "type": "object",
+      "desc": "角色组数据传输对象",
+      "propCount": 13,
+      "props": {
+        "id": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "parentId": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "code": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "nodeDesc": {
+          "type": "string"
+        },
+        "parentTreePath": {
+          "type": "string"
+        },
+        "treeLevel": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "parent": {
+          "type": "ref:RoleGroupDto"
+        },
+        "children": {
+          "type": "array"
+        },
+        "orderNum": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "createdTime": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "lastModifiedTime": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "tenantId": {
+          "type": "integer",
+          "format": "int64"
+        }
+      }
+    },
+    "PageVoRoleGroupDto": {
+      "type": "object",
+      "desc": "分页响应包装体",
+      "propCount": 2,
+      "props": {
+        "total": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "data": {
+          "type": "array"
+        }
+      }
+    },
+    "ResultVoPageVoRoleGroupDto": {
+      "type": "object",
+      "desc": "统一 API 响应包装体",
+      "propCount": 3,
+      "props": {
+        "errorNo": {
+          "type": "string"
+        },
+        "errorMsg": {
+          "type": "string"
+        },
+        "data": {
+          "type": "ref:PageVoRoleGroupDto"
+        }
+      }
+    },
+    "ResultVoRoleGroupForm": {
+      "type": "object",
+      "desc": "统一 API 响应包装体",
+      "propCount": 3,
+      "props": {
+        "errorNo": {
+          "type": "string"
+        },
+        "errorMsg": {
+          "type": "string"
+        },
+        "data": {
+          "type": "ref:RoleGroupForm"
+        }
+      }
+    },
+    "RoleGroupForm": {
+      "type": "object",
+      "desc": "新增表单对象",
+      "propCount": 6,
+      "props": {
+        "id": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "name": {
+          "type": "string"
+        },
+        "code": {
+          "type": "string"
+        },
+        "nodeDesc": {
+          "type": "string"
+        },
+        "parentId": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "orderNum": {
+          "type": "integer",
+          "format": "int32"
+        }
+      }
+    },
+    "OrgUnitQuery": {
+      "type": "object",
+      "desc": "查询条件",
+      "propCount": 4,
+      "props": {
+        "pageNo": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "pageSize": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "sorts": {
+          "type": "array"
+        },
+        "keyword": {
+          "type": "string"
+        }
+      }
+    },
+    "OrgUnitDto": {
+      "type": "object",
+      "desc": "组织单元数据传输对象",
+      "propCount": 14,
+      "props": {
+        "id": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "parentId": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "code": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "nodeDesc": {
+          "type": "string"
+        },
+        "parentTreePath": {
+          "type": "string"
+        },
+        "treeLevel": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "parent": {
+          "type": "ref:OrgUnitDto"
+        },
+        "children": {
+          "type": "array"
+        },
+        "orderNum": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "createdTime": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "lastModifiedTime": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "userPoolId": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "orgUnitStatus": {
+          "type": "string",
+          "enum": [
+            "0",
+            "1"
+          ]
+        }
+      }
+    },
+    "ResultVoListOrgUnitDto": {
+      "type": "object",
+      "desc": "统一 API 响应包装体",
+      "propCount": 3,
+      "props": {
+        "errorNo": {
+          "type": "string"
+        },
+        "errorMsg": {
+          "type": "string"
+        },
+        "data": {
+          "type": "array"
+        }
+      }
+    },
+    "PageVoOrgUnitDto": {
+      "type": "object",
+      "desc": "分页响应包装体",
+      "propCount": 2,
+      "props": {
+        "total": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "data": {
+          "type": "array"
+        }
+      }
+    },
+    "ResultVoPageVoOrgUnitDto": {
+      "type": "object",
+      "desc": "统一 API 响应包装体",
+      "propCount": 3,
+      "props": {
+        "errorNo": {
+          "type": "string"
+        },
+        "errorMsg": {
+          "type": "string"
+        },
+        "data": {
+          "type": "ref:PageVoOrgUnitDto"
+        }
+      }
+    },
+    "OrgUnitForm": {
+      "type": "object",
+      "desc": "新增表单对象",
+      "propCount": 8,
+      "props": {
+        "id": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "name": {
+          "type": "string"
+        },
+        "code": {
+          "type": "string"
+        },
+        "nodeDesc": {
+          "type": "string"
+        },
+        "parentId": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "orderNum": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "orgUnitStatus": {
+          "type": "string",
+          "enum": [
+            "0",
+            "1"
+          ]
+        },
+        "userPoolId": {
+          "type": "integer",
+          "format": "int64"
+        }
+      }
+    },
+    "ResultVoOrgUnitForm": {
+      "type": "object",
+      "desc": "统一 API 响应包装体",
+      "propCount": 3,
+      "props": {
+        "errorNo": {
+          "type": "string"
+        },
+        "errorMsg": {
+          "type": "string"
+        },
+        "data": {
+          "type": "ref:OrgUnitForm"
+        }
+      }
+    },
+    "MenuQuery": {
+      "type": "object",
+      "desc": "查询条件",
+      "propCount": 4,
+      "props": {
+        "pageNo": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "pageSize": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "sorts": {
+          "type": "array"
+        },
+        "keyword": {
+          "type": "string"
+        }
+      }
+    },
+    "MenuDto": {
+      "type": "object",
+      "desc": "菜单数据传输对象",
+      "propCount": 25,
+      "props": {
+        "id": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "parentId": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "code": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "nodeDesc": {
+          "type": "string"
+        },
+        "parentTreePath": {
+          "type": "string"
+        },
+        "treeLevel": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "parent": {
+          "type": "ref:MenuDto"
+        },
+        "children": {
+          "type": "array"
+        },
+        "orderNum": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "createdTime": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "lastModifiedTime": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "tenantId": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "menuType": {
+          "type": "string",
+          "enum": [
+            "M",
+            "D",
+            "B"
+          ]
+        },
+        "icon": {
+          "type": "string"
+        },
+        "perm": {
+          "type": "string"
+        },
+        "routePath": {
+          "type": "string"
+        },
+        "component": {
+          "type": "string"
+        },
+        "jumpType": {
+          "type": "string",
+          "enum": [
+            "1",
+            "2",
+            "3"
+          ]
+        },
+        "jumpTarget": {
+          "type": "string"
+        },
+        "redirect": {
+          "type": "string"
+        },
+        "keepAlive": {
+          "type": "string",
+          "enum": [
+            "0",
+            "1"
+          ]
+        },
+        "showStatus": {
+          "type": "string",
+          "enum": [
+            "0",
+            "1"
+          ]
+        },
+        "alwaysShow": {
+          "type": "string",
+          "enum": [
+            "0",
+            "1"
+          ]
+        },
+        "locked": {
+          "type": "string",
+          "enum": [
+            "0",
+            "1"
+          ]
+        }
+      }
+    },
+    "ResultVoListMenuDto": {
+      "type": "object",
+      "desc": "统一 API 响应包装体",
+      "propCount": 3,
+      "props": {
+        "errorNo": {
+          "type": "string"
+        },
+        "errorMsg": {
+          "type": "string"
+        },
+        "data": {
+          "type": "array"
+        }
+      }
+    },
+    "PageVoMenuDto": {
+      "type": "object",
+      "desc": "分页响应包装体",
+      "propCount": 2,
+      "props": {
+        "total": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "data": {
+          "type": "array"
+        }
+      }
+    },
+    "ResultVoPageVoMenuDto": {
+      "type": "object",
+      "desc": "统一 API 响应包装体",
+      "propCount": 3,
+      "props": {
+        "errorNo": {
+          "type": "string"
+        },
+        "errorMsg": {
+          "type": "string"
+        },
+        "data": {
+          "type": "ref:PageVoMenuDto"
+        }
+      }
+    },
+    "MenuForm": {
+      "type": "object",
+      "desc": "新增表单对象",
+      "propCount": 19,
+      "props": {
+        "id": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "name": {
+          "type": "string"
+        },
+        "code": {
+          "type": "string"
+        },
+        "nodeDesc": {
+          "type": "string"
+        },
+        "parentId": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "orderNum": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "menuType": {
+          "type": "string",
+          "enum": [
+            "M",
+            "D",
+            "B"
+          ]
+        },
+        "icon": {
+          "type": "string"
+        },
+        "perm": {
+          "type": "string"
+        },
+        "routePath": {
+          "type": "string"
+        },
+        "component": {
+          "type": "string"
+        },
+        "jumpType": {
+          "type": "string",
+          "enum": [
+            "1",
+            "2",
+            "3"
+          ]
+        },
+        "jumpTarget": {
+          "type": "string"
+        },
+        "redirect": {
+          "type": "string"
+        },
+        "keepAlive": {
+          "type": "string",
+          "enum": [
+            "0",
+            "1"
+          ]
+        },
+        "showStatus": {
+          "type": "string",
+          "enum": [
+            "0",
+            "1"
+          ]
+        },
+        "alwaysShow": {
+          "type": "string",
+          "enum": [
+            "0",
+            "1"
+          ]
+        },
+        "tenantId": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "locked": {
+          "type": "string",
+          "enum": [
+            "0",
+            "1"
+          ]
+        }
+      }
+    },
+    "ResultVoMenuForm": {
+      "type": "object",
+      "desc": "统一 API 响应包装体",
+      "propCount": 3,
+      "props": {
+        "errorNo": {
+          "type": "string"
+        },
+        "errorMsg": {
+          "type": "string"
+        },
+        "data": {
+          "type": "ref:MenuForm"
+        }
+      }
+    },
+    "MenuTemplateQuery": {
+      "type": "object",
+      "desc": "查询条件",
+      "propCount": 5,
+      "props": {
+        "pageNo": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "pageSize": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "sorts": {
+          "type": "array"
+        },
+        "keyword": {
+          "type": "string"
+        },
+        "templateTypeCode": {
+          "type": "string"
+        }
+      }
+    },
+    "MenuTemplateDto": {
+      "type": "object",
+      "desc": "菜单模板数据传输对象",
+      "propCount": 10,
+      "props": {
+        "orderNum": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "createdTime": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "lastModifiedTime": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "id": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "tenantId": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "templateTypeCode": {
+          "type": "string"
+        },
+        "templateCode": {
+          "type": "string"
+        },
+        "templateName": {
+          "type": "string"
+        },
+        "isSystem": {
+          "type": "string",
+          "enum": [
+            "0",
+            "1"
+          ]
+        },
+        "remark": {
+          "type": "string"
+        }
+      }
+    },
+    "PageVoMenuTemplateDto": {
+      "type": "object",
+      "desc": "分页响应包装体",
+      "propCount": 2,
+      "props": {
+        "total": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "data": {
+          "type": "array"
+        }
+      }
+    },
+    "ResultVoPageVoMenuTemplateDto": {
+      "type": "object",
+      "desc": "统一 API 响应包装体",
+      "propCount": 3,
+      "props": {
+        "errorNo": {
+          "type": "string"
+        },
+        "errorMsg": {
+          "type": "string"
+        },
+        "data": {
+          "type": "ref:PageVoMenuTemplateDto"
+        }
+      }
+    },
+    "ResultVoListMenuTemplateDto": {
+      "type": "object",
+      "desc": "统一 API 响应包装体",
+      "propCount": 3,
+      "props": {
+        "errorNo": {
+          "type": "string"
+        },
+        "errorMsg": {
+          "type": "string"
+        },
+        "data": {
+          "type": "array"
+        }
+      }
+    },
+    "MenuTemplateForm": {
+      "type": "object",
+      "desc": "新增表单对象",
+      "propCount": 7,
+      "props": {
+        "id": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "templateTypeCode": {
+          "type": "string"
+        },
+        "templateCode": {
+          "type": "string"
+        },
+        "templateName": {
+          "type": "string"
+        },
+        "isSystem": {
+          "type": "string",
+          "enum": [
+            "0",
+            "1"
+          ]
+        },
+        "remark": {
+          "type": "string"
+        },
+        "tenantId": {
+          "type": "integer",
+          "format": "int64"
+        }
+      }
+    },
+    "ResultVoMenuTemplateForm": {
+      "type": "object",
+      "desc": "统一 API 响应包装体",
+      "propCount": 3,
+      "props": {
+        "errorNo": {
+          "type": "string"
+        },
+        "errorMsg": {
+          "type": "string"
+        },
+        "data": {
+          "type": "ref:MenuTemplateForm"
+        }
+      }
+    },
+    "MenuTemplateItemQuery": {
+      "type": "object",
+      "desc": "查询条件",
+      "propCount": 5,
+      "props": {
+        "pageNo": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "pageSize": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "sorts": {
+          "type": "array"
+        },
+        "keyword": {
+          "type": "string"
+        },
+        "templateId": {
+          "type": "integer",
+          "format": "int64"
+        }
+      }
+    },
+    "MenuTemplateItemDto": {
+      "type": "object",
+      "desc": "菜单模板项数据传输对象",
+      "propCount": 26,
+      "props": {
+        "id": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "parentId": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "code": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "nodeDesc": {
+          "type": "string"
+        },
+        "parentTreePath": {
+          "type": "string"
+        },
+        "treeLevel": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "parent": {
+          "type": "ref:MenuTemplateItemDto"
+        },
+        "children": {
+          "type": "array"
+        },
+        "orderNum": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "createdTime": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "lastModifiedTime": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "tenantId": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "menuType": {
+          "type": "string",
+          "enum": [
+            "M",
+            "D",
+            "B"
+          ]
+        },
+        "icon": {
+          "type": "string"
+        },
+        "perm": {
+          "type": "string"
+        },
+        "templateId": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "routePath": {
+          "type": "string"
+        },
+        "component": {
+          "type": "string"
+        },
+        "jumpType": {
+          "type": "string",
+          "enum": [
+            "1",
+            "2",
+            "3"
+          ]
+        },
+        "jumpTarget": {
+          "type": "string"
+        },
+        "redirect": {
+          "type": "string"
+        },
+        "keepAlive": {
+          "type": "string",
+          "enum": [
+            "0",
+            "1"
+          ]
+        },
+        "showStatus": {
+          "type": "string",
+          "enum": [
+            "0",
+            "1"
+          ]
+        },
+        "alwaysShow": {
+          "type": "string",
+          "enum": [
+            "0",
+            "1"
+          ]
+        },
+        "locked": {
+          "type": "string",
+          "enum": [
+            "0",
+            "1"
+          ]
+        }
+      }
+    },
+    "ResultVoListMenuTemplateItemDto": {
+      "type": "object",
+      "desc": "统一 API 响应包装体",
+      "propCount": 3,
+      "props": {
+        "errorNo": {
+          "type": "string"
+        },
+        "errorMsg": {
+          "type": "string"
+        },
+        "data": {
+          "type": "array"
+        }
+      }
+    },
+    "PageVoMenuTemplateItemDto": {
+      "type": "object",
+      "desc": "分页响应包装体",
+      "propCount": 2,
+      "props": {
+        "total": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "data": {
+          "type": "array"
+        }
+      }
+    },
+    "ResultVoPageVoMenuTemplateItemDto": {
+      "type": "object",
+      "desc": "统一 API 响应包装体",
+      "propCount": 3,
+      "props": {
+        "errorNo": {
+          "type": "string"
+        },
+        "errorMsg": {
+          "type": "string"
+        },
+        "data": {
+          "type": "ref:PageVoMenuTemplateItemDto"
+        }
+      }
+    },
+    "MenuTemplateItemForm": {
+      "type": "object",
+      "desc": "新增表单对象",
+      "propCount": 20,
+      "props": {
+        "id": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "name": {
+          "type": "string"
+        },
+        "code": {
+          "type": "string"
+        },
+        "nodeDesc": {
+          "type": "string"
+        },
+        "parentId": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "orderNum": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "menuType": {
+          "type": "string",
+          "enum": [
+            "M",
+            "D",
+            "B"
+          ]
+        },
+        "icon": {
+          "type": "string"
+        },
+        "perm": {
+          "type": "string"
+        },
+        "templateId": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "routePath": {
+          "type": "string"
+        },
+        "component": {
+          "type": "string"
+        },
+        "jumpType": {
+          "type": "string",
+          "enum": [
+            "1",
+            "2",
+            "3"
+          ]
+        },
+        "jumpTarget": {
+          "type": "string"
+        },
+        "redirect": {
+          "type": "string"
+        },
+        "keepAlive": {
+          "type": "string",
+          "enum": [
+            "0",
+            "1"
+          ]
+        },
+        "showStatus": {
+          "type": "string",
+          "enum": [
+            "0",
+            "1"
+          ]
+        },
+        "alwaysShow": {
+          "type": "string",
+          "enum": [
+            "0",
+            "1"
+          ]
+        },
+        "tenantId": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "locked": {
+          "type": "string",
+          "enum": [
+            "0",
+            "1"
+          ]
+        }
+      }
+    },
+    "ResultVoMenuTemplateItemForm": {
+      "type": "object",
+      "desc": "统一 API 响应包装体",
+      "propCount": 3,
+      "props": {
+        "errorNo": {
+          "type": "string"
+        },
+        "errorMsg": {
+          "type": "string"
+        },
+        "data": {
+          "type": "ref:MenuTemplateItemForm"
+        }
+      }
+    },
+    "LoginLogQuery": {
+      "type": "object",
+      "desc": "查询条件",
+      "propCount": 4,
+      "props": {
+        "pageNo": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "pageSize": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "sorts": {
+          "type": "array"
+        },
+        "keyword": {
+          "type": "string"
+        }
+      }
+    },
+    "LoginLogDto": {
+      "type": "object",
+      "desc": "登录日志数据传输对象",
+      "propCount": 8,
+      "props": {
+        "orderNum": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "createdTime": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "lastModifiedTime": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "id": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "tenantId": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "userId": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "ip": {
+          "type": "string"
+        },
+        "mac": {
+          "type": "string"
+        }
+      }
+    },
+    "PageVoLoginLogDto": {
+      "type": "object",
+      "desc": "分页响应包装体",
+      "propCount": 2,
+      "props": {
+        "total": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "data": {
+          "type": "array"
+        }
+      }
+    },
+    "ResultVoPageVoLoginLogDto": {
+      "type": "object",
+      "desc": "统一 API 响应包装体",
+      "propCount": 3,
+      "props": {
+        "errorNo": {
+          "type": "string"
+        },
+        "errorMsg": {
+          "type": "string"
+        },
+        "data": {
+          "type": "ref:PageVoLoginLogDto"
+        }
+      }
+    },
+    "ResultVoListLoginLogDto": {
+      "type": "object",
+      "desc": "统一 API 响应包装体",
+      "propCount": 3,
+      "props": {
+        "errorNo": {
+          "type": "string"
+        },
+        "errorMsg": {
+          "type": "string"
+        },
+        "data": {
+          "type": "array"
+        }
+      }
+    },
+    "LoginLogForm": {
+      "type": "object",
+      "desc": "新增表单对象",
+      "propCount": 5,
+      "props": {
+        "id": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "userId": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "ip": {
+          "type": "string"
+        },
+        "mac": {
+          "type": "string"
+        },
+        "tenantId": {
+          "type": "integer",
+          "format": "int64"
+        }
+      }
+    },
+    "ResultVoLoginLogForm": {
+      "type": "object",
+      "desc": "统一 API 响应包装体",
+      "propCount": 3,
+      "props": {
+        "errorNo": {
+          "type": "string"
+        },
+        "errorMsg": {
+          "type": "string"
+        },
+        "data": {
+          "type": "ref:LoginLogForm"
+        }
+      }
+    },
+    "DictTypeQuery": {
+      "type": "object",
+      "desc": "查询条件",
+      "propCount": 4,
+      "props": {
+        "pageNo": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "pageSize": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "sorts": {
+          "type": "array"
+        },
+        "keyword": {
+          "type": "string"
+        }
+      }
+    },
+    "DictTypeDto": {
+      "type": "object",
+      "desc": "字典类型数据传输对象",
+      "propCount": 15,
+      "props": {
+        "id": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "parentId": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "code": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "nodeDesc": {
+          "type": "string"
+        },
+        "parentTreePath": {
+          "type": "string"
+        },
+        "treeLevel": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "parent": {
+          "type": "ref:DictTypeDto"
+        },
+        "children": {
+          "type": "array"
+        },
+        "orderNum": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "createdTime": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "lastModifiedTime": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "tenantId": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "enableStatus": {
+          "type": "string",
+          "enum": [
+            "0",
+            "1"
+          ]
+        },
+        "locked": {
+          "type": "string",
+          "enum": [
+            "0",
+            "1"
+          ]
+        }
+      }
+    },
+    "ResultVoListDictTypeDto": {
+      "type": "object",
+      "desc": "统一 API 响应包装体",
+      "propCount": 3,
+      "props": {
+        "errorNo": {
+          "type": "string"
+        },
+        "errorMsg": {
+          "type": "string"
+        },
+        "data": {
+          "type": "array"
+        }
+      }
+    },
+    "PageVoDictTypeDto": {
+      "type": "object",
+      "desc": "分页响应包装体",
+      "propCount": 2,
+      "props": {
+        "total": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "data": {
+          "type": "array"
+        }
+      }
+    },
+    "ResultVoPageVoDictTypeDto": {
+      "type": "object",
+      "desc": "统一 API 响应包装体",
+      "propCount": 3,
+      "props": {
+        "errorNo": {
+          "type": "string"
+        },
+        "errorMsg": {
+          "type": "string"
+        },
+        "data": {
+          "type": "ref:PageVoDictTypeDto"
+        }
+      }
+    },
+    "DictTypeForm": {
+      "type": "object",
+      "desc": "新增表单对象",
+      "propCount": 8,
+      "props": {
+        "id": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "name": {
+          "type": "string"
+        },
+        "code": {
+          "type": "string"
+        },
+        "nodeDesc": {
+          "type": "string"
+        },
+        "parentId": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "orderNum": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "enableStatus": {
+          "type": "string",
+          "enum": [
+            "0",
+            "1"
+          ]
+        },
+        "tenantId": {
+          "type": "integer",
+          "format": "int64"
+        }
+      }
+    },
+    "ResultVoDictTypeForm": {
+      "type": "object",
+      "desc": "统一 API 响应包装体",
+      "propCount": 3,
+      "props": {
+        "errorNo": {
+          "type": "string"
+        },
+        "errorMsg": {
+          "type": "string"
+        },
+        "data": {
+          "type": "ref:DictTypeForm"
+        }
+      }
+    },
+    "DictEntryQuery": {
+      "type": "object",
+      "desc": "查询条件",
+      "propCount": 5,
+      "props": {
+        "pageNo": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "pageSize": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "sorts": {
+          "type": "array"
+        },
+        "keyword": {
+          "type": "string"
+        },
+        "dictCode": {
+          "type": "string"
+        }
+      }
+    },
+    "DictEntryDto": {
+      "type": "object",
+      "desc": "字典条目数据传输对象",
+      "propCount": 12,
+      "props": {
+        "orderNum": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "createdTime": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "lastModifiedTime": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "id": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "tenantId": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "dictCode": {
+          "type": "string"
+        },
+        "entryCode": {
+          "type": "string"
+        },
+        "entryName": {
+          "type": "string"
+        },
+        "remark": {
+          "type": "string"
+        },
+        "tagType": {
+          "type": "string",
+          "enum": [
+            "primary",
+            "success",
+            "info",
+            "warning",
+            "danger"
+          ]
+        },
+        "enableStatus": {
+          "type": "string",
+          "enum": [
+            "0",
+            "1"
+          ]
+        },
+        "locked": {
+          "type": "string",
+          "enum": [
+            "0",
+            "1"
+          ]
+        }
+      }
+    },
+    "PageVoDictEntryDto": {
+      "type": "object",
+      "desc": "分页响应包装体",
+      "propCount": 2,
+      "props": {
+        "total": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "data": {
+          "type": "array"
+        }
+      }
+    },
+    "ResultVoPageVoDictEntryDto": {
+      "type": "object",
+      "desc": "统一 API 响应包装体",
+      "propCount": 3,
+      "props": {
+        "errorNo": {
+          "type": "string"
+        },
+        "errorMsg": {
+          "type": "string"
+        },
+        "data": {
+          "type": "ref:PageVoDictEntryDto"
+        }
+      }
+    },
+    "ResultVoListDictEntryDto": {
+      "type": "object",
+      "desc": "统一 API 响应包装体",
+      "propCount": 3,
+      "props": {
+        "errorNo": {
+          "type": "string"
+        },
+        "errorMsg": {
+          "type": "string"
+        },
+        "data": {
+          "type": "array"
+        }
+      }
+    },
+    "DictEntryForm": {
+      "type": "object",
+      "desc": "新增表单对象",
+      "propCount": 8,
+      "props": {
+        "id": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "dictCode": {
+          "type": "string"
+        },
+        "entryCode": {
+          "type": "string"
+        },
+        "entryName": {
+          "type": "string"
+        },
+        "remark": {
+          "type": "string"
+        },
+        "tagType": {
+          "type": "string",
+          "enum": [
+            "primary",
+            "success",
+            "info",
+            "warning",
+            "danger"
+          ]
+        },
+        "enableStatus": {
+          "type": "string",
+          "enum": [
+            "0",
+            "1"
+          ]
+        },
+        "tenantId": {
+          "type": "integer",
+          "format": "int64"
+        }
+      }
+    },
+    "ResultVoDictEntryForm": {
+      "type": "object",
+      "desc": "统一 API 响应包装体",
+      "propCount": 3,
+      "props": {
+        "errorNo": {
+          "type": "string"
+        },
+        "errorMsg": {
+          "type": "string"
+        },
+        "data": {
+          "type": "ref:DictEntryForm"
+        }
+      }
+    },
+    "DictTemplateQuery": {
+      "type": "object",
+      "desc": "查询条件",
+      "propCount": 5,
+      "props": {
+        "pageNo": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "pageSize": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "sorts": {
+          "type": "array"
+        },
+        "keyword": {
+          "type": "string"
+        },
+        "isSystem": {
+          "type": "string",
+          "enum": [
+            "0",
+            "1"
+          ]
+        }
+      }
+    },
+    "DictTemplateDto": {
+      "type": "object",
+      "desc": "字典模板数据传输对象",
+      "propCount": 16,
+      "props": {
+        "id": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "parentId": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "code": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "nodeDesc": {
+          "type": "string"
+        },
+        "parentTreePath": {
+          "type": "string"
+        },
+        "treeLevel": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "parent": {
+          "type": "ref:DictTemplateDto"
+        },
+        "children": {
+          "type": "array"
+        },
+        "orderNum": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "createdTime": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "lastModifiedTime": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "tenantId": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "enableStatus": {
+          "type": "string",
+          "enum": [
+            "0",
+            "1"
+          ]
+        },
+        "isSystem": {
+          "type": "string",
+          "enum": [
+            "0",
+            "1"
+          ]
+        },
+        "remark": {
+          "type": "string"
+        }
+      }
+    },
+    "ResultVoListDictTemplateDto": {
+      "type": "object",
+      "desc": "统一 API 响应包装体",
+      "propCount": 3,
+      "props": {
+        "errorNo": {
+          "type": "string"
+        },
+        "errorMsg": {
+          "type": "string"
+        },
+        "data": {
+          "type": "array"
+        }
+      }
+    },
+    "PageVoDictTemplateDto": {
+      "type": "object",
+      "desc": "分页响应包装体",
+      "propCount": 2,
+      "props": {
+        "total": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "data": {
+          "type": "array"
+        }
+      }
+    },
+    "ResultVoPageVoDictTemplateDto": {
+      "type": "object",
+      "desc": "统一 API 响应包装体",
+      "propCount": 3,
+      "props": {
+        "errorNo": {
+          "type": "string"
+        },
+        "errorMsg": {
+          "type": "string"
+        },
+        "data": {
+          "type": "ref:PageVoDictTemplateDto"
+        }
+      }
+    },
+    "DictTemplateForm": {
+      "type": "object",
+      "desc": "新增表单对象",
+      "propCount": 10,
+      "props": {
+        "id": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "name": {
+          "type": "string"
+        },
+        "code": {
+          "type": "string"
+        },
+        "nodeDesc": {
+          "type": "string"
+        },
+        "parentId": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "orderNum": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "enableStatus": {
+          "type": "string",
+          "enum": [
+            "0",
+            "1"
+          ]
+        },
+        "isSystem": {
+          "type": "string",
+          "enum": [
+            "0",
+            "1"
+          ]
+        },
+        "remark": {
+          "type": "string"
+        },
+        "tenantId": {
+          "type": "integer",
+          "format": "int64"
+        }
+      }
+    },
+    "ResultVoDictTemplateForm": {
+      "type": "object",
+      "desc": "统一 API 响应包装体",
+      "propCount": 3,
+      "props": {
+        "errorNo": {
+          "type": "string"
+        },
+        "errorMsg": {
+          "type": "string"
+        },
+        "data": {
+          "type": "ref:DictTemplateForm"
+        }
+      }
+    },
+    "DictTemplateEntryQuery": {
+      "type": "object",
+      "desc": "查询条件",
+      "propCount": 6,
+      "props": {
+        "pageNo": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "pageSize": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "sorts": {
+          "type": "array"
+        },
+        "keyword": {
+          "type": "string"
+        },
+        "templateId": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "dictCode": {
+          "type": "string"
+        }
+      }
+    },
+    "DictTemplateEntryDto": {
+      "type": "object",
+      "desc": "字典模板条目数据传输对象",
+      "propCount": 12,
+      "props": {
+        "orderNum": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "createdTime": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "lastModifiedTime": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "id": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "tenantId": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "templateId": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "dictCode": {
+          "type": "string"
+        },
+        "entryCode": {
+          "type": "string"
+        },
+        "entryName": {
+          "type": "string"
+        },
+        "remark": {
+          "type": "string"
+        },
+        "tagType": {
+          "type": "string",
+          "enum": [
+            "primary",
+            "success",
+            "info",
+            "warning",
+            "danger"
+          ]
+        },
+        "enableStatus": {
+          "type": "string",
+          "enum": [
+            "0",
+            "1"
+          ]
+        }
+      }
+    },
+    "PageVoDictTemplateEntryDto": {
+      "type": "object",
+      "desc": "分页响应包装体",
+      "propCount": 2,
+      "props": {
+        "total": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "data": {
+          "type": "array"
+        }
+      }
+    },
+    "ResultVoPageVoDictTemplateEntryDto": {
+      "type": "object",
+      "desc": "统一 API 响应包装体",
+      "propCount": 3,
+      "props": {
+        "errorNo": {
+          "type": "string"
+        },
+        "errorMsg": {
+          "type": "string"
+        },
+        "data": {
+          "type": "ref:PageVoDictTemplateEntryDto"
+        }
+      }
+    },
+    "ResultVoListDictTemplateEntryDto": {
+      "type": "object",
+      "desc": "统一 API 响应包装体",
+      "propCount": 3,
+      "props": {
+        "errorNo": {
+          "type": "string"
+        },
+        "errorMsg": {
+          "type": "string"
+        },
+        "data": {
+          "type": "array"
+        }
+      }
+    },
+    "DictTemplateEntryForm": {
+      "type": "object",
+      "desc": "新增表单对象",
+      "propCount": 9,
+      "props": {
+        "id": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "templateId": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "dictCode": {
+          "type": "string"
+        },
+        "entryCode": {
+          "type": "string"
+        },
+        "entryName": {
+          "type": "string"
+        },
+        "remark": {
+          "type": "string"
+        },
+        "tagType": {
+          "type": "string",
+          "enum": [
+            "primary",
+            "success",
+            "info",
+            "warning",
+            "danger"
+          ]
+        },
+        "enableStatus": {
+          "type": "string",
+          "enum": [
+            "0",
+            "1"
+          ]
+        },
+        "tenantId": {
+          "type": "integer",
+          "format": "int64"
+        }
+      }
+    },
+    "ResultVoDictTemplateEntryForm": {
+      "type": "object",
+      "desc": "统一 API 响应包装体",
+      "propCount": 3,
+      "props": {
+        "errorNo": {
+          "type": "string"
+        },
+        "errorMsg": {
+          "type": "string"
+        },
+        "data": {
+          "type": "ref:DictTemplateEntryForm"
+        }
+      }
+    },
+    "TokenAdminRequest": {
+      "type": "object",
+      "desc": "查询请求（租户ID/类型）",
+      "propCount": 3,
+      "props": {
+        "tenantId": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "userId": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "type": {
+          "type": "string"
+        }
+      }
+    },
+    "ResultVoListTokenSummary": {
+      "type": "object",
+      "desc": "统一 API 响应包装体",
+      "propCount": 3,
+      "props": {
+        "errorNo": {
+          "type": "string"
+        },
+        "errorMsg": {
+          "type": "string"
+        },
+        "data": {
+          "type": "array"
+        }
+      }
+    },
+    "TokenSummary": {
+      "type": "object",
+      "desc": "token 诊断摘要（不含 token 原文与敏感信息）",
+      "propCount": 9,
+      "props": {
+        "tokenHint": {
+          "type": "string"
+        },
+        "type": {
+          "type": "string",
+          "enum": [
+            "ACCESS",
+            "REFRESH"
+          ]
+        },
+        "sessionId": {
+          "type": "string"
+        },
+        "tenantId": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "userPoolId": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "userId": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "loginId": {
+          "type": "string"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "expiresAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "RefreshRequest": {
+      "type": "object",
+      "desc": "刷新请求（refresh token/DPoP proof）",
+      "propCount": 2,
+      "props": {
+        "refreshToken": {
+          "type": "string"
+        },
+        "dpopProof": {
+          "type": "string"
+        }
+      }
+    },
+    "LoginResult": {
+      "type": "object",
+      "desc": "登录结果：返回 access/refresh 一对令牌",
+      "propCount": 5,
+      "props": {
+        "accessToken": {
+          "type": "string"
+        },
+        "refreshToken": {
+          "type": "string"
+        },
+        "expiresIn": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "refreshExpiresIn": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "tokenType": {
+          "type": "string"
+        }
+      }
+    },
+    "ResultVoLoginResult": {
+      "type": "object",
+      "desc": "统一 API 响应包装体",
+      "propCount": 3,
+      "props": {
+        "errorNo": {
+          "type": "string"
+        },
+        "errorMsg": {
+          "type": "string"
+        },
+        "data": {
+          "type": "ref:LoginResult"
+        }
+      }
+    },
+    "LogoutRequest": {
+      "type": "object",
+      "desc": "登出请求（access/refresh token）",
+      "propCount": 2,
+      "props": {
+        "accessToken": {
+          "type": "string"
+        },
+        "refreshToken": {
+          "type": "string"
+        }
+      }
+    },
+    "LoginRequest": {
+      "type": "object",
+      "desc": "登录请求（账号/密码/DPoP proof）",
+      "propCount": 10,
+      "props": {
+        "loginId": {
+          "type": "string"
+        },
+        "credential": {
+          "type": "string"
+        },
+        "type": {
+          "type": "string"
+        },
+        "tenantId": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "publicKey": {
+          "type": "string"
+        },
+        "clientType": {
+          "type": "string"
+        },
+        "clientVersion": {
+          "type": "string"
+        },
+        "mac": {
+          "type": "string"
+        },
+        "diskSerial": {
+          "type": "string"
+        },
+        "fingerprint": {
+          "type": "string"
+        }
+      }
+    },
+    "ResultVoListLong": {
+      "type": "object",
+      "desc": "统一 API 响应包装体",
+      "propCount": 3,
+      "props": {
+        "errorNo": {
+          "type": "string"
+        },
+        "errorMsg": {
+          "type": "string"
+        },
+        "data": {
+          "type": "array"
+        }
+      }
+    },
+    "MenuTreeVO": {
+      "type": "object",
+      "desc": "导航菜单树节点（frame 用）",
+      "propCount": 17,
+      "props": {
+        "id": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "parentId": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "name": {
+          "type": "string"
+        },
+        "code": {
+          "type": "string"
+        },
+        "nodeDesc": {
+          "type": "string"
+        },
+        "menuType": {
+          "type": "string",
+          "enum": [
+            "M",
+            "D",
+            "B"
+          ]
+        },
+        "routePath": {
+          "type": "string"
+        },
+        "component": {
+          "type": "string"
+        },
+        "icon": {
+          "type": "string"
+        },
+        "redirect": {
+          "type": "string"
+        },
+        "keepAlive": {
+          "type": "string",
+          "enum": [
+            "0",
+            "1"
+          ]
+        },
+        "showStatus": {
+          "type": "string",
+          "enum": [
+            "0",
+            "1"
+          ]
+        },
+        "alwaysShow": {
+          "type": "string",
+          "enum": [
+            "0",
+            "1"
+          ]
+        },
+        "jumpType": {
+          "type": "string",
+          "enum": [
+            "1",
+            "2",
+            "3"
+          ]
+        },
+        "jumpTarget": {
+          "type": "string"
+        },
+        "orderNum": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "children": {
+          "type": "array"
+        }
+      }
+    },
+    "FrameUserVO": {
+      "type": "object",
+      "desc": "当前登录用户基础资料（frame 用，不含密码等敏感字段）",
+      "propCount": 12,
+      "props": {
+        "id": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "loginId": {
+          "type": "string"
+        },
+        "nickName": {
+          "type": "string"
+        },
+        "avatar": {
+          "type": "string"
+        },
+        "tenantId": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "tenantName": {
+          "type": "string"
+        },
+        "userPoolId": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "userPoolName": {
+          "type": "string"
+        },
+        "isRoot": {
+          "type": "boolean"
+        },
+        "tenantType": {
+          "type": "string"
+        },
+        "roleNames": {
+          "type": "array"
+        },
+        "perms": {
+          "type": "array"
+        }
+      }
+    },
+    "FrameBootstrapVO": {
+      "type": "object",
+      "desc": "应用外壳(frame)引导数据聚合体",
+      "propCount": 2,
+      "props": {
+        "user": {
+          "type": "ref:FrameUserVO"
+        },
+        "menus": {
+          "type": "array"
+        }
+      }
+    }
+  }
+}

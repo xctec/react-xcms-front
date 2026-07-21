@@ -1,0 +1,217 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  /* ============================================================
+     亮色 + 默认 Indigo 主色
+     灰阶使用 Slate（比默认 zinc 更冷、更专业）
+     ============================================================ */
+  :root {
+    /* 中性灰阶 - Slate */
+    --background: 0 0% 100%;
+    --foreground: 222 47% 11%;
+    --card: 0 0% 100%;
+    --card-foreground: 222 47% 11%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 222 47% 11%;
+
+    /* 主色 - 默认 Indigo（被 data-brand 覆盖） */
+    --brand-400: 234 89% 74%;
+    --brand-500: 239 84% 67%;
+    --brand-600: 244 76% 59%;
+    --brand-700: 245 58% 51%;
+
+    /* primary 映射到 brand-500，shadcn 组件自动用主色 */
+    --primary: var(--brand-500);
+    --primary-foreground: 0 0% 100%;
+
+    /* 次级容器 */
+    --secondary: 210 40% 96%;
+    --secondary-foreground: 222 47% 11%;
+    --muted: 210 40% 96%;
+    --muted-foreground: 215 16% 47%;
+    --accent: 210 40% 96%;
+    --accent-foreground: 222 47% 11%;
+
+    /* 语义色 - 5 色封顶 */
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+    --success: 142 71% 45%;
+    --success-foreground: 0 0% 100%;
+    --warning: 38 92% 50%;
+    --warning-foreground: 0 0% 100%;
+    --info: 217 91% 60%;
+    --info-foreground: 0 0% 100%;
+
+    /* 边框/输入/焦点环 */
+    --border: 214 32% 91%;
+    --input: 214 32% 91%;
+    --ring: var(--brand-500);
+
+    /* 圆角 - 8px 基准 */
+    --radius: 0.5rem;
+
+    /* 侧边栏 */
+    --sidebar-background: 210 40% 98%;
+    --sidebar-foreground: 215 19% 35%;
+    --sidebar-primary: var(--brand-500);
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 210 40% 96%;
+    --sidebar-accent-foreground: 222 47% 11%;
+    --sidebar-border: 214 32% 91%;
+    --sidebar-ring: var(--brand-500);
+  }
+
+  /* ============================================================
+     主色预设 - 5 套，通过 data-brand 属性切换
+     ============================================================ */
+  [data-brand="indigo"] {
+    --brand-400: 234 89% 74%;
+    --brand-500: 239 84% 67%;
+    --brand-600: 244 76% 59%;
+    --brand-700: 245 58% 51%;
+  }
+  [data-brand="blue"] {
+    --brand-400: 213 94% 68%;
+    --brand-500: 217 91% 60%;
+    --brand-600: 221 83% 53%;
+    --brand-700: 224 76% 48%;
+  }
+  [data-brand="emerald"] {
+    --brand-400: 152 76% 56%;
+    --brand-500: 160 84% 39%;
+    --brand-600: 161 86% 34%;
+    --brand-700: 163 72% 30%;
+  }
+  [data-brand="violet"] {
+    --brand-400: 252 95% 76%;
+    --brand-500: 258 90% 66%;
+    --brand-600: 262 83% 58%;
+    --brand-700: 263 70% 50%;
+  }
+  [data-brand="orange"] {
+    --brand-400: 25 95% 63%;
+    --brand-500: 25 95% 53%;
+    --brand-600: 21 90% 48%;
+    --brand-700: 17 88% 40%;
+  }
+
+  /* ============================================================
+     暗色模式 - 深蓝黑底（不是纯黑，更有质感）
+     ============================================================ */
+  .dark {
+    --background: 222 39% 8%;
+    --foreground: 210 40% 98%;
+    --card: 222 32% 11%;
+    --card-foreground: 210 40% 98%;
+    --popover: 222 32% 11%;
+    --popover-foreground: 210 40% 98%;
+
+    --primary: var(--brand-500);
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 217 19% 17%;
+    --secondary-foreground: 210 40% 98%;
+    --muted: 217 19% 17%;
+    --muted-foreground: 215 20% 65%;
+    --accent: 217 19% 17%;
+    --accent-foreground: 210 40% 98%;
+
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 0 0% 100%;
+    --success: 142 71% 45%;
+    --success-foreground: 0 0% 100%;
+    --warning: 38 92% 50%;
+    --warning-foreground: 0 0% 100%;
+    --info: 217 91% 60%;
+    --info-foreground: 0 0% 100%;
+
+    --border: 217 19% 20%;
+    --input: 217 19% 20%;
+    --ring: var(--brand-500);
+
+    --sidebar-background: 222 32% 11%;
+    --sidebar-foreground: 215 20% 65%;
+    --sidebar-primary: var(--brand-500);
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 217 19% 17%;
+    --sidebar-accent-foreground: 210 40% 98%;
+    --sidebar-border: 217 19% 20%;
+    --sidebar-ring: var(--brand-500);
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+    font-feature-settings: "rlig" 1, "calt" 1, "tnum" 1;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* 等宽数字 - 表格/统计用 */
+  .tabular-nums {
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* 滚动条 - 极简风 */
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: hsl(var(--muted-foreground) / 0.25);
+    border-radius: 4px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: hsl(var(--muted-foreground) / 0.45);
+  }
+
+  /* 选中文本 */
+  ::selection {
+    background: hsl(var(--brand-500) / 0.2);
+    color: hsl(var(--foreground));
+  }
+
+  /* 焦点环 - 所有可交互元素 */
+  :focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 3px hsl(var(--brand-500) / 0.25);
+  }
+
+  /* 减少动效 - 尊重用户偏好 */
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+}
+
+@layer components {
+  /* 行选中态 - 表格行选中时的左侧主色条 + 浅底 */
+  .row-selected {
+    background: hsl(var(--brand-500) / 0.06);
+    box-shadow: inset 2px 0 0 0 hsl(var(--brand-500));
+  }
+
+  /* 侧边栏菜单项选中态 */
+  .nav-item-active {
+    background: hsl(var(--brand-500) / 0.1);
+    color: hsl(var(--brand-500));
+    box-shadow: inset 2px 0 0 0 hsl(var(--brand-500));
+  }
+
+  /* 树节点选中态 */
+  .tree-node-active {
+    background: hsl(var(--brand-500) / 0.08);
+    color: hsl(var(--brand-500));
+  }
+}

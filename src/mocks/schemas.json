@@ -1,0 +1,5339 @@
+{
+  "QuerySort": {
+    "type": "object",
+    "description": "排序项",
+    "properties": {
+      "key": {
+        "type": "string",
+        "description": "排序字段名",
+        "example": "id"
+      },
+      "order": {
+        "type": "string",
+        "description": "排序方向",
+        "enum": [
+          "ASC",
+          "DESC"
+        ],
+        "example": "DESC"
+      }
+    }
+  },
+  "UserQuery": {
+    "type": "object",
+    "description": "查询条件",
+    "properties": {
+      "pageNo": {
+        "type": "integer",
+        "format": "int32",
+        "description": "页码，从 1 开始",
+        "example": 1
+      },
+      "pageSize": {
+        "type": "integer",
+        "format": "int32",
+        "description": "每页条数",
+        "example": 20
+      },
+      "sorts": {
+        "type": "array",
+        "description": "排序集合",
+        "example": [],
+        "items": {
+          "$ref": "#/components/schemas/QuerySort"
+        }
+      },
+      "keyword": {
+        "type": "string",
+        "description": "关键字（模糊匹配）",
+        "example": "张三"
+      },
+      "userPoolId": {
+        "type": "integer",
+        "format": "int64",
+        "description": "用户池 ID",
+        "example": 1
+      }
+    }
+  },
+  "PageVoUserDto": {
+    "type": "object",
+    "description": "分页响应包装体",
+    "properties": {
+      "total": {
+        "type": "integer",
+        "format": "int64",
+        "description": "满足条件的记录总数",
+        "example": 100
+      },
+      "data": {
+        "type": "array",
+        "description": "当前页数据列表",
+        "items": {
+          "$ref": "#/components/schemas/UserDto"
+        }
+      }
+    }
+  },
+  "ResultVoPageVoUserDto": {
+    "type": "object",
+    "description": "统一 API 响应包装体",
+    "properties": {
+      "errorNo": {
+        "type": "string",
+        "description": "业务状态码，0 表示成功，非 0 表示业务错误",
+        "example": "0"
+      },
+      "errorMsg": {
+        "type": "string",
+        "description": "提示信息，成功或失败的描述文本",
+        "example": "success"
+      },
+      "data": {
+        "$ref": "#/components/schemas/PageVoUserDto",
+        "description": "业务数据载体，成功时返回具体对象/集合，失败时通常为 null"
+      }
+    }
+  },
+  "UserDto": {
+    "type": "object",
+    "description": "用户数据传输对象",
+    "properties": {
+      "orderNum": {
+        "type": "integer",
+        "format": "int32"
+      },
+      "createdTime": {
+        "type": "string",
+        "format": "date-time"
+      },
+      "lastModifiedTime": {
+        "type": "string",
+        "format": "date-time"
+      },
+      "id": {
+        "type": "integer",
+        "format": "int64"
+      },
+      "userPoolId": {
+        "type": "integer",
+        "format": "int64"
+      },
+      "loginId": {
+        "type": "string",
+        "description": "登录账号",
+        "example": "admin"
+      },
+      "nickName": {
+        "type": "string",
+        "description": "昵称",
+        "example": "张三"
+      },
+      "mobile": {
+        "type": "string",
+        "description": "手机号",
+        "example": "13800138000"
+      },
+      "email": {
+        "type": "string",
+        "description": "邮箱",
+        "example": "user@example.com"
+      },
+      "gender": {
+        "type": "string",
+        "description": "性别（0未知/1男性/2女性/9未说明）",
+        "enum": [
+          "0",
+          "1",
+          "2",
+          "9"
+        ],
+        "example": "0"
+      },
+      "avatar": {
+        "type": "string",
+        "description": "头像 URL",
+        "example": "https://cdn.example.com/avatar/1001.png"
+      },
+      "orgUnitId": {
+        "type": "integer",
+        "format": "int64",
+        "description": "组织单元 ID",
+        "example": 10
+      },
+      "orgUnitPath": {
+        "type": "string",
+        "description": "组织路径（祖先 ID 链，逗号分隔）",
+        "example": "1,3,10"
+      },
+      "userStatus": {
+        "type": "string",
+        "description": "用户状态（1正常/0禁用）",
+        "enum": [
+          "0",
+          "1"
+        ],
+        "example": "1"
+      },
+      "encType": {
+        "type": "string",
+        "description": "密码加密类型（BCrypt 哈希）",
+        "example": "BCrypt"
+      }
+    }
+  },
+  "ResultVoListUserDto": {
+    "type": "object",
+    "description": "统一 API 响应包装体",
+    "properties": {
+      "errorNo": {
+        "type": "string",
+        "description": "业务状态码，0 表示成功，非 0 表示业务错误",
+        "example": "0"
+      },
+      "errorMsg": {
+        "type": "string",
+        "description": "提示信息，成功或失败的描述文本",
+        "example": "success"
+      },
+      "data": {
+        "type": "array",
+        "description": "业务数据载体，成功时返回具体对象/集合，失败时通常为 null",
+        "items": {
+          "$ref": "#/components/schemas/UserDto"
+        }
+      }
+    }
+  },
+  "ResultVoUserForm": {
+    "type": "object",
+    "description": "统一 API 响应包装体",
+    "properties": {
+      "errorNo": {
+        "type": "string",
+        "description": "业务状态码，0 表示成功，非 0 表示业务错误",
+        "example": "0"
+      },
+      "errorMsg": {
+        "type": "string",
+        "description": "提示信息，成功或失败的描述文本",
+        "example": "success"
+      },
+      "data": {
+        "$ref": "#/components/schemas/UserForm",
+        "description": "业务数据载体，成功时返回具体对象/集合，失败时通常为 null"
+      }
+    }
+  },
+  "UserForm": {
+    "type": "object",
+    "description": "新增表单对象",
+    "properties": {
+      "id": {
+        "type": "integer",
+        "format": "int64",
+        "description": "主键 ID",
+        "example": 1
+      },
+      "loginId": {
+        "type": "string",
+        "description": "登录账号",
+        "example": "admin"
+      },
+      "nickName": {
+        "type": "string",
+        "description": "昵称",
+        "example": "张三"
+      },
+      "mobile": {
+        "type": "string",
+        "description": "手机号",
+        "example": "13800138000"
+      },
+      "email": {
+        "type": "string",
+        "description": "邮箱",
+        "example": "user@example.com"
+      },
+      "gender": {
+        "type": "string",
+        "description": "性别（0未知/1男性/2女性/9未说明）",
+        "enum": [
+          "0",
+          "1",
+          "2",
+          "9"
+        ],
+        "example": "0"
+      },
+      "avatar": {
+        "type": "string",
+        "description": "头像 URL",
+        "example": "https://cdn.example.com/avatar/1001.png"
+      },
+      "orgUnitId": {
+        "type": "integer",
+        "format": "int64",
+        "description": "组织单元 ID",
+        "example": 10
+      },
+      "orgUnitPath": {
+        "type": "string",
+        "description": "组织路径（祖先 ID 链，逗号分隔）",
+        "example": "1,3,10"
+      },
+      "userStatus": {
+        "type": "string",
+        "description": "用户状态（1正常/0禁用）",
+        "enum": [
+          "0",
+          "1"
+        ],
+        "example": "1"
+      },
+      "encType": {
+        "type": "string",
+        "description": "密码加密类型（BCrypt 哈希）",
+        "example": "BCrypt"
+      },
+      "salt": {
+        "type": "string",
+        "description": "密码盐",
+        "example": "a1b2c3"
+      },
+      "passwd": {
+        "type": "string",
+        "description": "密码（密文）",
+        "example": "$2a$10$xxxxxxxxxxxxxxxxxxxxxxxx"
+      },
+      "userPoolId": {
+        "type": "integer",
+        "format": "int64",
+        "description": "用户池 ID",
+        "example": 1
+      }
+    },
+    "required": [
+      "loginId"
+    ]
+  },
+  "ResultVoVoid": {
+    "type": "object",
+    "description": "统一 API 响应包装体",
+    "properties": {
+      "errorNo": {
+        "type": "string",
+        "description": "业务状态码，0 表示成功，非 0 表示业务错误",
+        "example": "0"
+      },
+      "errorMsg": {
+        "type": "string",
+        "description": "提示信息，成功或失败的描述文本",
+        "example": "success"
+      },
+      "data": {
+        "description": "业务数据载体，成功时返回具体对象/集合，失败时通常为 null"
+      }
+    }
+  },
+  "UserPoolQuery": {
+    "type": "object",
+    "description": "查询条件",
+    "properties": {
+      "pageNo": {
+        "type": "integer",
+        "format": "int32",
+        "description": "页码，从 1 开始",
+        "example": 1
+      },
+      "pageSize": {
+        "type": "integer",
+        "format": "int32",
+        "description": "每页条数",
+        "example": 20
+      },
+      "sorts": {
+        "type": "array",
+        "description": "排序集合",
+        "example": [],
+        "items": {
+          "$ref": "#/components/schemas/QuerySort"
+        }
+      },
+      "keyword": {
+        "type": "string",
+        "description": "关键字（模糊匹配）",
+        "example": "张三"
+      },
+      "userPoolId": {
+        "type": "integer",
+        "format": "int64",
+        "description": "用户池 ID",
+        "example": 1
+      }
+    }
+  },
+  "PageVoUserPoolDto": {
+    "type": "object",
+    "description": "分页响应包装体",
+    "properties": {
+      "total": {
+        "type": "integer",
+        "format": "int64",
+        "description": "满足条件的记录总数",
+        "example": 100
+      },
+      "data": {
+        "type": "array",
+        "description": "当前页数据列表",
+        "items": {
+          "$ref": "#/components/schemas/UserPoolDto"
+        }
+      }
+    }
+  },
+  "ResultVoPageVoUserPoolDto": {
+    "type": "object",
+    "description": "统一 API 响应包装体",
+    "properties": {
+      "errorNo": {
+        "type": "string",
+        "description": "业务状态码，0 表示成功，非 0 表示业务错误",
+        "example": "0"
+      },
+      "errorMsg": {
+        "type": "string",
+        "description": "提示信息，成功或失败的描述文本",
+        "example": "success"
+      },
+      "data": {
+        "$ref": "#/components/schemas/PageVoUserPoolDto",
+        "description": "业务数据载体，成功时返回具体对象/集合，失败时通常为 null"
+      }
+    }
+  },
+  "UserPoolDto": {
+    "type": "object",
+    "description": "用户池数据传输对象",
+    "properties": {
+      "orderNum": {
+        "type": "integer",
+        "format": "int32"
+      },
+      "createdTime": {
+        "type": "string",
+        "format": "date-time"
+      },
+      "lastModifiedTime": {
+        "type": "string",
+        "format": "date-time"
+      },
+      "id": {
+        "type": "integer",
+        "format": "int64"
+      },
+      "userPoolName": {
+        "type": "string",
+        "description": "用户池名称",
+        "example": "默认用户池"
+      },
+      "remark": {
+        "type": "string",
+        "description": "备注",
+        "example": "系统内置"
+      },
+      "userPoolStatus": {
+        "type": "string",
+        "description": "用户池状态（1正常/0禁用）",
+        "enum": [
+          "0",
+          "1"
+        ],
+        "example": "1"
+      }
+    }
+  },
+  "ResultVoListUserPoolDto": {
+    "type": "object",
+    "description": "统一 API 响应包装体",
+    "properties": {
+      "errorNo": {
+        "type": "string",
+        "description": "业务状态码，0 表示成功，非 0 表示业务错误",
+        "example": "0"
+      },
+      "errorMsg": {
+        "type": "string",
+        "description": "提示信息，成功或失败的描述文本",
+        "example": "success"
+      },
+      "data": {
+        "type": "array",
+        "description": "业务数据载体，成功时返回具体对象/集合，失败时通常为 null",
+        "items": {
+          "$ref": "#/components/schemas/UserPoolDto"
+        }
+      }
+    }
+  },
+  "ResultVoUserPoolForm": {
+    "type": "object",
+    "description": "统一 API 响应包装体",
+    "properties": {
+      "errorNo": {
+        "type": "string",
+        "description": "业务状态码，0 表示成功，非 0 表示业务错误",
+        "example": "0"
+      },
+      "errorMsg": {
+        "type": "string",
+        "description": "提示信息，成功或失败的描述文本",
+        "example": "success"
+      },
+      "data": {
+        "$ref": "#/components/schemas/UserPoolForm",
+        "description": "业务数据载体，成功时返回具体对象/集合，失败时通常为 null"
+      }
+    }
+  },
+  "UserPoolForm": {
+    "type": "object",
+    "description": "新增表单对象",
+    "properties": {
+      "id": {
+        "type": "integer",
+        "format": "int64",
+        "description": "主键 ID",
+        "example": 1
+      },
+      "userPoolName": {
+        "type": "string",
+        "description": "用户池名称",
+        "example": "默认用户池"
+      },
+      "remark": {
+        "type": "string",
+        "description": "备注",
+        "example": "系统内置"
+      },
+      "userPoolStatus": {
+        "type": "string",
+        "description": "用户池状态（1正常/0禁用）",
+        "enum": [
+          "0",
+          "1"
+        ],
+        "example": "1"
+      }
+    }
+  },
+  "TenantQuery": {
+    "type": "object",
+    "description": "查询条件",
+    "properties": {
+      "pageNo": {
+        "type": "integer",
+        "format": "int32",
+        "description": "页码，从 1 开始",
+        "example": 1
+      },
+      "pageSize": {
+        "type": "integer",
+        "format": "int32",
+        "description": "每页条数",
+        "example": 20
+      },
+      "sorts": {
+        "type": "array",
+        "description": "排序集合",
+        "example": [],
+        "items": {
+          "$ref": "#/components/schemas/QuerySort"
+        }
+      },
+      "keyword": {
+        "type": "string",
+        "description": "关键字（模糊匹配）",
+        "example": "张三"
+      }
+    }
+  },
+  "PageVoTenantDto": {
+    "type": "object",
+    "description": "分页响应包装体",
+    "properties": {
+      "total": {
+        "type": "integer",
+        "format": "int64",
+        "description": "满足条件的记录总数",
+        "example": 100
+      },
+      "data": {
+        "type": "array",
+        "description": "当前页数据列表",
+        "items": {
+          "$ref": "#/components/schemas/TenantDto"
+        }
+      }
+    }
+  },
+  "ResultVoPageVoTenantDto": {
+    "type": "object",
+    "description": "统一 API 响应包装体",
+    "properties": {
+      "errorNo": {
+        "type": "string",
+        "description": "业务状态码，0 表示成功，非 0 表示业务错误",
+        "example": "0"
+      },
+      "errorMsg": {
+        "type": "string",
+        "description": "提示信息，成功或失败的描述文本",
+        "example": "success"
+      },
+      "data": {
+        "$ref": "#/components/schemas/PageVoTenantDto",
+        "description": "业务数据载体，成功时返回具体对象/集合，失败时通常为 null"
+      }
+    }
+  },
+  "TenantDto": {
+    "type": "object",
+    "description": "租户数据传输对象",
+    "properties": {
+      "id": {
+        "type": "integer",
+        "format": "int64",
+        "description": "主键 ID",
+        "example": 1
+      },
+      "parentId": {
+        "type": "integer",
+        "format": "int64",
+        "description": "父节点 ID",
+        "example": 0
+      },
+      "code": {
+        "type": "string",
+        "description": "业务编码",
+        "example": "demo_code"
+      },
+      "name": {
+        "type": "string",
+        "description": "名称",
+        "example": "示例名称"
+      },
+      "nodeDesc": {
+        "type": "string",
+        "description": "节点描述",
+        "example": "系统管理根菜单"
+      },
+      "parentTreePath": {
+        "type": "string",
+        "description": "父路径（祖先 ID 链，逗号分隔）",
+        "example": "0,1,3"
+      },
+      "treeLevel": {
+        "type": "integer",
+        "format": "int32",
+        "description": "树层级深度（根=0）",
+        "example": 2
+      },
+      "parent": {
+        "$ref": "#/components/schemas/TenantDto",
+        "description": "父节点对象"
+      },
+      "children": {
+        "type": "array",
+        "description": "子节点集合",
+        "example": [],
+        "items": {
+          "$ref": "#/components/schemas/TenantDto"
+        }
+      },
+      "orderNum": {
+        "type": "integer",
+        "format": "int32",
+        "description": "排序号",
+        "example": 1
+      },
+      "createdTime": {
+        "type": "string",
+        "format": "date-time",
+        "description": "创建时间",
+        "example": "2026-07-20T10:30:00Z"
+      },
+      "lastModifiedTime": {
+        "type": "string",
+        "format": "date-time",
+        "description": "最后修改时间",
+        "example": "2026-07-20T10:30:00Z"
+      },
+      "tenantType": {
+        "type": "string",
+        "description": "租户",
+        "example": "demo"
+      },
+      "tenantStatus": {
+        "type": "string",
+        "description": "租户状态（1正常/0禁用）",
+        "enum": [
+          "0",
+          "1"
+        ],
+        "example": "1"
+      },
+      "userPoolType": {
+        "type": "string",
+        "description": "用户池类型（1默认）",
+        "enum": [
+          "1"
+        ],
+        "example": "1"
+      },
+      "userPoolId": {
+        "type": "integer",
+        "format": "int64",
+        "description": "用户池 ID",
+        "example": 1
+      },
+      "userPoolTreePath": {
+        "type": "string",
+        "description": "路径",
+        "example": "/api/path"
+      }
+    }
+  },
+  "ResultVoListTenantDto": {
+    "type": "object",
+    "description": "统一 API 响应包装体",
+    "properties": {
+      "errorNo": {
+        "type": "string",
+        "description": "业务状态码，0 表示成功，非 0 表示业务错误",
+        "example": "0"
+      },
+      "errorMsg": {
+        "type": "string",
+        "description": "提示信息，成功或失败的描述文本",
+        "example": "success"
+      },
+      "data": {
+        "type": "array",
+        "description": "业务数据载体，成功时返回具体对象/集合，失败时通常为 null",
+        "items": {
+          "$ref": "#/components/schemas/TenantDto"
+        }
+      }
+    }
+  },
+  "TenantMenuInitForm": {
+    "type": "object",
+    "description": "租户ID与模板ID",
+    "properties": {
+      "id": {
+        "type": "integer",
+        "format": "int64",
+        "description": "主键 ID",
+        "example": 1
+      },
+      "tenantId": {
+        "type": "integer",
+        "format": "int64",
+        "description": "租户 ID",
+        "example": 1
+      },
+      "templateId": {
+        "type": "integer",
+        "format": "int64",
+        "description": "模板 ID",
+        "example": 4
+      }
+    },
+    "required": [
+      "tenantId"
+    ]
+  },
+  "ResultVoTenantForm": {
+    "type": "object",
+    "description": "统一 API 响应包装体",
+    "properties": {
+      "errorNo": {
+        "type": "string",
+        "description": "业务状态码，0 表示成功，非 0 表示业务错误",
+        "example": "0"
+      },
+      "errorMsg": {
+        "type": "string",
+        "description": "提示信息，成功或失败的描述文本",
+        "example": "success"
+      },
+      "data": {
+        "$ref": "#/components/schemas/TenantForm",
+        "description": "业务数据载体，成功时返回具体对象/集合，失败时通常为 null"
+      }
+    }
+  },
+  "TenantForm": {
+    "type": "object",
+    "description": "新增表单对象",
+    "properties": {
+      "id": {
+        "type": "integer",
+        "format": "int64",
+        "description": "主键 ID",
+        "example": 1
+      },
+      "name": {
+        "type": "string"
+      },
+      "code": {
+        "type": "string"
+      },
+      "nodeDesc": {
+        "type": "string"
+      },
+      "parentId": {
+        "type": "integer",
+        "format": "int64"
+      },
+      "orderNum": {
+        "type": "integer",
+        "format": "int32"
+      },
+      "tenantType": {
+        "type": "string",
+        "description": "租户",
+        "example": "demo"
+      },
+      "tenantStatus": {
+        "type": "string",
+        "description": "租户状态（1正常/0禁用）",
+        "enum": [
+          "0",
+          "1"
+        ],
+        "example": "1"
+      },
+      "userPoolType": {
+        "type": "string",
+        "description": "用户池类型（1默认）",
+        "enum": [
+          "1"
+        ],
+        "example": "1"
+      },
+      "userPoolId": {
+        "type": "integer",
+        "format": "int64",
+        "description": "用户池 ID",
+        "example": 1
+      },
+      "userPoolTreePath": {
+        "type": "string",
+        "description": "路径",
+        "example": "/api/path"
+      },
+      "templateId": {
+        "type": "integer",
+        "format": "int64",
+        "description": "模板 ID",
+        "example": 4
+      }
+    }
+  },
+  "TenantUserQuery": {
+    "type": "object",
+    "description": "查询条件",
+    "properties": {
+      "pageNo": {
+        "type": "integer",
+        "format": "int32",
+        "description": "页码，从 1 开始",
+        "example": 1
+      },
+      "pageSize": {
+        "type": "integer",
+        "format": "int32",
+        "description": "每页条数",
+        "example": 20
+      },
+      "sorts": {
+        "type": "array",
+        "description": "排序集合",
+        "example": [],
+        "items": {
+          "$ref": "#/components/schemas/QuerySort"
+        }
+      },
+      "keyword": {
+        "type": "string",
+        "description": "关键字（模糊匹配）",
+        "example": "张三"
+      },
+      "userId": {
+        "type": "integer",
+        "format": "int64",
+        "description": "用户 ID",
+        "example": 1
+      },
+      "tenantId": {
+        "type": "integer",
+        "format": "int64",
+        "description": "租户 ID",
+        "example": 1
+      }
+    }
+  },
+  "PageVoTenantUserDto": {
+    "type": "object",
+    "description": "分页响应包装体",
+    "properties": {
+      "total": {
+        "type": "integer",
+        "format": "int64",
+        "description": "满足条件的记录总数",
+        "example": 100
+      },
+      "data": {
+        "type": "array",
+        "description": "当前页数据列表",
+        "items": {
+          "$ref": "#/components/schemas/TenantUserDto"
+        }
+      }
+    }
+  },
+  "ResultVoPageVoTenantUserDto": {
+    "type": "object",
+    "description": "统一 API 响应包装体",
+    "properties": {
+      "errorNo": {
+        "type": "string",
+        "description": "业务状态码，0 表示成功，非 0 表示业务错误",
+        "example": "0"
+      },
+      "errorMsg": {
+        "type": "string",
+        "description": "提示信息，成功或失败的描述文本",
+        "example": "success"
+      },
+      "data": {
+        "$ref": "#/components/schemas/PageVoTenantUserDto",
+        "description": "业务数据载体，成功时返回具体对象/集合，失败时通常为 null"
+      }
+    }
+  },
+  "TenantUserDto": {
+    "type": "object",
+    "description": "租户用户数据传输对象",
+    "properties": {
+      "orderNum": {
+        "type": "integer",
+        "format": "int32"
+      },
+      "createdTime": {
+        "type": "string",
+        "format": "date-time"
+      },
+      "lastModifiedTime": {
+        "type": "string",
+        "format": "date-time"
+      },
+      "id": {
+        "type": "integer",
+        "format": "int64"
+      },
+      "tenantId": {
+        "type": "integer",
+        "format": "int64"
+      },
+      "userId": {
+        "type": "integer",
+        "format": "int64",
+        "description": "用户 ID",
+        "example": 1
+      },
+      "tenantUserStatus": {
+        "type": "string",
+        "description": "租户用户状态（1正常/0禁用）",
+        "enum": [
+          "0",
+          "1"
+        ],
+        "example": "1"
+      },
+      "displayName": {
+        "type": "string",
+        "description": "名称",
+        "example": "示例名称"
+      },
+      "joinSource": {
+        "type": "string",
+        "description": "加入来源（invite 邀请/apply 申请/auto 自动）",
+        "example": "invite"
+      },
+      "joinTime": {
+        "type": "string",
+        "format": "date-time",
+        "description": "时间",
+        "example": "2026-07-20 10:30:00"
+      },
+      "inviterId": {
+        "type": "string",
+        "description": "ID",
+        "example": "1"
+      },
+      "lastLoginTime": {
+        "type": "string",
+        "format": "date-time",
+        "description": "时间",
+        "example": "2026-07-20 10:30:00"
+      },
+      "userPoolId": {
+        "type": "integer",
+        "format": "int64",
+        "description": "用户池 ID",
+        "example": 1
+      },
+      "orgUnitId": {
+        "type": "integer",
+        "format": "int64",
+        "description": "部门 ID（数据范围过滤用）",
+        "example": 1
+      }
+    }
+  },
+  "ResultVoListTenantUserDto": {
+    "type": "object",
+    "description": "统一 API 响应包装体",
+    "properties": {
+      "errorNo": {
+        "type": "string",
+        "description": "业务状态码，0 表示成功，非 0 表示业务错误",
+        "example": "0"
+      },
+      "errorMsg": {
+        "type": "string",
+        "description": "提示信息，成功或失败的描述文本",
+        "example": "success"
+      },
+      "data": {
+        "type": "array",
+        "description": "业务数据载体，成功时返回具体对象/集合，失败时通常为 null",
+        "items": {
+          "$ref": "#/components/schemas/TenantUserDto"
+        }
+      }
+    }
+  },
+  "ResultVoTenantUserForm": {
+    "type": "object",
+    "description": "统一 API 响应包装体",
+    "properties": {
+      "errorNo": {
+        "type": "string",
+        "description": "业务状态码，0 表示成功，非 0 表示业务错误",
+        "example": "0"
+      },
+      "errorMsg": {
+        "type": "string",
+        "description": "提示信息，成功或失败的描述文本",
+        "example": "success"
+      },
+      "data": {
+        "$ref": "#/components/schemas/TenantUserForm",
+        "description": "业务数据载体，成功时返回具体对象/集合，失败时通常为 null"
+      }
+    }
+  },
+  "TenantUserForm": {
+    "type": "object",
+    "description": "新增表单对象",
+    "properties": {
+      "id": {
+        "type": "integer",
+        "format": "int64",
+        "description": "主键 ID",
+        "example": 1
+      },
+      "userId": {
+        "type": "integer",
+        "format": "int64",
+        "description": "用户 ID",
+        "example": 1
+      },
+      "tenantUserStatus": {
+        "type": "string",
+        "description": "租户用户状态（1正常/0禁用）",
+        "enum": [
+          "0",
+          "1"
+        ],
+        "example": "1"
+      },
+      "displayName": {
+        "type": "string",
+        "description": "名称",
+        "example": "示例名称"
+      },
+      "joinSource": {
+        "type": "string",
+        "description": "加入来源（invite 邀请/apply 申请/auto 自动）",
+        "example": "invite"
+      },
+      "joinTime": {
+        "type": "string",
+        "format": "date-time",
+        "description": "时间",
+        "example": "2026-07-20 10:30:00"
+      },
+      "inviterId": {
+        "type": "string",
+        "description": "ID",
+        "example": "1"
+      },
+      "lastLoginTime": {
+        "type": "string",
+        "format": "date-time",
+        "description": "时间",
+        "example": "2026-07-20 10:30:00"
+      },
+      "tenantId": {
+        "type": "integer",
+        "format": "int64",
+        "description": "租户 ID",
+        "example": 1
+      },
+      "userPoolId": {
+        "type": "integer",
+        "format": "int64",
+        "description": "用户池 ID",
+        "example": 1
+      }
+    },
+    "required": [
+      "userId"
+    ]
+  },
+  "TenantUserRoleQuery": {
+    "type": "object",
+    "description": "查询条件",
+    "properties": {
+      "pageNo": {
+        "type": "integer",
+        "format": "int32",
+        "description": "页码，从 1 开始",
+        "example": 1
+      },
+      "pageSize": {
+        "type": "integer",
+        "format": "int32",
+        "description": "每页条数",
+        "example": 20
+      },
+      "sorts": {
+        "type": "array",
+        "description": "排序集合",
+        "example": [],
+        "items": {
+          "$ref": "#/components/schemas/QuerySort"
+        }
+      },
+      "keyword": {
+        "type": "string",
+        "description": "关键字（模糊匹配）",
+        "example": "张三"
+      },
+      "tenantUserId": {
+        "type": "integer",
+        "format": "int64",
+        "description": "租户用户 ID",
+        "example": 7
+      },
+      "roleId": {
+        "type": "integer",
+        "format": "int64",
+        "description": "角色 ID",
+        "example": 5
+      }
+    }
+  },
+  "PageVoTenantUserRoleDto": {
+    "type": "object",
+    "description": "分页响应包装体",
+    "properties": {
+      "total": {
+        "type": "integer",
+        "format": "int64",
+        "description": "满足条件的记录总数",
+        "example": 100
+      },
+      "data": {
+        "type": "array",
+        "description": "当前页数据列表",
+        "items": {
+          "$ref": "#/components/schemas/TenantUserRoleDto"
+        }
+      }
+    }
+  },
+  "ResultVoPageVoTenantUserRoleDto": {
+    "type": "object",
+    "description": "统一 API 响应包装体",
+    "properties": {
+      "errorNo": {
+        "type": "string",
+        "description": "业务状态码，0 表示成功，非 0 表示业务错误",
+        "example": "0"
+      },
+      "errorMsg": {
+        "type": "string",
+        "description": "提示信息，成功或失败的描述文本",
+        "example": "success"
+      },
+      "data": {
+        "$ref": "#/components/schemas/PageVoTenantUserRoleDto",
+        "description": "业务数据载体，成功时返回具体对象/集合，失败时通常为 null"
+      }
+    }
+  },
+  "TenantUserRoleDto": {
+    "type": "object",
+    "description": "租户用户角色数据传输对象",
+    "properties": {
+      "orderNum": {
+        "type": "integer",
+        "format": "int32"
+      },
+      "createdTime": {
+        "type": "string",
+        "format": "date-time"
+      },
+      "lastModifiedTime": {
+        "type": "string",
+        "format": "date-time"
+      },
+      "id": {
+        "type": "integer",
+        "format": "int64"
+      },
+      "tenantId": {
+        "type": "integer",
+        "format": "int64"
+      },
+      "tenantUserId": {
+        "type": "integer",
+        "format": "int64",
+        "description": "租户用户 ID",
+        "example": 7
+      },
+      "roleId": {
+        "type": "integer",
+        "format": "int64",
+        "description": "角色 ID",
+        "example": 5
+      }
+    }
+  },
+  "ResultVoListTenantUserRoleDto": {
+    "type": "object",
+    "description": "统一 API 响应包装体",
+    "properties": {
+      "errorNo": {
+        "type": "string",
+        "description": "业务状态码，0 表示成功，非 0 表示业务错误",
+        "example": "0"
+      },
+      "errorMsg": {
+        "type": "string",
+        "description": "提示信息，成功或失败的描述文本",
+        "example": "success"
+      },
+      "data": {
+        "type": "array",
+        "description": "业务数据载体，成功时返回具体对象/集合，失败时通常为 null",
+        "items": {
+          "$ref": "#/components/schemas/TenantUserRoleDto"
+        }
+      }
+    }
+  },
+  "ResultVoTenantUserRoleForm": {
+    "type": "object",
+    "description": "统一 API 响应包装体",
+    "properties": {
+      "errorNo": {
+        "type": "string",
+        "description": "业务状态码，0 表示成功，非 0 表示业务错误",
+        "example": "0"
+      },
+      "errorMsg": {
+        "type": "string",
+        "description": "提示信息，成功或失败的描述文本",
+        "example": "success"
+      },
+      "data": {
+        "$ref": "#/components/schemas/TenantUserRoleForm",
+        "description": "业务数据载体，成功时返回具体对象/集合，失败时通常为 null"
+      }
+    }
+  },
+  "TenantUserRoleForm": {
+    "type": "object",
+    "description": "新增表单对象",
+    "properties": {
+      "id": {
+        "type": "integer",
+        "format": "int64",
+        "description": "主键 ID",
+        "example": 1
+      },
+      "tenantUserId": {
+        "type": "integer",
+        "format": "int64",
+        "description": "租户用户 ID",
+        "example": 7
+      },
+      "roleId": {
+        "type": "integer",
+        "format": "int64",
+        "description": "角色 ID",
+        "example": 5
+      },
+      "tenantId": {
+        "type": "integer",
+        "format": "int64",
+        "description": "租户 ID",
+        "example": 1
+      }
+    },
+    "required": [
+      "roleId",
+      "tenantUserId"
+    ]
+  },
+  "ResultVoMapStringObject": {
+    "type": "object",
+    "description": "统一 API 响应包装体",
+    "properties": {
+      "errorNo": {
+        "type": "string",
+        "description": "业务状态码，0 表示成功，非 0 表示业务错误",
+        "example": "0"
+      },
+      "errorMsg": {
+        "type": "string",
+        "description": "提示信息，成功或失败的描述文本",
+        "example": "success"
+      },
+      "data": {
+        "type": "object",
+        "additionalProperties": {},
+        "description": "业务数据载体，成功时返回具体对象/集合，失败时通常为 null"
+      }
+    }
+  },
+  "SysLogQuery": {
+    "type": "object",
+    "description": "查询条件",
+    "properties": {
+      "pageNo": {
+        "type": "integer",
+        "format": "int32",
+        "description": "页码，从 1 开始",
+        "example": 1
+      },
+      "pageSize": {
+        "type": "integer",
+        "format": "int32",
+        "description": "每页条数",
+        "example": 20
+      },
+      "sorts": {
+        "type": "array",
+        "description": "排序集合",
+        "example": [],
+        "items": {
+          "$ref": "#/components/schemas/QuerySort"
+        }
+      },
+      "keyword": {
+        "type": "string",
+        "description": "关键字（模糊匹配）",
+        "example": "张三"
+      }
+    }
+  },
+  "PageVoSysLogDto": {
+    "type": "object",
+    "description": "分页响应包装体",
+    "properties": {
+      "total": {
+        "type": "integer",
+        "format": "int64",
+        "description": "满足条件的记录总数",
+        "example": 100
+      },
+      "data": {
+        "type": "array",
+        "description": "当前页数据列表",
+        "items": {
+          "$ref": "#/components/schemas/SysLogDto"
+        }
+      }
+    }
+  },
+  "ResultVoPageVoSysLogDto": {
+    "type": "object",
+    "description": "统一 API 响应包装体",
+    "properties": {
+      "errorNo": {
+        "type": "string",
+        "description": "业务状态码，0 表示成功，非 0 表示业务错误",
+        "example": "0"
+      },
+      "errorMsg": {
+        "type": "string",
+        "description": "提示信息，成功或失败的描述文本",
+        "example": "success"
+      },
+      "data": {
+        "$ref": "#/components/schemas/PageVoSysLogDto",
+        "description": "业务数据载体，成功时返回具体对象/集合，失败时通常为 null"
+      }
+    }
+  },
+  "SysLogDto": {
+    "type": "object",
+    "description": "操作日志数据传输对象",
+    "properties": {
+      "orderNum": {
+        "type": "integer",
+        "format": "int32"
+      },
+      "createdTime": {
+        "type": "string",
+        "format": "date-time"
+      },
+      "lastModifiedTime": {
+        "type": "string",
+        "format": "date-time"
+      },
+      "id": {
+        "type": "integer",
+        "format": "int64"
+      },
+      "tenantId": {
+        "type": "integer",
+        "format": "int64"
+      },
+      "operateType": {
+        "type": "string",
+        "description": "操作类型（AUTHORIZE授权/ACCESS访问/OPERATE操作/ERROR异常）",
+        "enum": [
+          "AUTHORIZE",
+          "ACCESS",
+          "OPERATE",
+          "ERROR"
+        ],
+        "example": "OPERATE"
+      },
+      "logContent": {
+        "type": "string",
+        "description": "日志内容",
+        "example": "用户登录成功"
+      }
+    }
+  },
+  "ResultVoListSysLogDto": {
+    "type": "object",
+    "description": "统一 API 响应包装体",
+    "properties": {
+      "errorNo": {
+        "type": "string",
+        "description": "业务状态码，0 表示成功，非 0 表示业务错误",
+        "example": "0"
+      },
+      "errorMsg": {
+        "type": "string",
+        "description": "提示信息，成功或失败的描述文本",
+        "example": "success"
+      },
+      "data": {
+        "type": "array",
+        "description": "业务数据载体，成功时返回具体对象/集合，失败时通常为 null",
+        "items": {
+          "$ref": "#/components/schemas/SysLogDto"
+        }
+      }
+    }
+  },
+  "ResultVoSysLogForm": {
+    "type": "object",
+    "description": "统一 API 响应包装体",
+    "properties": {
+      "errorNo": {
+        "type": "string",
+        "description": "业务状态码，0 表示成功，非 0 表示业务错误",
+        "example": "0"
+      },
+      "errorMsg": {
+        "type": "string",
+        "description": "提示信息，成功或失败的描述文本",
+        "example": "success"
+      },
+      "data": {
+        "$ref": "#/components/schemas/SysLogForm",
+        "description": "业务数据载体，成功时返回具体对象/集合，失败时通常为 null"
+      }
+    }
+  },
+  "SysLogForm": {
+    "type": "object",
+    "description": "新增表单对象",
+    "properties": {
+      "id": {
+        "type": "integer",
+        "format": "int64",
+        "description": "主键 ID",
+        "example": 1
+      },
+      "operateType": {
+        "type": "string",
+        "description": "操作类型（AUTHORIZE授权/ACCESS访问/OPERATE操作/ERROR异常）",
+        "enum": [
+          "AUTHORIZE",
+          "ACCESS",
+          "OPERATE",
+          "ERROR"
+        ],
+        "example": "OPERATE"
+      },
+      "logContent": {
+        "type": "string",
+        "description": "日志内容",
+        "example": "用户登录成功"
+      },
+      "tenantId": {
+        "type": "integer",
+        "format": "int64",
+        "description": "租户 ID",
+        "example": 1
+      }
+    }
+  },
+  "RoleQuery": {
+    "type": "object",
+    "description": "查询条件",
+    "properties": {
+      "pageNo": {
+        "type": "integer",
+        "format": "int32",
+        "description": "页码，从 1 开始",
+        "example": 1
+      },
+      "pageSize": {
+        "type": "integer",
+        "format": "int32",
+        "description": "每页条数",
+        "example": 20
+      },
+      "sorts": {
+        "type": "array",
+        "description": "排序集合",
+        "example": [],
+        "items": {
+          "$ref": "#/components/schemas/QuerySort"
+        }
+      },
+      "keyword": {
+        "type": "string",
+        "description": "关键字（模糊匹配）",
+        "example": "张三"
+      }
+    }
+  },
+  "PageVoRoleDto": {
+    "type": "object",
+    "description": "分页响应包装体",
+    "properties": {
+      "total": {
+        "type": "integer",
+        "format": "int64",
+        "description": "满足条件的记录总数",
+        "example": 100
+      },
+      "data": {
+        "type": "array",
+        "description": "当前页数据列表",
+        "items": {
+          "$ref": "#/components/schemas/RoleDto"
+        }
+      }
+    }
+  },
+  "ResultVoPageVoRoleDto": {
+    "type": "object",
+    "description": "统一 API 响应包装体",
+    "properties": {
+      "errorNo": {
+        "type": "string",
+        "description": "业务状态码，0 表示成功，非 0 表示业务错误",
+        "example": "0"
+      },
+      "errorMsg": {
+        "type": "string",
+        "description": "提示信息，成功或失败的描述文本",
+        "example": "success"
+      },
+      "data": {
+        "$ref": "#/components/schemas/PageVoRoleDto",
+        "description": "业务数据载体，成功时返回具体对象/集合，失败时通常为 null"
+      }
+    }
+  },
+  "RoleDto": {
+    "type": "object",
+    "description": "角色数据传输对象",
+    "properties": {
+      "orderNum": {
+        "type": "integer",
+        "format": "int32"
+      },
+      "createdTime": {
+        "type": "string",
+        "format": "date-time"
+      },
+      "lastModifiedTime": {
+        "type": "string",
+        "format": "date-time"
+      },
+      "id": {
+        "type": "integer",
+        "format": "int64"
+      },
+      "tenantId": {
+        "type": "integer",
+        "format": "int64"
+      },
+      "roleCode": {
+        "type": "string",
+        "description": "角色编码",
+        "example": "admin"
+      },
+      "roleName": {
+        "type": "string",
+        "description": "角色名称",
+        "example": "管理员"
+      },
+      "roleDesc": {
+        "type": "string",
+        "description": "描述/备注",
+        "example": "备注信息"
+      },
+      "enableStatus": {
+        "type": "string",
+        "description": "启用状态（1启用/0停用）",
+        "enum": [
+          "0",
+          "1"
+        ],
+        "example": "1"
+      },
+      "roleType": {
+        "type": "string",
+        "description": "角色类型（1常规角色/2部门角色）",
+        "enum": [
+          "1",
+          "2"
+        ],
+        "example": "1"
+      },
+      "orgUnitId": {
+        "type": "integer",
+        "format": "int64",
+        "description": "组织单元 ID",
+        "example": 10
+      },
+      "orgUnitPath": {
+        "type": "string",
+        "description": "组织路径（祖先 ID 链，逗号分隔）",
+        "example": "1,3,10"
+      },
+      "locked": {
+        "type": "string",
+        "description": "锁定标记（1可编辑/0系统锁定）",
+        "enum": [
+          "0",
+          "1"
+        ],
+        "example": "0"
+      }
+    }
+  },
+  "ResultVoListRoleDto": {
+    "type": "object",
+    "description": "统一 API 响应包装体",
+    "properties": {
+      "errorNo": {
+        "type": "string",
+        "description": "业务状态码，0 表示成功，非 0 表示业务错误",
+        "example": "0"
+      },
+      "errorMsg": {
+        "type": "string",
+        "description": "提示信息，成功或失败的描述文本",
+        "example": "success"
+      },
+      "data": {
+        "type": "array",
+        "description": "业务数据载体，成功时返回具体对象/集合，失败时通常为 null",
+        "items": {
+          "$ref": "#/components/schemas/RoleDto"
+        }
+      }
+    }
+  },
+  "ResultVoRoleForm": {
+    "type": "object",
+    "description": "统一 API 响应包装体",
+    "properties": {
+      "errorNo": {
+        "type": "string",
+        "description": "业务状态码，0 表示成功，非 0 表示业务错误",
+        "example": "0"
+      },
+      "errorMsg": {
+        "type": "string",
+        "description": "提示信息，成功或失败的描述文本",
+        "example": "success"
+      },
+      "data": {
+        "$ref": "#/components/schemas/RoleForm",
+        "description": "业务数据载体，成功时返回具体对象/集合，失败时通常为 null"
+      }
+    }
+  },
+  "RoleForm": {
+    "type": "object",
+    "description": "新增表单对象",
+    "properties": {
+      "id": {
+        "type": "integer",
+        "format": "int64",
+        "description": "主键 ID",
+        "example": 1
+      },
+      "roleCode": {
+        "type": "string",
+        "description": "角色编码",
+        "example": "admin"
+      },
+      "roleName": {
+        "type": "string",
+        "description": "角色名称",
+        "example": "管理员"
+      },
+      "roleDesc": {
+        "type": "string",
+        "description": "描述/备注",
+        "example": "备注信息"
+      },
+      "enableStatus": {
+        "type": "string",
+        "description": "启用状态（1启用/0停用）",
+        "enum": [
+          "0",
+          "1"
+        ],
+        "example": "1"
+      },
+      "tenantId": {
+        "type": "integer",
+        "format": "int64",
+        "description": "租户 ID",
+        "example": 1
+      },
+      "roleType": {
+        "type": "string",
+        "description": "角色类型（1常规角色/2部门角色）",
+        "enum": [
+          "1",
+          "2"
+        ],
+        "example": "1"
+      },
+      "orgUnitId": {
+        "type": "integer",
+        "format": "int64",
+        "description": "组织单元 ID",
+        "example": 10
+      },
+      "orgUnitPath": {
+        "type": "string",
+        "description": "组织路径（祖先 ID 链，逗号分隔）",
+        "example": "1,3,10"
+      }
+    },
+    "required": [
+      "roleCode",
+      "roleName",
+      "roleType"
+    ]
+  },
+  "RoleTemplateQuery": {
+    "type": "object",
+    "description": "查询条件",
+    "properties": {
+      "pageNo": {
+        "type": "integer",
+        "format": "int32",
+        "description": "页码，从 1 开始",
+        "example": 1
+      },
+      "pageSize": {
+        "type": "integer",
+        "format": "int32",
+        "description": "每页条数",
+        "example": 20
+      },
+      "sorts": {
+        "type": "array",
+        "description": "排序集合",
+        "example": [],
+        "items": {
+          "$ref": "#/components/schemas/QuerySort"
+        }
+      },
+      "keyword": {
+        "type": "string",
+        "description": "关键字（模糊匹配）",
+        "example": "张三"
+      },
+      "isSystem": {
+        "type": "string",
+        "description": "是否系统内置（1是/0否）",
+        "enum": [
+          "0",
+          "1"
+        ],
+        "example": "0"
+      }
+    }
+  },
+  "PageVoRoleTemplateDto": {
+    "type": "object",
+    "description": "分页响应包装体",
+    "properties": {
+      "total": {
+        "type": "integer",
+        "format": "int64",
+        "description": "满足条件的记录总数",
+        "example": 100
+      },
+      "data": {
+        "type": "array",
+        "description": "当前页数据列表",
+        "items": {
+          "$ref": "#/components/schemas/RoleTemplateDto"
+        }
+      }
+    }
+  },
+  "ResultVoPageVoRoleTemplateDto": {
+    "type": "object",
+    "description": "统一 API 响应包装体",
+    "properties": {
+      "errorNo": {
+        "type": "string",
+        "description": "业务状态码，0 表示成功，非 0 表示业务错误",
+        "example": "0"
+      },
+      "errorMsg": {
+        "type": "string",
+        "description": "提示信息，成功或失败的描述文本",
+        "example": "success"
+      },
+      "data": {
+        "$ref": "#/components/schemas/PageVoRoleTemplateDto",
+        "description": "业务数据载体，成功时返回具体对象/集合，失败时通常为 null"
+      }
+    }
+  },
+  "RoleTemplateDto": {
+    "type": "object",
+    "description": "角色模板数据传输对象",
+    "properties": {
+      "orderNum": {
+        "type": "integer",
+        "format": "int32"
+      },
+      "createdTime": {
+        "type": "string",
+        "format": "date-time"
+      },
+      "lastModifiedTime": {
+        "type": "string",
+        "format": "date-time"
+      },
+      "id": {
+        "type": "integer",
+        "format": "int64"
+      },
+      "tenantId": {
+        "type": "integer",
+        "format": "int64"
+      },
+      "roleCode": {
+        "type": "string",
+        "description": "角色编码",
+        "example": "admin"
+      },
+      "roleName": {
+        "type": "string",
+        "description": "角色名称",
+        "example": "管理员"
+      },
+      "roleDesc": {
+        "type": "string",
+        "description": "描述/备注",
+        "example": "备注信息"
+      },
+      "enableStatus": {
+        "type": "string",
+        "description": "启用状态（1启用/0停用）",
+        "enum": [
+          "0",
+          "1"
+        ],
+        "example": "1"
+      },
+      "roleType": {
+        "type": "string",
+        "description": "角色类型（1常规角色/2部门角色）",
+        "enum": [
+          "1",
+          "2"
+        ],
+        "example": "1"
+      },
+      "orgUnitId": {
+        "type": "integer",
+        "format": "int64",
+        "description": "组织单元 ID",
+        "example": 10
+      },
+      "orgUnitPath": {
+        "type": "string",
+        "description": "组织路径（祖先 ID 链，逗号分隔）",
+        "example": "1,3,10"
+      },
+      "isSystem": {
+        "type": "string",
+        "description": "是否系统内置（1是/0否）",
+        "enum": [
+          "0",
+          "1"
+        ],
+        "example": "0"
+      }
+    }
+  },
+  "ResultVoListRoleTemplateDto": {
+    "type": "object",
+    "description": "统一 API 响应包装体",
+    "properties": {
+      "errorNo": {
+        "type": "string",
+        "description": "业务状态码，0 表示成功，非 0 表示业务错误",
+        "example": "0"
+      },
+      "errorMsg": {
+        "type": "string",
+        "description": "提示信息，成功或失败的描述文本",
+        "example": "success"
+      },
+      "data": {
+        "type": "array",
+        "description": "业务数据载体，成功时返回具体对象/集合，失败时通常为 null",
+        "items": {
+          "$ref": "#/components/schemas/RoleTemplateDto"
+        }
+      }
+    }
+  },
+  "ResultVoRoleTemplateForm": {
+    "type": "object",
+    "description": "统一 API 响应包装体",
+    "properties": {
+      "errorNo": {
+        "type": "string",
+        "description": "业务状态码，0 表示成功，非 0 表示业务错误",
+        "example": "0"
+      },
+      "errorMsg": {
+        "type": "string",
+        "description": "提示信息，成功或失败的描述文本",
+        "example": "success"
+      },
+      "data": {
+        "$ref": "#/components/schemas/RoleTemplateForm",
+        "description": "业务数据载体，成功时返回具体对象/集合，失败时通常为 null"
+      }
+    }
+  },
+  "RoleTemplateForm": {
+    "type": "object",
+    "description": "新增表单对象",
+    "properties": {
+      "id": {
+        "type": "integer",
+        "format": "int64",
+        "description": "主键 ID",
+        "example": 1
+      },
+      "roleCode": {
+        "type": "string",
+        "description": "角色编码",
+        "example": "admin"
+      },
+      "roleName": {
+        "type": "string",
+        "description": "角色名称",
+        "example": "管理员"
+      },
+      "roleDesc": {
+        "type": "string",
+        "description": "描述/备注",
+        "example": "备注信息"
+      },
+      "enableStatus": {
+        "type": "string",
+        "description": "启用状态（1启用/0停用）",
+        "enum": [
+          "0",
+          "1"
+        ],
+        "example": "1"
+      },
+      "roleType": {
+        "type": "string",
+        "description": "角色类型（1常规角色/2部门角色）",
+        "enum": [
+          "1",
+          "2"
+        ],
+        "example": "1"
+      },
+      "orgUnitId": {
+        "type": "integer",
+        "format": "int64",
+        "description": "组织单元 ID",
+        "example": 10
+      },
+      "orgUnitPath": {
+        "type": "string",
+        "description": "组织路径（祖先 ID 链，逗号分隔）",
+        "example": "1,3,10"
+      },
+      "isSystem": {
+        "type": "string",
+        "description": "是否系统内置（1是/0否）",
+        "enum": [
+          "0",
+          "1"
+        ],
+        "example": "0"
+      },
+      "tenantId": {
+        "type": "integer",
+        "format": "int64",
+        "description": "租户 ID",
+        "example": 1
+      }
+    }
+  },
+  "RoleMenuAssignForm": {
+    "type": "object",
+    "description": "角色、租户与菜单ID集合",
+    "properties": {
+      "tenantId": {
+        "type": "integer",
+        "format": "int64",
+        "description": "租户 ID",
+        "example": 1
+      },
+      "roleId": {
+        "type": "integer",
+        "format": "int64",
+        "description": "角色 ID",
+        "example": 5
+      },
+      "menuIds": {
+        "type": "array",
+        "description": "菜单 ID 集合",
+        "example": [
+          20,
+          21
+        ],
+        "items": {
+          "type": "integer",
+          "format": "int64"
+        }
+      }
+    },
+    "required": [
+      "menuIds",
+      "roleId"
+    ]
+  },
+  "RoleGroupQuery": {
+    "type": "object",
+    "description": "查询条件",
+    "properties": {
+      "pageNo": {
+        "type": "integer",
+        "format": "int32",
+        "description": "页码，从 1 开始",
+        "example": 1
+      },
+      "pageSize": {
+        "type": "integer",
+        "format": "int32",
+        "description": "每页条数",
+        "example": 20
+      },
+      "sorts": {
+        "type": "array",
+        "description": "排序集合",
+        "example": [],
+        "items": {
+          "$ref": "#/components/schemas/QuerySort"
+        }
+      },
+      "keyword": {
+        "type": "string",
+        "description": "关键字（模糊匹配）",
+        "example": "张三"
+      }
+    }
+  },
+  "ResultVoListRoleGroupDto": {
+    "type": "object",
+    "description": "统一 API 响应包装体",
+    "properties": {
+      "errorNo": {
+        "type": "string",
+        "description": "业务状态码，0 表示成功，非 0 表示业务错误",
+        "example": "0"
+      },
+      "errorMsg": {
+        "type": "string",
+        "description": "提示信息，成功或失败的描述文本",
+        "example": "success"
+      },
+      "data": {
+        "type": "array",
+        "description": "业务数据载体，成功时返回具体对象/集合，失败时通常为 null",
+        "items": {
+          "$ref": "#/components/schemas/RoleGroupDto"
+        }
+      }
+    }
+  },
+  "RoleGroupDto": {
+    "type": "object",
+    "description": "角色组数据传输对象",
+    "properties": {
+      "id": {
+        "type": "integer",
+        "format": "int64",
+        "description": "主键 ID",
+        "example": 1
+      },
+      "parentId": {
+        "type": "integer",
+        "format": "int64",
+        "description": "父节点 ID",
+        "example": 0
+      },
+      "code": {
+        "type": "string",
+        "description": "业务编码",
+        "example": "demo_code"
+      },
+      "name": {
+        "type": "string",
+        "description": "名称",
+        "example": "示例名称"
+      },
+      "nodeDesc": {
+        "type": "string",
+        "description": "节点描述",
+        "example": "系统管理根菜单"
+      },
+      "parentTreePath": {
+        "type": "string",
+        "description": "父路径（祖先 ID 链，逗号分隔）",
+        "example": "0,1,3"
+      },
+      "treeLevel": {
+        "type": "integer",
+        "format": "int32",
+        "description": "树层级深度（根=0）",
+        "example": 2
+      },
+      "parent": {
+        "$ref": "#/components/schemas/RoleGroupDto",
+        "description": "父节点对象"
+      },
+      "children": {
+        "type": "array",
+        "description": "子节点集合",
+        "example": [],
+        "items": {
+          "$ref": "#/components/schemas/RoleGroupDto"
+        }
+      },
+      "orderNum": {
+        "type": "integer",
+        "format": "int32",
+        "description": "排序号",
+        "example": 1
+      },
+      "createdTime": {
+        "type": "string",
+        "format": "date-time",
+        "description": "创建时间",
+        "example": "2026-07-20T10:30:00Z"
+      },
+      "lastModifiedTime": {
+        "type": "string",
+        "format": "date-time",
+        "description": "最后修改时间",
+        "example": "2026-07-20T10:30:00Z"
+      },
+      "tenantId": {
+        "type": "integer",
+        "format": "int64"
+      }
+    }
+  },
+  "PageVoRoleGroupDto": {
+    "type": "object",
+    "description": "分页响应包装体",
+    "properties": {
+      "total": {
+        "type": "integer",
+        "format": "int64",
+        "description": "满足条件的记录总数",
+        "example": 100
+      },
+      "data": {
+        "type": "array",
+        "description": "当前页数据列表",
+        "items": {
+          "$ref": "#/components/schemas/RoleGroupDto"
+        }
+      }
+    }
+  },
+  "ResultVoPageVoRoleGroupDto": {
+    "type": "object",
+    "description": "统一 API 响应包装体",
+    "properties": {
+      "errorNo": {
+        "type": "string",
+        "description": "业务状态码，0 表示成功，非 0 表示业务错误",
+        "example": "0"
+      },
+      "errorMsg": {
+        "type": "string",
+        "description": "提示信息，成功或失败的描述文本",
+        "example": "success"
+      },
+      "data": {
+        "$ref": "#/components/schemas/PageVoRoleGroupDto",
+        "description": "业务数据载体，成功时返回具体对象/集合，失败时通常为 null"
+      }
+    }
+  },
+  "ResultVoRoleGroupForm": {
+    "type": "object",
+    "description": "统一 API 响应包装体",
+    "properties": {
+      "errorNo": {
+        "type": "string",
+        "description": "业务状态码，0 表示成功，非 0 表示业务错误",
+        "example": "0"
+      },
+      "errorMsg": {
+        "type": "string",
+        "description": "提示信息，成功或失败的描述文本",
+        "example": "success"
+      },
+      "data": {
+        "$ref": "#/components/schemas/RoleGroupForm",
+        "description": "业务数据载体，成功时返回具体对象/集合，失败时通常为 null"
+      }
+    }
+  },
+  "RoleGroupForm": {
+    "type": "object",
+    "description": "新增表单对象",
+    "properties": {
+      "id": {
+        "type": "integer",
+        "format": "int64",
+        "description": "主键 ID",
+        "example": 1
+      },
+      "name": {
+        "type": "string"
+      },
+      "code": {
+        "type": "string"
+      },
+      "nodeDesc": {
+        "type": "string"
+      },
+      "parentId": {
+        "type": "integer",
+        "format": "int64"
+      },
+      "orderNum": {
+        "type": "integer",
+        "format": "int32"
+      }
+    }
+  },
+  "OrgUnitQuery": {
+    "type": "object",
+    "description": "查询条件",
+    "properties": {
+      "pageNo": {
+        "type": "integer",
+        "format": "int32",
+        "description": "页码，从 1 开始",
+        "example": 1
+      },
+      "pageSize": {
+        "type": "integer",
+        "format": "int32",
+        "description": "每页条数",
+        "example": 20
+      },
+      "sorts": {
+        "type": "array",
+        "description": "排序集合",
+        "example": [],
+        "items": {
+          "$ref": "#/components/schemas/QuerySort"
+        }
+      },
+      "keyword": {
+        "type": "string",
+        "description": "关键字（模糊匹配）",
+        "example": "张三"
+      }
+    }
+  },
+  "OrgUnitDto": {
+    "type": "object",
+    "description": "组织单元数据传输对象",
+    "properties": {
+      "id": {
+        "type": "integer",
+        "format": "int64",
+        "description": "主键 ID",
+        "example": 1
+      },
+      "parentId": {
+        "type": "integer",
+        "format": "int64",
+        "description": "父节点 ID",
+        "example": 0
+      },
+      "code": {
+        "type": "string",
+        "description": "业务编码",
+        "example": "demo_code"
+      },
+      "name": {
+        "type": "string",
+        "description": "名称",
+        "example": "示例名称"
+      },
+      "nodeDesc": {
+        "type": "string",
+        "description": "节点描述",
+        "example": "系统管理根菜单"
+      },
+      "parentTreePath": {
+        "type": "string",
+        "description": "父路径（祖先 ID 链，逗号分隔）",
+        "example": "0,1,3"
+      },
+      "treeLevel": {
+        "type": "integer",
+        "format": "int32",
+        "description": "树层级深度（根=0）",
+        "example": 2
+      },
+      "parent": {
+        "$ref": "#/components/schemas/OrgUnitDto",
+        "description": "父节点对象"
+      },
+      "children": {
+        "type": "array",
+        "description": "子节点集合",
+        "example": [],
+        "items": {
+          "$ref": "#/components/schemas/OrgUnitDto"
+        }
+      },
+      "orderNum": {
+        "type": "integer",
+        "format": "int32",
+        "description": "排序号",
+        "example": 1
+      },
+      "createdTime": {
+        "type": "string",
+        "format": "date-time",
+        "description": "创建时间",
+        "example": "2026-07-20T10:30:00Z"
+      },
+      "lastModifiedTime": {
+        "type": "string",
+        "format": "date-time",
+        "description": "最后修改时间",
+        "example": "2026-07-20T10:30:00Z"
+      },
+      "userPoolId": {
+        "type": "integer",
+        "format": "int64"
+      },
+      "orgUnitStatus": {
+        "type": "string",
+        "description": "组织状态（1启用/0停用）",
+        "enum": [
+          "0",
+          "1"
+        ],
+        "example": "1"
+      }
+    }
+  },
+  "ResultVoListOrgUnitDto": {
+    "type": "object",
+    "description": "统一 API 响应包装体",
+    "properties": {
+      "errorNo": {
+        "type": "string",
+        "description": "业务状态码，0 表示成功，非 0 表示业务错误",
+        "example": "0"
+      },
+      "errorMsg": {
+        "type": "string",
+        "description": "提示信息，成功或失败的描述文本",
+        "example": "success"
+      },
+      "data": {
+        "type": "array",
+        "description": "业务数据载体，成功时返回具体对象/集合，失败时通常为 null",
+        "items": {
+          "$ref": "#/components/schemas/OrgUnitDto"
+        }
+      }
+    }
+  },
+  "PageVoOrgUnitDto": {
+    "type": "object",
+    "description": "分页响应包装体",
+    "properties": {
+      "total": {
+        "type": "integer",
+        "format": "int64",
+        "description": "满足条件的记录总数",
+        "example": 100
+      },
+      "data": {
+        "type": "array",
+        "description": "当前页数据列表",
+        "items": {
+          "$ref": "#/components/schemas/OrgUnitDto"
+        }
+      }
+    }
+  },
+  "ResultVoPageVoOrgUnitDto": {
+    "type": "object",
+    "description": "统一 API 响应包装体",
+    "properties": {
+      "errorNo": {
+        "type": "string",
+        "description": "业务状态码，0 表示成功，非 0 表示业务错误",
+        "example": "0"
+      },
+      "errorMsg": {
+        "type": "string",
+        "description": "提示信息，成功或失败的描述文本",
+        "example": "success"
+      },
+      "data": {
+        "$ref": "#/components/schemas/PageVoOrgUnitDto",
+        "description": "业务数据载体，成功时返回具体对象/集合，失败时通常为 null"
+      }
+    }
+  },
+  "OrgUnitForm": {
+    "type": "object",
+    "description": "新增表单对象",
+    "properties": {
+      "id": {
+        "type": "integer",
+        "format": "int64",
+        "description": "主键 ID",
+        "example": 1
+      },
+      "name": {
+        "type": "string"
+      },
+      "code": {
+        "type": "string"
+      },
+      "nodeDesc": {
+        "type": "string"
+      },
+      "parentId": {
+        "type": "integer",
+        "format": "int64"
+      },
+      "orderNum": {
+        "type": "integer",
+        "format": "int32"
+      },
+      "orgUnitStatus": {
+        "type": "string",
+        "description": "组织状态（1启用/0停用）",
+        "enum": [
+          "0",
+          "1"
+        ],
+        "example": "1"
+      },
+      "userPoolId": {
+        "type": "integer",
+        "format": "int64",
+        "description": "用户池 ID",
+        "example": 1
+      }
+    }
+  },
+  "ResultVoOrgUnitForm": {
+    "type": "object",
+    "description": "统一 API 响应包装体",
+    "properties": {
+      "errorNo": {
+        "type": "string",
+        "description": "业务状态码，0 表示成功，非 0 表示业务错误",
+        "example": "0"
+      },
+      "errorMsg": {
+        "type": "string",
+        "description": "提示信息，成功或失败的描述文本",
+        "example": "success"
+      },
+      "data": {
+        "$ref": "#/components/schemas/OrgUnitForm",
+        "description": "业务数据载体，成功时返回具体对象/集合，失败时通常为 null"
+      }
+    }
+  },
+  "MenuQuery": {
+    "type": "object",
+    "description": "查询条件",
+    "properties": {
+      "pageNo": {
+        "type": "integer",
+        "format": "int32",
+        "description": "页码，从 1 开始",
+        "example": 1
+      },
+      "pageSize": {
+        "type": "integer",
+        "format": "int32",
+        "description": "每页条数",
+        "example": 20
+      },
+      "sorts": {
+        "type": "array",
+        "description": "排序集合",
+        "example": [],
+        "items": {
+          "$ref": "#/components/schemas/QuerySort"
+        }
+      },
+      "keyword": {
+        "type": "string",
+        "description": "关键字（模糊匹配）",
+        "example": "张三"
+      }
+    }
+  },
+  "MenuDto": {
+    "type": "object",
+    "description": "菜单数据传输对象",
+    "properties": {
+      "id": {
+        "type": "integer",
+        "format": "int64",
+        "description": "主键 ID",
+        "example": 1
+      },
+      "parentId": {
+        "type": "integer",
+        "format": "int64",
+        "description": "父节点 ID",
+        "example": 0
+      },
+      "code": {
+        "type": "string",
+        "description": "业务编码",
+        "example": "demo_code"
+      },
+      "name": {
+        "type": "string",
+        "description": "名称",
+        "example": "示例名称"
+      },
+      "nodeDesc": {
+        "type": "string",
+        "description": "节点描述",
+        "example": "系统管理根菜单"
+      },
+      "parentTreePath": {
+        "type": "string",
+        "description": "父路径（祖先 ID 链，逗号分隔）",
+        "example": "0,1,3"
+      },
+      "treeLevel": {
+        "type": "integer",
+        "format": "int32",
+        "description": "树层级深度（根=0）",
+        "example": 2
+      },
+      "parent": {
+        "$ref": "#/components/schemas/MenuDto",
+        "description": "父节点对象"
+      },
+      "children": {
+        "type": "array",
+        "description": "子节点集合",
+        "example": [],
+        "items": {
+          "$ref": "#/components/schemas/MenuDto"
+        }
+      },
+      "orderNum": {
+        "type": "integer",
+        "format": "int32",
+        "description": "排序号",
+        "example": 1
+      },
+      "createdTime": {
+        "type": "string",
+        "format": "date-time",
+        "description": "创建时间",
+        "example": "2026-07-20T10:30:00Z"
+      },
+      "lastModifiedTime": {
+        "type": "string",
+        "format": "date-time",
+        "description": "最后修改时间",
+        "example": "2026-07-20T10:30:00Z"
+      },
+      "tenantId": {
+        "type": "integer",
+        "format": "int64"
+      },
+      "menuType": {
+        "type": "string",
+        "description": "菜单类型（M目录/D菜单/B按钮）",
+        "enum": [
+          "M",
+          "D",
+          "B"
+        ],
+        "example": "M"
+      },
+      "icon": {
+        "type": "string",
+        "description": "图标",
+        "example": "el-icon-setting"
+      },
+      "perm": {
+        "type": "string",
+        "description": "权限码",
+        "example": "module:res:action"
+      },
+      "routePath": {
+        "type": "string",
+        "description": "路由路径",
+        "example": "/system/user"
+      },
+      "component": {
+        "type": "string",
+        "description": "前端组件路径",
+        "example": "system/user/index"
+      },
+      "jumpType": {
+        "type": "string",
+        "description": "跳转类型（1应用内路由/2外链/3内嵌iframe）",
+        "enum": [
+          "1",
+          "2",
+          "3"
+        ],
+        "example": "1"
+      },
+      "jumpTarget": {
+        "type": "string",
+        "description": "跳转目标",
+        "example": "https://example.com"
+      },
+      "redirect": {
+        "type": "string",
+        "description": "重定向地址",
+        "example": "/system/user"
+      },
+      "keepAlive": {
+        "type": "string",
+        "description": "是否缓存（1是/0否）",
+        "enum": [
+          "0",
+          "1"
+        ],
+        "example": "1"
+      },
+      "showStatus": {
+        "type": "string",
+        "description": "显示状态（1显示/0隐藏）",
+        "enum": [
+          "0",
+          "1"
+        ],
+        "example": "1"
+      },
+      "alwaysShow": {
+        "type": "string",
+        "description": "是否总是显示（1是/0否）",
+        "enum": [
+          "0",
+          "1"
+        ],
+        "example": "0"
+      },
+      "locked": {
+        "type": "string",
+        "description": "锁定标记（1可编辑/0系统锁定）",
+        "enum": [
+          "0",
+          "1"
+        ],
+        "example": "0"
+      }
+    }
+  },
+  "ResultVoListMenuDto": {
+    "type": "object",
+    "description": "统一 API 响应包装体",
+    "properties": {
+      "errorNo": {
+        "type": "string",
+        "description": "业务状态码，0 表示成功，非 0 表示业务错误",
+        "example": "0"
+      },
+      "errorMsg": {
+        "type": "string",
+        "description": "提示信息，成功或失败的描述文本",
+        "example": "success"
+      },
+      "data": {
+        "type": "array",
+        "description": "业务数据载体，成功时返回具体对象/集合，失败时通常为 null",
+        "items": {
+          "$ref": "#/components/schemas/MenuDto"
+        }
+      }
+    }
+  },
+  "PageVoMenuDto": {
+    "type": "object",
+    "description": "分页响应包装体",
+    "properties": {
+      "total": {
+        "type": "integer",
+        "format": "int64",
+        "description": "满足条件的记录总数",
+        "example": 100
+      },
+      "data": {
+        "type": "array",
+        "description": "当前页数据列表",
+        "items": {
+          "$ref": "#/components/schemas/MenuDto"
+        }
+      }
+    }
+  },
+  "ResultVoPageVoMenuDto": {
+    "type": "object",
+    "description": "统一 API 响应包装体",
+    "properties": {
+      "errorNo": {
+        "type": "string",
+        "description": "业务状态码，0 表示成功，非 0 表示业务错误",
+        "example": "0"
+      },
+      "errorMsg": {
+        "type": "string",
+        "description": "提示信息，成功或失败的描述文本",
+        "example": "success"
+      },
+      "data": {
+        "$ref": "#/components/schemas/PageVoMenuDto",
+        "description": "业务数据载体，成功时返回具体对象/集合，失败时通常为 null"
+      }
+    }
+  },
+  "MenuForm": {
+    "type": "object",
+    "description": "新增表单对象",
+    "properties": {
+      "id": {
+        "type": "integer",
+        "format": "int64",
+        "description": "主键 ID",
+        "example": 1
+      },
+      "name": {
+        "type": "string"
+      },
+      "code": {
+        "type": "string"
+      },
+      "nodeDesc": {
+        "type": "string"
+      },
+      "parentId": {
+        "type": "integer",
+        "format": "int64"
+      },
+      "orderNum": {
+        "type": "integer",
+        "format": "int32"
+      },
+      "menuType": {
+        "type": "string",
+        "description": "菜单类型（M目录/D菜单/B按钮）",
+        "enum": [
+          "M",
+          "D",
+          "B"
+        ],
+        "example": "M"
+      },
+      "icon": {
+        "type": "string",
+        "description": "图标",
+        "example": "el-icon-setting"
+      },
+      "perm": {
+        "type": "string",
+        "description": "权限码",
+        "example": "module:res:action"
+      },
+      "routePath": {
+        "type": "string",
+        "description": "路由路径",
+        "example": "/system/user"
+      },
+      "component": {
+        "type": "string",
+        "description": "前端组件路径",
+        "example": "system/user/index"
+      },
+      "jumpType": {
+        "type": "string",
+        "description": "跳转类型（1应用内路由/2外链/3内嵌iframe）",
+        "enum": [
+          "1",
+          "2",
+          "3"
+        ],
+        "example": "1"
+      },
+      "jumpTarget": {
+        "type": "string",
+        "description": "跳转目标",
+        "example": "https://example.com"
+      },
+      "redirect": {
+        "type": "string",
+        "description": "重定向地址",
+        "example": "/system/user"
+      },
+      "keepAlive": {
+        "type": "string",
+        "description": "是否缓存（1是/0否）",
+        "enum": [
+          "0",
+          "1"
+        ],
+        "example": "1"
+      },
+      "showStatus": {
+        "type": "string",
+        "description": "显示状态（1显示/0隐藏）",
+        "enum": [
+          "0",
+          "1"
+        ],
+        "example": "1"
+      },
+      "alwaysShow": {
+        "type": "string",
+        "description": "是否总是显示（1是/0否）",
+        "enum": [
+          "0",
+          "1"
+        ],
+        "example": "0"
+      },
+      "tenantId": {
+        "type": "integer",
+        "format": "int64",
+        "description": "租户 ID",
+        "example": 1
+      },
+      "locked": {
+        "type": "string",
+        "description": "锁定标记（1可编辑/0系统锁定）",
+        "enum": [
+          "0",
+          "1"
+        ],
+        "example": "0"
+      }
+    },
+    "required": [
+      "component",
+      "menuType",
+      "routePath"
+    ]
+  },
+  "ResultVoMenuForm": {
+    "type": "object",
+    "description": "统一 API 响应包装体",
+    "properties": {
+      "errorNo": {
+        "type": "string",
+        "description": "业务状态码，0 表示成功，非 0 表示业务错误",
+        "example": "0"
+      },
+      "errorMsg": {
+        "type": "string",
+        "description": "提示信息，成功或失败的描述文本",
+        "example": "success"
+      },
+      "data": {
+        "$ref": "#/components/schemas/MenuForm",
+        "description": "业务数据载体，成功时返回具体对象/集合，失败时通常为 null"
+      }
+    }
+  },
+  "MenuTemplateQuery": {
+    "type": "object",
+    "description": "查询条件",
+    "properties": {
+      "pageNo": {
+        "type": "integer",
+        "format": "int32",
+        "description": "页码，从 1 开始",
+        "example": 1
+      },
+      "pageSize": {
+        "type": "integer",
+        "format": "int32",
+        "description": "每页条数",
+        "example": 20
+      },
+      "sorts": {
+        "type": "array",
+        "description": "排序集合",
+        "example": [],
+        "items": {
+          "$ref": "#/components/schemas/QuerySort"
+        }
+      },
+      "keyword": {
+        "type": "string",
+        "description": "关键字（模糊匹配）",
+        "example": "张三"
+      },
+      "templateTypeCode": {
+        "type": "string",
+        "description": "菜单模板类型编码（字典 MENU_TEMPLATE_TYPE）",
+        "example": "SYSTEM"
+      }
+    }
+  },
+  "MenuTemplateDto": {
+    "type": "object",
+    "description": "菜单模板数据传输对象",
+    "properties": {
+      "orderNum": {
+        "type": "integer",
+        "format": "int32"
+      },
+      "createdTime": {
+        "type": "string",
+        "format": "date-time"
+      },
+      "lastModifiedTime": {
+        "type": "string",
+        "format": "date-time"
+      },
+      "id": {
+        "type": "integer",
+        "format": "int64"
+      },
+      "tenantId": {
+        "type": "integer",
+        "format": "int64"
+      },
+      "templateTypeCode": {
+        "type": "string",
+        "description": "菜单模板类型编码（字典 MENU_TEMPLATE_TYPE）",
+        "example": "SYSTEM"
+      },
+      "templateCode": {
+        "type": "string",
+        "description": "模板编码",
+        "example": "sys_common"
+      },
+      "templateName": {
+        "type": "string",
+        "description": "名称",
+        "example": "示例名称"
+      },
+      "isSystem": {
+        "type": "string",
+        "description": "是否系统内置（1是/0否）",
+        "enum": [
+          "0",
+          "1"
+        ],
+        "example": "0"
+      },
+      "remark": {
+        "type": "string",
+        "description": "备注",
+        "example": "系统内置"
+      }
+    }
+  },
+  "PageVoMenuTemplateDto": {
+    "type": "object",
+    "description": "分页响应包装体",
+    "properties": {
+      "total": {
+        "type": "integer",
+        "format": "int64",
+        "description": "满足条件的记录总数",
+        "example": 100
+      },
+      "data": {
+        "type": "array",
+        "description": "当前页数据列表",
+        "items": {
+          "$ref": "#/components/schemas/MenuTemplateDto"
+        }
+      }
+    }
+  },
+  "ResultVoPageVoMenuTemplateDto": {
+    "type": "object",
+    "description": "统一 API 响应包装体",
+    "properties": {
+      "errorNo": {
+        "type": "string",
+        "description": "业务状态码，0 表示成功，非 0 表示业务错误",
+        "example": "0"
+      },
+      "errorMsg": {
+        "type": "string",
+        "description": "提示信息，成功或失败的描述文本",
+        "example": "success"
+      },
+      "data": {
+        "$ref": "#/components/schemas/PageVoMenuTemplateDto",
+        "description": "业务数据载体，成功时返回具体对象/集合，失败时通常为 null"
+      }
+    }
+  },
+  "ResultVoListMenuTemplateDto": {
+    "type": "object",
+    "description": "统一 API 响应包装体",
+    "properties": {
+      "errorNo": {
+        "type": "string",
+        "description": "业务状态码，0 表示成功，非 0 表示业务错误",
+        "example": "0"
+      },
+      "errorMsg": {
+        "type": "string",
+        "description": "提示信息，成功或失败的描述文本",
+        "example": "success"
+      },
+      "data": {
+        "type": "array",
+        "description": "业务数据载体，成功时返回具体对象/集合，失败时通常为 null",
+        "items": {
+          "$ref": "#/components/schemas/MenuTemplateDto"
+        }
+      }
+    }
+  },
+  "MenuTemplateForm": {
+    "type": "object",
+    "description": "新增表单对象",
+    "properties": {
+      "id": {
+        "type": "integer",
+        "format": "int64",
+        "description": "主键 ID",
+        "example": 1
+      },
+      "templateTypeCode": {
+        "type": "string",
+        "description": "菜单模板类型编码（字典 MENU_TEMPLATE_TYPE）",
+        "example": "SYSTEM"
+      },
+      "templateCode": {
+        "type": "string",
+        "description": "模板编码",
+        "example": "sys_common"
+      },
+      "templateName": {
+        "type": "string",
+        "description": "名称",
+        "example": "示例名称"
+      },
+      "isSystem": {
+        "type": "string",
+        "description": "是否系统内置（1是/0否）",
+        "enum": [
+          "0",
+          "1"
+        ],
+        "example": "0"
+      },
+      "remark": {
+        "type": "string",
+        "description": "备注",
+        "example": "系统内置"
+      },
+      "tenantId": {
+        "type": "integer",
+        "format": "int64",
+        "description": "租户 ID",
+        "example": 1
+      }
+    },
+    "required": [
+      "templateName"
+    ]
+  },
+  "ResultVoMenuTemplateForm": {
+    "type": "object",
+    "description": "统一 API 响应包装体",
+    "properties": {
+      "errorNo": {
+        "type": "string",
+        "description": "业务状态码，0 表示成功，非 0 表示业务错误",
+        "example": "0"
+      },
+      "errorMsg": {
+        "type": "string",
+        "description": "提示信息，成功或失败的描述文本",
+        "example": "success"
+      },
+      "data": {
+        "$ref": "#/components/schemas/MenuTemplateForm",
+        "description": "业务数据载体，成功时返回具体对象/集合，失败时通常为 null"
+      }
+    }
+  },
+  "MenuTemplateItemQuery": {
+    "type": "object",
+    "description": "查询条件",
+    "properties": {
+      "pageNo": {
+        "type": "integer",
+        "format": "int32",
+        "description": "页码，从 1 开始",
+        "example": 1
+      },
+      "pageSize": {
+        "type": "integer",
+        "format": "int32",
+        "description": "每页条数",
+        "example": 20
+      },
+      "sorts": {
+        "type": "array",
+        "description": "排序集合",
+        "example": [],
+        "items": {
+          "$ref": "#/components/schemas/QuerySort"
+        }
+      },
+      "keyword": {
+        "type": "string",
+        "description": "关键字（模糊匹配）",
+        "example": "张三"
+      },
+      "templateId": {
+        "type": "integer",
+        "format": "int64",
+        "description": "模板 ID",
+        "example": 4
+      }
+    }
+  },
+  "MenuTemplateItemDto": {
+    "type": "object",
+    "description": "菜单模板项数据传输对象",
+    "properties": {
+      "id": {
+        "type": "integer",
+        "format": "int64",
+        "description": "主键 ID",
+        "example": 1
+      },
+      "parentId": {
+        "type": "integer",
+        "format": "int64",
+        "description": "父节点 ID",
+        "example": 0
+      },
+      "code": {
+        "type": "string",
+        "description": "业务编码",
+        "example": "demo_code"
+      },
+      "name": {
+        "type": "string",
+        "description": "名称",
+        "example": "示例名称"
+      },
+      "nodeDesc": {
+        "type": "string",
+        "description": "节点描述",
+        "example": "系统管理根菜单"
+      },
+      "parentTreePath": {
+        "type": "string",
+        "description": "父路径（祖先 ID 链，逗号分隔）",
+        "example": "0,1,3"
+      },
+      "treeLevel": {
+        "type": "integer",
+        "format": "int32",
+        "description": "树层级深度（根=0）",
+        "example": 2
+      },
+      "parent": {
+        "$ref": "#/components/schemas/MenuTemplateItemDto",
+        "description": "父节点对象"
+      },
+      "children": {
+        "type": "array",
+        "description": "子节点集合",
+        "example": [],
+        "items": {
+          "$ref": "#/components/schemas/MenuTemplateItemDto"
+        }
+      },
+      "orderNum": {
+        "type": "integer",
+        "format": "int32",
+        "description": "排序号",
+        "example": 1
+      },
+      "createdTime": {
+        "type": "string",
+        "format": "date-time",
+        "description": "创建时间",
+        "example": "2026-07-20T10:30:00Z"
+      },
+      "lastModifiedTime": {
+        "type": "string",
+        "format": "date-time",
+        "description": "最后修改时间",
+        "example": "2026-07-20T10:30:00Z"
+      },
+      "tenantId": {
+        "type": "integer",
+        "format": "int64"
+      },
+      "menuType": {
+        "type": "string",
+        "description": "菜单类型（M目录/D菜单/B按钮）",
+        "enum": [
+          "M",
+          "D",
+          "B"
+        ],
+        "example": "M"
+      },
+      "icon": {
+        "type": "string",
+        "description": "图标",
+        "example": "el-icon-setting"
+      },
+      "perm": {
+        "type": "string",
+        "description": "权限码",
+        "example": "module:res:action"
+      },
+      "templateId": {
+        "type": "integer",
+        "format": "int64",
+        "description": "模板 ID",
+        "example": 4
+      },
+      "routePath": {
+        "type": "string",
+        "description": "路由路径",
+        "example": "/system/user"
+      },
+      "component": {
+        "type": "string",
+        "description": "前端组件路径",
+        "example": "system/user/index"
+      },
+      "jumpType": {
+        "type": "string",
+        "description": "跳转类型（1应用内路由/2外链/3内嵌iframe）",
+        "enum": [
+          "1",
+          "2",
+          "3"
+        ],
+        "example": "1"
+      },
+      "jumpTarget": {
+        "type": "string",
+        "description": "跳转目标",
+        "example": "https://example.com"
+      },
+      "redirect": {
+        "type": "string",
+        "description": "重定向地址",
+        "example": "/system/user"
+      },
+      "keepAlive": {
+        "type": "string",
+        "description": "是否缓存（1是/0否）",
+        "enum": [
+          "0",
+          "1"
+        ],
+        "example": "1"
+      },
+      "showStatus": {
+        "type": "string",
+        "description": "显示状态（1显示/0隐藏）",
+        "enum": [
+          "0",
+          "1"
+        ],
+        "example": "1"
+      },
+      "alwaysShow": {
+        "type": "string",
+        "description": "是否总是显示（1是/0否）",
+        "enum": [
+          "0",
+          "1"
+        ],
+        "example": "0"
+      },
+      "locked": {
+        "type": "string",
+        "description": "锁定标记（1可编辑/0系统锁定）",
+        "enum": [
+          "0",
+          "1"
+        ],
+        "example": "0"
+      }
+    }
+  },
+  "ResultVoListMenuTemplateItemDto": {
+    "type": "object",
+    "description": "统一 API 响应包装体",
+    "properties": {
+      "errorNo": {
+        "type": "string",
+        "description": "业务状态码，0 表示成功，非 0 表示业务错误",
+        "example": "0"
+      },
+      "errorMsg": {
+        "type": "string",
+        "description": "提示信息，成功或失败的描述文本",
+        "example": "success"
+      },
+      "data": {
+        "type": "array",
+        "description": "业务数据载体，成功时返回具体对象/集合，失败时通常为 null",
+        "items": {
+          "$ref": "#/components/schemas/MenuTemplateItemDto"
+        }
+      }
+    }
+  },
+  "PageVoMenuTemplateItemDto": {
+    "type": "object",
+    "description": "分页响应包装体",
+    "properties": {
+      "total": {
+        "type": "integer",
+        "format": "int64",
+        "description": "满足条件的记录总数",
+        "example": 100
+      },
+      "data": {
+        "type": "array",
+        "description": "当前页数据列表",
+        "items": {
+          "$ref": "#/components/schemas/MenuTemplateItemDto"
+        }
+      }
+    }
+  },
+  "ResultVoPageVoMenuTemplateItemDto": {
+    "type": "object",
+    "description": "统一 API 响应包装体",
+    "properties": {
+      "errorNo": {
+        "type": "string",
+        "description": "业务状态码，0 表示成功，非 0 表示业务错误",
+        "example": "0"
+      },
+      "errorMsg": {
+        "type": "string",
+        "description": "提示信息，成功或失败的描述文本",
+        "example": "success"
+      },
+      "data": {
+        "$ref": "#/components/schemas/PageVoMenuTemplateItemDto",
+        "description": "业务数据载体，成功时返回具体对象/集合，失败时通常为 null"
+      }
+    }
+  },
+  "MenuTemplateItemForm": {
+    "type": "object",
+    "description": "新增表单对象",
+    "properties": {
+      "id": {
+        "type": "integer",
+        "format": "int64",
+        "description": "主键 ID",
+        "example": 1
+      },
+      "name": {
+        "type": "string"
+      },
+      "code": {
+        "type": "string"
+      },
+      "nodeDesc": {
+        "type": "string"
+      },
+      "parentId": {
+        "type": "integer",
+        "format": "int64"
+      },
+      "orderNum": {
+        "type": "integer",
+        "format": "int32"
+      },
+      "menuType": {
+        "type": "string",
+        "description": "菜单类型（M目录/D菜单/B按钮）",
+        "enum": [
+          "M",
+          "D",
+          "B"
+        ],
+        "example": "M"
+      },
+      "icon": {
+        "type": "string",
+        "description": "图标",
+        "example": "el-icon-setting"
+      },
+      "perm": {
+        "type": "string",
+        "description": "权限码",
+        "example": "module:res:action"
+      },
+      "templateId": {
+        "type": "integer",
+        "format": "int64",
+        "description": "模板 ID",
+        "example": 4
+      },
+      "routePath": {
+        "type": "string",
+        "description": "路由路径",
+        "example": "/system/user"
+      },
+      "component": {
+        "type": "string",
+        "description": "前端组件路径",
+        "example": "system/user/index"
+      },
+      "jumpType": {
+        "type": "string",
+        "description": "跳转类型（1应用内路由/2外链/3内嵌iframe）",
+        "enum": [
+          "1",
+          "2",
+          "3"
+        ],
+        "example": "1"
+      },
+      "jumpTarget": {
+        "type": "string",
+        "description": "跳转目标",
+        "example": "https://example.com"
+      },
+      "redirect": {
+        "type": "string",
+        "description": "重定向地址",
+        "example": "/system/user"
+      },
+      "keepAlive": {
+        "type": "string",
+        "description": "是否缓存（1是/0否）",
+        "enum": [
+          "0",
+          "1"
+        ],
+        "example": "1"
+      },
+      "showStatus": {
+        "type": "string",
+        "description": "显示状态（1显示/0隐藏）",
+        "enum": [
+          "0",
+          "1"
+        ],
+        "example": "1"
+      },
+      "alwaysShow": {
+        "type": "string",
+        "description": "是否总是显示（1是/0否）",
+        "enum": [
+          "0",
+          "1"
+        ],
+        "example": "0"
+      },
+      "tenantId": {
+        "type": "integer",
+        "format": "int64",
+        "description": "租户 ID",
+        "example": 1
+      },
+      "locked": {
+        "type": "string",
+        "description": "锁定标记（1可编辑/0系统锁定）",
+        "enum": [
+          "0",
+          "1"
+        ],
+        "example": "0"
+      }
+    },
+    "required": [
+      "component",
+      "menuType",
+      "routePath",
+      "templateId"
+    ]
+  },
+  "ResultVoMenuTemplateItemForm": {
+    "type": "object",
+    "description": "统一 API 响应包装体",
+    "properties": {
+      "errorNo": {
+        "type": "string",
+        "description": "业务状态码，0 表示成功，非 0 表示业务错误",
+        "example": "0"
+      },
+      "errorMsg": {
+        "type": "string",
+        "description": "提示信息，成功或失败的描述文本",
+        "example": "success"
+      },
+      "data": {
+        "$ref": "#/components/schemas/MenuTemplateItemForm",
+        "description": "业务数据载体，成功时返回具体对象/集合，失败时通常为 null"
+      }
+    }
+  },
+  "LoginLogQuery": {
+    "type": "object",
+    "description": "查询条件",
+    "properties": {
+      "pageNo": {
+        "type": "integer",
+        "format": "int32",
+        "description": "页码，从 1 开始",
+        "example": 1
+      },
+      "pageSize": {
+        "type": "integer",
+        "format": "int32",
+        "description": "每页条数",
+        "example": 20
+      },
+      "sorts": {
+        "type": "array",
+        "description": "排序集合",
+        "example": [],
+        "items": {
+          "$ref": "#/components/schemas/QuerySort"
+        }
+      },
+      "keyword": {
+        "type": "string",
+        "description": "关键字（模糊匹配）",
+        "example": "张三"
+      }
+    }
+  },
+  "LoginLogDto": {
+    "type": "object",
+    "description": "登录日志数据传输对象",
+    "properties": {
+      "orderNum": {
+        "type": "integer",
+        "format": "int32"
+      },
+      "createdTime": {
+        "type": "string",
+        "format": "date-time"
+      },
+      "lastModifiedTime": {
+        "type": "string",
+        "format": "date-time"
+      },
+      "id": {
+        "type": "integer",
+        "format": "int64"
+      },
+      "tenantId": {
+        "type": "integer",
+        "format": "int64"
+      },
+      "userId": {
+        "type": "integer",
+        "format": "int64",
+        "description": "用户 ID",
+        "example": 1
+      },
+      "ip": {
+        "type": "string",
+        "description": "IP 地址",
+        "example": "192.168.1.100"
+      },
+      "mac": {
+        "type": "string",
+        "description": "设备 MAC",
+        "example": "00:1A:2B:3C:4D:5E"
+      }
+    }
+  },
+  "PageVoLoginLogDto": {
+    "type": "object",
+    "description": "分页响应包装体",
+    "properties": {
+      "total": {
+        "type": "integer",
+        "format": "int64",
+        "description": "满足条件的记录总数",
+        "example": 100
+      },
+      "data": {
+        "type": "array",
+        "description": "当前页数据列表",
+        "items": {
+          "$ref": "#/components/schemas/LoginLogDto"
+        }
+      }
+    }
+  },
+  "ResultVoPageVoLoginLogDto": {
+    "type": "object",
+    "description": "统一 API 响应包装体",
+    "properties": {
+      "errorNo": {
+        "type": "string",
+        "description": "业务状态码，0 表示成功，非 0 表示业务错误",
+        "example": "0"
+      },
+      "errorMsg": {
+        "type": "string",
+        "description": "提示信息，成功或失败的描述文本",
+        "example": "success"
+      },
+      "data": {
+        "$ref": "#/components/schemas/PageVoLoginLogDto",
+        "description": "业务数据载体，成功时返回具体对象/集合，失败时通常为 null"
+      }
+    }
+  },
+  "ResultVoListLoginLogDto": {
+    "type": "object",
+    "description": "统一 API 响应包装体",
+    "properties": {
+      "errorNo": {
+        "type": "string",
+        "description": "业务状态码，0 表示成功，非 0 表示业务错误",
+        "example": "0"
+      },
+      "errorMsg": {
+        "type": "string",
+        "description": "提示信息，成功或失败的描述文本",
+        "example": "success"
+      },
+      "data": {
+        "type": "array",
+        "description": "业务数据载体，成功时返回具体对象/集合，失败时通常为 null",
+        "items": {
+          "$ref": "#/components/schemas/LoginLogDto"
+        }
+      }
+    }
+  },
+  "LoginLogForm": {
+    "type": "object",
+    "description": "新增表单对象",
+    "properties": {
+      "id": {
+        "type": "integer",
+        "format": "int64",
+        "description": "主键 ID",
+        "example": 1
+      },
+      "userId": {
+        "type": "integer",
+        "format": "int64",
+        "description": "用户 ID",
+        "example": 1
+      },
+      "ip": {
+        "type": "string",
+        "description": "IP 地址",
+        "example": "192.168.1.100"
+      },
+      "mac": {
+        "type": "string",
+        "description": "设备 MAC",
+        "example": "00:1A:2B:3C:4D:5E"
+      },
+      "tenantId": {
+        "type": "integer",
+        "format": "int64",
+        "description": "租户 ID",
+        "example": 1
+      }
+    }
+  },
+  "ResultVoLoginLogForm": {
+    "type": "object",
+    "description": "统一 API 响应包装体",
+    "properties": {
+      "errorNo": {
+        "type": "string",
+        "description": "业务状态码，0 表示成功，非 0 表示业务错误",
+        "example": "0"
+      },
+      "errorMsg": {
+        "type": "string",
+        "description": "提示信息，成功或失败的描述文本",
+        "example": "success"
+      },
+      "data": {
+        "$ref": "#/components/schemas/LoginLogForm",
+        "description": "业务数据载体，成功时返回具体对象/集合，失败时通常为 null"
+      }
+    }
+  },
+  "DictTypeQuery": {
+    "type": "object",
+    "description": "查询条件",
+    "properties": {
+      "pageNo": {
+        "type": "integer",
+        "format": "int32",
+        "description": "页码，从 1 开始",
+        "example": 1
+      },
+      "pageSize": {
+        "type": "integer",
+        "format": "int32",
+        "description": "每页条数",
+        "example": 20
+      },
+      "sorts": {
+        "type": "array",
+        "description": "排序集合",
+        "example": [],
+        "items": {
+          "$ref": "#/components/schemas/QuerySort"
+        }
+      },
+      "keyword": {
+        "type": "string",
+        "description": "关键字（模糊匹配）",
+        "example": "张三"
+      }
+    }
+  },
+  "DictTypeDto": {
+    "type": "object",
+    "description": "字典类型数据传输对象",
+    "properties": {
+      "id": {
+        "type": "integer",
+        "format": "int64",
+        "description": "主键 ID",
+        "example": 1
+      },
+      "parentId": {
+        "type": "integer",
+        "format": "int64",
+        "description": "父节点 ID",
+        "example": 0
+      },
+      "code": {
+        "type": "string",
+        "description": "业务编码",
+        "example": "demo_code"
+      },
+      "name": {
+        "type": "string",
+        "description": "名称",
+        "example": "示例名称"
+      },
+      "nodeDesc": {
+        "type": "string",
+        "description": "节点描述",
+        "example": "系统管理根菜单"
+      },
+      "parentTreePath": {
+        "type": "string",
+        "description": "父路径（祖先 ID 链，逗号分隔）",
+        "example": "0,1,3"
+      },
+      "treeLevel": {
+        "type": "integer",
+        "format": "int32",
+        "description": "树层级深度（根=0）",
+        "example": 2
+      },
+      "parent": {
+        "$ref": "#/components/schemas/DictTypeDto",
+        "description": "父节点对象"
+      },
+      "children": {
+        "type": "array",
+        "description": "子节点集合",
+        "example": [],
+        "items": {
+          "$ref": "#/components/schemas/DictTypeDto"
+        }
+      },
+      "orderNum": {
+        "type": "integer",
+        "format": "int32",
+        "description": "排序号",
+        "example": 1
+      },
+      "createdTime": {
+        "type": "string",
+        "format": "date-time",
+        "description": "创建时间",
+        "example": "2026-07-20T10:30:00Z"
+      },
+      "lastModifiedTime": {
+        "type": "string",
+        "format": "date-time",
+        "description": "最后修改时间",
+        "example": "2026-07-20T10:30:00Z"
+      },
+      "tenantId": {
+        "type": "integer",
+        "format": "int64"
+      },
+      "enableStatus": {
+        "type": "string",
+        "description": "启用状态（1启用/0停用）",
+        "enum": [
+          "0",
+          "1"
+        ],
+        "example": "1"
+      },
+      "locked": {
+        "type": "string",
+        "description": "锁定标记（1可编辑/0系统锁定）",
+        "enum": [
+          "0",
+          "1"
+        ],
+        "example": "0"
+      }
+    }
+  },
+  "ResultVoListDictTypeDto": {
+    "type": "object",
+    "description": "统一 API 响应包装体",
+    "properties": {
+      "errorNo": {
+        "type": "string",
+        "description": "业务状态码，0 表示成功，非 0 表示业务错误",
+        "example": "0"
+      },
+      "errorMsg": {
+        "type": "string",
+        "description": "提示信息，成功或失败的描述文本",
+        "example": "success"
+      },
+      "data": {
+        "type": "array",
+        "description": "业务数据载体，成功时返回具体对象/集合，失败时通常为 null",
+        "items": {
+          "$ref": "#/components/schemas/DictTypeDto"
+        }
+      }
+    }
+  },
+  "PageVoDictTypeDto": {
+    "type": "object",
+    "description": "分页响应包装体",
+    "properties": {
+      "total": {
+        "type": "integer",
+        "format": "int64",
+        "description": "满足条件的记录总数",
+        "example": 100
+      },
+      "data": {
+        "type": "array",
+        "description": "当前页数据列表",
+        "items": {
+          "$ref": "#/components/schemas/DictTypeDto"
+        }
+      }
+    }
+  },
+  "ResultVoPageVoDictTypeDto": {
+    "type": "object",
+    "description": "统一 API 响应包装体",
+    "properties": {
+      "errorNo": {
+        "type": "string",
+        "description": "业务状态码，0 表示成功，非 0 表示业务错误",
+        "example": "0"
+      },
+      "errorMsg": {
+        "type": "string",
+        "description": "提示信息，成功或失败的描述文本",
+        "example": "success"
+      },
+      "data": {
+        "$ref": "#/components/schemas/PageVoDictTypeDto",
+        "description": "业务数据载体，成功时返回具体对象/集合，失败时通常为 null"
+      }
+    }
+  },
+  "DictTypeForm": {
+    "type": "object",
+    "description": "新增表单对象",
+    "properties": {
+      "id": {
+        "type": "integer",
+        "format": "int64",
+        "description": "主键 ID",
+        "example": 1
+      },
+      "name": {
+        "type": "string"
+      },
+      "code": {
+        "type": "string"
+      },
+      "nodeDesc": {
+        "type": "string"
+      },
+      "parentId": {
+        "type": "integer",
+        "format": "int64"
+      },
+      "orderNum": {
+        "type": "integer",
+        "format": "int32"
+      },
+      "enableStatus": {
+        "type": "string",
+        "description": "启用状态（1启用/0停用）",
+        "enum": [
+          "0",
+          "1"
+        ],
+        "example": "1"
+      },
+      "tenantId": {
+        "type": "integer",
+        "format": "int64",
+        "description": "租户 ID",
+        "example": 1
+      }
+    }
+  },
+  "ResultVoDictTypeForm": {
+    "type": "object",
+    "description": "统一 API 响应包装体",
+    "properties": {
+      "errorNo": {
+        "type": "string",
+        "description": "业务状态码，0 表示成功，非 0 表示业务错误",
+        "example": "0"
+      },
+      "errorMsg": {
+        "type": "string",
+        "description": "提示信息，成功或失败的描述文本",
+        "example": "success"
+      },
+      "data": {
+        "$ref": "#/components/schemas/DictTypeForm",
+        "description": "业务数据载体，成功时返回具体对象/集合，失败时通常为 null"
+      }
+    }
+  },
+  "DictEntryQuery": {
+    "type": "object",
+    "description": "查询条件",
+    "properties": {
+      "pageNo": {
+        "type": "integer",
+        "format": "int32",
+        "description": "页码，从 1 开始",
+        "example": 1
+      },
+      "pageSize": {
+        "type": "integer",
+        "format": "int32",
+        "description": "每页条数",
+        "example": 20
+      },
+      "sorts": {
+        "type": "array",
+        "description": "排序集合",
+        "example": [],
+        "items": {
+          "$ref": "#/components/schemas/QuerySort"
+        }
+      },
+      "keyword": {
+        "type": "string",
+        "description": "关键字（模糊匹配）",
+        "example": "张三"
+      },
+      "dictCode": {
+        "type": "string",
+        "description": "字典编码",
+        "example": "normal"
+      }
+    }
+  },
+  "DictEntryDto": {
+    "type": "object",
+    "description": "字典条目数据传输对象",
+    "properties": {
+      "orderNum": {
+        "type": "integer",
+        "format": "int32"
+      },
+      "createdTime": {
+        "type": "string",
+        "format": "date-time"
+      },
+      "lastModifiedTime": {
+        "type": "string",
+        "format": "date-time"
+      },
+      "id": {
+        "type": "integer",
+        "format": "int64"
+      },
+      "tenantId": {
+        "type": "integer",
+        "format": "int64"
+      },
+      "dictCode": {
+        "type": "string",
+        "description": "字典编码",
+        "example": "normal"
+      },
+      "entryCode": {
+        "type": "string",
+        "description": "编码",
+        "example": "demo_code"
+      },
+      "entryName": {
+        "type": "string",
+        "description": "名称",
+        "example": "示例名称"
+      },
+      "remark": {
+        "type": "string",
+        "description": "备注",
+        "example": "系统内置"
+      },
+      "tagType": {
+        "type": "string",
+        "description": "标签类型，用于前端样式展示（如success、warning等）",
+        "enum": [
+          "primary",
+          "success",
+          "info",
+          "warning",
+          "danger"
+        ],
+        "example": "primary"
+      },
+      "enableStatus": {
+        "type": "string",
+        "description": "启用状态（1启用/0停用）",
+        "enum": [
+          "0",
+          "1"
+        ],
+        "example": "1"
+      },
+      "locked": {
+        "type": "string",
+        "description": "锁定标记（1可编辑/0系统锁定）",
+        "enum": [
+          "0",
+          "1"
+        ],
+        "example": "0"
+      }
+    }
+  },
+  "PageVoDictEntryDto": {
+    "type": "object",
+    "description": "分页响应包装体",
+    "properties": {
+      "total": {
+        "type": "integer",
+        "format": "int64",
+        "description": "满足条件的记录总数",
+        "example": 100
+      },
+      "data": {
+        "type": "array",
+        "description": "当前页数据列表",
+        "items": {
+          "$ref": "#/components/schemas/DictEntryDto"
+        }
+      }
+    }
+  },
+  "ResultVoPageVoDictEntryDto": {
+    "type": "object",
+    "description": "统一 API 响应包装体",
+    "properties": {
+      "errorNo": {
+        "type": "string",
+        "description": "业务状态码，0 表示成功，非 0 表示业务错误",
+        "example": "0"
+      },
+      "errorMsg": {
+        "type": "string",
+        "description": "提示信息，成功或失败的描述文本",
+        "example": "success"
+      },
+      "data": {
+        "$ref": "#/components/schemas/PageVoDictEntryDto",
+        "description": "业务数据载体，成功时返回具体对象/集合，失败时通常为 null"
+      }
+    }
+  },
+  "ResultVoListDictEntryDto": {
+    "type": "object",
+    "description": "统一 API 响应包装体",
+    "properties": {
+      "errorNo": {
+        "type": "string",
+        "description": "业务状态码，0 表示成功，非 0 表示业务错误",
+        "example": "0"
+      },
+      "errorMsg": {
+        "type": "string",
+        "description": "提示信息，成功或失败的描述文本",
+        "example": "success"
+      },
+      "data": {
+        "type": "array",
+        "description": "业务数据载体，成功时返回具体对象/集合，失败时通常为 null",
+        "items": {
+          "$ref": "#/components/schemas/DictEntryDto"
+        }
+      }
+    }
+  },
+  "DictEntryForm": {
+    "type": "object",
+    "description": "新增表单对象",
+    "properties": {
+      "id": {
+        "type": "integer",
+        "format": "int64",
+        "description": "主键 ID",
+        "example": 1
+      },
+      "dictCode": {
+        "type": "string",
+        "description": "字典编码",
+        "example": "normal"
+      },
+      "entryCode": {
+        "type": "string",
+        "description": "编码",
+        "example": "demo_code"
+      },
+      "entryName": {
+        "type": "string",
+        "description": "名称",
+        "example": "示例名称"
+      },
+      "remark": {
+        "type": "string",
+        "description": "备注",
+        "example": "系统内置"
+      },
+      "tagType": {
+        "type": "string",
+        "description": "标签类型，用于前端样式展示（如success、warning等）",
+        "enum": [
+          "primary",
+          "success",
+          "info",
+          "warning",
+          "danger"
+        ],
+        "example": "primary"
+      },
+      "enableStatus": {
+        "type": "string",
+        "description": "启用状态（1启用/0停用）",
+        "enum": [
+          "0",
+          "1"
+        ],
+        "example": "1"
+      },
+      "tenantId": {
+        "type": "integer",
+        "format": "int64",
+        "description": "租户 ID",
+        "example": 1
+      }
+    },
+    "required": [
+      "entryCode",
+      "entryName"
+    ]
+  },
+  "ResultVoDictEntryForm": {
+    "type": "object",
+    "description": "统一 API 响应包装体",
+    "properties": {
+      "errorNo": {
+        "type": "string",
+        "description": "业务状态码，0 表示成功，非 0 表示业务错误",
+        "example": "0"
+      },
+      "errorMsg": {
+        "type": "string",
+        "description": "提示信息，成功或失败的描述文本",
+        "example": "success"
+      },
+      "data": {
+        "$ref": "#/components/schemas/DictEntryForm",
+        "description": "业务数据载体，成功时返回具体对象/集合，失败时通常为 null"
+      }
+    }
+  },
+  "DictTemplateQuery": {
+    "type": "object",
+    "description": "查询条件",
+    "properties": {
+      "pageNo": {
+        "type": "integer",
+        "format": "int32",
+        "description": "页码，从 1 开始",
+        "example": 1
+      },
+      "pageSize": {
+        "type": "integer",
+        "format": "int32",
+        "description": "每页条数",
+        "example": 20
+      },
+      "sorts": {
+        "type": "array",
+        "description": "排序集合",
+        "example": [],
+        "items": {
+          "$ref": "#/components/schemas/QuerySort"
+        }
+      },
+      "keyword": {
+        "type": "string",
+        "description": "关键字（模糊匹配）",
+        "example": "张三"
+      },
+      "isSystem": {
+        "type": "string",
+        "description": "是否系统内置（1是/0否）",
+        "enum": [
+          "0",
+          "1"
+        ],
+        "example": "0"
+      }
+    }
+  },
+  "DictTemplateDto": {
+    "type": "object",
+    "description": "字典模板数据传输对象",
+    "properties": {
+      "id": {
+        "type": "integer",
+        "format": "int64",
+        "description": "主键 ID",
+        "example": 1
+      },
+      "parentId": {
+        "type": "integer",
+        "format": "int64",
+        "description": "父节点 ID",
+        "example": 0
+      },
+      "code": {
+        "type": "string",
+        "description": "业务编码",
+        "example": "demo_code"
+      },
+      "name": {
+        "type": "string",
+        "description": "名称",
+        "example": "示例名称"
+      },
+      "nodeDesc": {
+        "type": "string",
+        "description": "节点描述",
+        "example": "系统管理根菜单"
+      },
+      "parentTreePath": {
+        "type": "string",
+        "description": "父路径（祖先 ID 链，逗号分隔）",
+        "example": "0,1,3"
+      },
+      "treeLevel": {
+        "type": "integer",
+        "format": "int32",
+        "description": "树层级深度（根=0）",
+        "example": 2
+      },
+      "parent": {
+        "$ref": "#/components/schemas/DictTemplateDto",
+        "description": "父节点对象"
+      },
+      "children": {
+        "type": "array",
+        "description": "子节点集合",
+        "example": [],
+        "items": {
+          "$ref": "#/components/schemas/DictTemplateDto"
+        }
+      },
+      "orderNum": {
+        "type": "integer",
+        "format": "int32",
+        "description": "排序号",
+        "example": 1
+      },
+      "createdTime": {
+        "type": "string",
+        "format": "date-time",
+        "description": "创建时间",
+        "example": "2026-07-20T10:30:00Z"
+      },
+      "lastModifiedTime": {
+        "type": "string",
+        "format": "date-time",
+        "description": "最后修改时间",
+        "example": "2026-07-20T10:30:00Z"
+      },
+      "tenantId": {
+        "type": "integer",
+        "format": "int64"
+      },
+      "enableStatus": {
+        "type": "string",
+        "description": "启用状态（1启用/0停用）",
+        "enum": [
+          "0",
+          "1"
+        ],
+        "example": "1"
+      },
+      "isSystem": {
+        "type": "string",
+        "description": "是否系统内置（1是/0否）",
+        "enum": [
+          "0",
+          "1"
+        ],
+        "example": "0"
+      },
+      "remark": {
+        "type": "string",
+        "description": "备注",
+        "example": "系统内置"
+      }
+    }
+  },
+  "ResultVoListDictTemplateDto": {
+    "type": "object",
+    "description": "统一 API 响应包装体",
+    "properties": {
+      "errorNo": {
+        "type": "string",
+        "description": "业务状态码，0 表示成功，非 0 表示业务错误",
+        "example": "0"
+      },
+      "errorMsg": {
+        "type": "string",
+        "description": "提示信息，成功或失败的描述文本",
+        "example": "success"
+      },
+      "data": {
+        "type": "array",
+        "description": "业务数据载体，成功时返回具体对象/集合，失败时通常为 null",
+        "items": {
+          "$ref": "#/components/schemas/DictTemplateDto"
+        }
+      }
+    }
+  },
+  "PageVoDictTemplateDto": {
+    "type": "object",
+    "description": "分页响应包装体",
+    "properties": {
+      "total": {
+        "type": "integer",
+        "format": "int64",
+        "description": "满足条件的记录总数",
+        "example": 100
+      },
+      "data": {
+        "type": "array",
+        "description": "当前页数据列表",
+        "items": {
+          "$ref": "#/components/schemas/DictTemplateDto"
+        }
+      }
+    }
+  },
+  "ResultVoPageVoDictTemplateDto": {
+    "type": "object",
+    "description": "统一 API 响应包装体",
+    "properties": {
+      "errorNo": {
+        "type": "string",
+        "description": "业务状态码，0 表示成功，非 0 表示业务错误",
+        "example": "0"
+      },
+      "errorMsg": {
+        "type": "string",
+        "description": "提示信息，成功或失败的描述文本",
+        "example": "success"
+      },
+      "data": {
+        "$ref": "#/components/schemas/PageVoDictTemplateDto",
+        "description": "业务数据载体，成功时返回具体对象/集合，失败时通常为 null"
+      }
+    }
+  },
+  "DictTemplateForm": {
+    "type": "object",
+    "description": "新增表单对象",
+    "properties": {
+      "id": {
+        "type": "integer",
+        "format": "int64",
+        "description": "主键 ID",
+        "example": 1
+      },
+      "name": {
+        "type": "string"
+      },
+      "code": {
+        "type": "string"
+      },
+      "nodeDesc": {
+        "type": "string"
+      },
+      "parentId": {
+        "type": "integer",
+        "format": "int64"
+      },
+      "orderNum": {
+        "type": "integer",
+        "format": "int32"
+      },
+      "enableStatus": {
+        "type": "string",
+        "description": "启用状态（1启用/0停用）",
+        "enum": [
+          "0",
+          "1"
+        ],
+        "example": "1"
+      },
+      "isSystem": {
+        "type": "string",
+        "description": "是否系统内置（1是/0否）",
+        "enum": [
+          "0",
+          "1"
+        ],
+        "example": "0"
+      },
+      "remark": {
+        "type": "string",
+        "description": "备注",
+        "example": "系统内置"
+      },
+      "tenantId": {
+        "type": "integer",
+        "format": "int64",
+        "description": "租户 ID",
+        "example": 1
+      }
+    }
+  },
+  "ResultVoDictTemplateForm": {
+    "type": "object",
+    "description": "统一 API 响应包装体",
+    "properties": {
+      "errorNo": {
+        "type": "string",
+        "description": "业务状态码，0 表示成功，非 0 表示业务错误",
+        "example": "0"
+      },
+      "errorMsg": {
+        "type": "string",
+        "description": "提示信息，成功或失败的描述文本",
+        "example": "success"
+      },
+      "data": {
+        "$ref": "#/components/schemas/DictTemplateForm",
+        "description": "业务数据载体，成功时返回具体对象/集合，失败时通常为 null"
+      }
+    }
+  },
+  "DictTemplateEntryQuery": {
+    "type": "object",
+    "description": "查询条件",
+    "properties": {
+      "pageNo": {
+        "type": "integer",
+        "format": "int32",
+        "description": "页码，从 1 开始",
+        "example": 1
+      },
+      "pageSize": {
+        "type": "integer",
+        "format": "int32",
+        "description": "每页条数",
+        "example": 20
+      },
+      "sorts": {
+        "type": "array",
+        "description": "排序集合",
+        "example": [],
+        "items": {
+          "$ref": "#/components/schemas/QuerySort"
+        }
+      },
+      "keyword": {
+        "type": "string",
+        "description": "关键字（模糊匹配）",
+        "example": "张三"
+      },
+      "templateId": {
+        "type": "integer",
+        "format": "int64",
+        "description": "模板 ID",
+        "example": 4
+      },
+      "dictCode": {
+        "type": "string",
+        "description": "字典编码",
+        "example": "normal"
+      }
+    }
+  },
+  "DictTemplateEntryDto": {
+    "type": "object",
+    "description": "字典模板条目数据传输对象",
+    "properties": {
+      "orderNum": {
+        "type": "integer",
+        "format": "int32"
+      },
+      "createdTime": {
+        "type": "string",
+        "format": "date-time"
+      },
+      "lastModifiedTime": {
+        "type": "string",
+        "format": "date-time"
+      },
+      "id": {
+        "type": "integer",
+        "format": "int64"
+      },
+      "tenantId": {
+        "type": "integer",
+        "format": "int64"
+      },
+      "templateId": {
+        "type": "integer",
+        "format": "int64",
+        "description": "模板 ID",
+        "example": 4
+      },
+      "dictCode": {
+        "type": "string",
+        "description": "字典编码",
+        "example": "normal"
+      },
+      "entryCode": {
+        "type": "string",
+        "description": "编码",
+        "example": "demo_code"
+      },
+      "entryName": {
+        "type": "string",
+        "description": "名称",
+        "example": "示例名称"
+      },
+      "remark": {
+        "type": "string",
+        "description": "备注",
+        "example": "系统内置"
+      },
+      "tagType": {
+        "type": "string",
+        "description": "标签类型，用于前端样式展示（如success、warning等）",
+        "enum": [
+          "primary",
+          "success",
+          "info",
+          "warning",
+          "danger"
+        ],
+        "example": "primary"
+      },
+      "enableStatus": {
+        "type": "string",
+        "description": "启用状态（1启用/0停用）",
+        "enum": [
+          "0",
+          "1"
+        ],
+        "example": "1"
+      }
+    }
+  },
+  "PageVoDictTemplateEntryDto": {
+    "type": "object",
+    "description": "分页响应包装体",
+    "properties": {
+      "total": {
+        "type": "integer",
+        "format": "int64",
+        "description": "满足条件的记录总数",
+        "example": 100
+      },
+      "data": {
+        "type": "array",
+        "description": "当前页数据列表",
+        "items": {
+          "$ref": "#/components/schemas/DictTemplateEntryDto"
+        }
+      }
+    }
+  },
+  "ResultVoPageVoDictTemplateEntryDto": {
+    "type": "object",
+    "description": "统一 API 响应包装体",
+    "properties": {
+      "errorNo": {
+        "type": "string",
+        "description": "业务状态码，0 表示成功，非 0 表示业务错误",
+        "example": "0"
+      },
+      "errorMsg": {
+        "type": "string",
+        "description": "提示信息，成功或失败的描述文本",
+        "example": "success"
+      },
+      "data": {
+        "$ref": "#/components/schemas/PageVoDictTemplateEntryDto",
+        "description": "业务数据载体，成功时返回具体对象/集合，失败时通常为 null"
+      }
+    }
+  },
+  "ResultVoListDictTemplateEntryDto": {
+    "type": "object",
+    "description": "统一 API 响应包装体",
+    "properties": {
+      "errorNo": {
+        "type": "string",
+        "description": "业务状态码，0 表示成功，非 0 表示业务错误",
+        "example": "0"
+      },
+      "errorMsg": {
+        "type": "string",
+        "description": "提示信息，成功或失败的描述文本",
+        "example": "success"
+      },
+      "data": {
+        "type": "array",
+        "description": "业务数据载体，成功时返回具体对象/集合，失败时通常为 null",
+        "items": {
+          "$ref": "#/components/schemas/DictTemplateEntryDto"
+        }
+      }
+    }
+  },
+  "DictTemplateEntryForm": {
+    "type": "object",
+    "description": "新增表单对象",
+    "properties": {
+      "id": {
+        "type": "integer",
+        "format": "int64",
+        "description": "主键 ID",
+        "example": 1
+      },
+      "templateId": {
+        "type": "integer",
+        "format": "int64",
+        "description": "模板 ID",
+        "example": 4
+      },
+      "dictCode": {
+        "type": "string",
+        "description": "字典编码",
+        "example": "normal"
+      },
+      "entryCode": {
+        "type": "string",
+        "description": "编码",
+        "example": "demo_code"
+      },
+      "entryName": {
+        "type": "string",
+        "description": "名称",
+        "example": "示例名称"
+      },
+      "remark": {
+        "type": "string",
+        "description": "备注",
+        "example": "系统内置"
+      },
+      "tagType": {
+        "type": "string",
+        "description": "标签类型，用于前端样式展示（如success、warning等）",
+        "enum": [
+          "primary",
+          "success",
+          "info",
+          "warning",
+          "danger"
+        ],
+        "example": "primary"
+      },
+      "enableStatus": {
+        "type": "string",
+        "description": "启用状态（1启用/0停用）",
+        "enum": [
+          "0",
+          "1"
+        ],
+        "example": "1"
+      },
+      "tenantId": {
+        "type": "integer",
+        "format": "int64",
+        "description": "租户 ID",
+        "example": 1
+      }
+    },
+    "required": [
+      "entryCode",
+      "entryName",
+      "templateId"
+    ]
+  },
+  "ResultVoDictTemplateEntryForm": {
+    "type": "object",
+    "description": "统一 API 响应包装体",
+    "properties": {
+      "errorNo": {
+        "type": "string",
+        "description": "业务状态码，0 表示成功，非 0 表示业务错误",
+        "example": "0"
+      },
+      "errorMsg": {
+        "type": "string",
+        "description": "提示信息，成功或失败的描述文本",
+        "example": "success"
+      },
+      "data": {
+        "$ref": "#/components/schemas/DictTemplateEntryForm",
+        "description": "业务数据载体，成功时返回具体对象/集合，失败时通常为 null"
+      }
+    }
+  },
+  "TokenAdminRequest": {
+    "type": "object",
+    "description": "查询请求（租户ID/类型）",
+    "properties": {
+      "tenantId": {
+        "type": "integer",
+        "format": "int64",
+        "description": "目标租户ID",
+        "example": 1
+      },
+      "userId": {
+        "type": "integer",
+        "format": "int64",
+        "description": "目标用户ID",
+        "example": 1
+      },
+      "type": {
+        "type": "string",
+        "description": "可选：按 token 类型过滤（ACCESS / REFRESH），为空则不过滤",
+        "example": "default"
+      }
+    }
+  },
+  "ResultVoListTokenSummary": {
+    "type": "object",
+    "description": "统一 API 响应包装体",
+    "properties": {
+      "errorNo": {
+        "type": "string",
+        "description": "业务状态码，0 表示成功，非 0 表示业务错误",
+        "example": "0"
+      },
+      "errorMsg": {
+        "type": "string",
+        "description": "提示信息，成功或失败的描述文本",
+        "example": "success"
+      },
+      "data": {
+        "type": "array",
+        "description": "业务数据载体，成功时返回具体对象/集合，失败时通常为 null",
+        "items": {
+          "$ref": "#/components/schemas/TokenSummary"
+        }
+      }
+    }
+  },
+  "TokenSummary": {
+    "type": "object",
+    "description": "token 诊断摘要（不含 token 原文与敏感信息）",
+    "properties": {
+      "tokenHint": {
+        "type": "string",
+        "description": "token 掩码提示",
+        "example": "eyJhbG...****"
+      },
+      "type": {
+        "type": "string",
+        "description": "token 类型：access / refresh",
+        "enum": [
+          "ACCESS",
+          "REFRESH"
+        ],
+        "example": "default"
+      },
+      "sessionId": {
+        "type": "string",
+        "description": "所属登录会话 ID",
+        "example": "sess-abc123"
+      },
+      "tenantId": {
+        "type": "integer",
+        "format": "int64",
+        "description": "租户 ID",
+        "example": 1
+      },
+      "userPoolId": {
+        "type": "integer",
+        "format": "int64",
+        "description": "用户池 ID",
+        "example": 1
+      },
+      "userId": {
+        "type": "integer",
+        "format": "int64",
+        "description": "用户 ID",
+        "example": 1
+      },
+      "loginId": {
+        "type": "string",
+        "description": "登录账号",
+        "example": "admin"
+      },
+      "createdAt": {
+        "type": "string",
+        "format": "date-time",
+        "description": "创建时间",
+        "example": "2026-07-20 10:30:00"
+      },
+      "expiresAt": {
+        "type": "string",
+        "format": "date-time",
+        "description": "过期时间",
+        "example": "2026-07-20 10:30:00"
+      }
+    }
+  },
+  "RefreshRequest": {
+    "type": "object",
+    "description": "刷新请求（refresh token/DPoP proof）",
+    "properties": {
+      "refreshToken": {
+        "type": "string",
+        "description": "refresh token",
+        "example": "eyJhbGciOiJIUzI1NiJ9.xxxxx.yyyyy"
+      },
+      "dpopProof": {
+        "type": "string",
+        "description": "refresh 时的 DPoP proof（JWS 紧凑串）；强模式下必填，用于持有证明校验",
+        "example": "eyJhbGciOiJFUzI1NiIs..._.xxxxxx.yyyyy"
+      }
+    }
+  },
+  "LoginResult": {
+    "type": "object",
+    "description": "登录结果：返回 access/refresh 一对令牌",
+    "properties": {
+      "accessToken": {
+        "type": "string",
+        "description": "访问令牌（Bearer 调 API 用）",
+        "example": "eyJhbGciOiJIUzI1NiJ9.xxxxx.yyyyy"
+      },
+      "refreshToken": {
+        "type": "string",
+        "description": "刷新令牌（仅用于 /api/auth/refresh）",
+        "example": "eyJhbGciOiJIUzI1NiJ9.xxxxx.yyyyy"
+      },
+      "expiresIn": {
+        "type": "integer",
+        "format": "int64",
+        "description": "access token 有效期（秒）",
+        "example": 7200
+      },
+      "refreshExpiresIn": {
+        "type": "integer",
+        "format": "int64",
+        "description": "refresh token 有效期（秒）",
+        "example": 7200
+      },
+      "tokenType": {
+        "type": "string",
+        "description": "token 类型，恒为 Bearer",
+        "example": "Bearer"
+      }
+    }
+  },
+  "ResultVoLoginResult": {
+    "type": "object",
+    "description": "统一 API 响应包装体",
+    "properties": {
+      "errorNo": {
+        "type": "string",
+        "description": "业务状态码，0 表示成功，非 0 表示业务错误",
+        "example": "0"
+      },
+      "errorMsg": {
+        "type": "string",
+        "description": "提示信息，成功或失败的描述文本",
+        "example": "success"
+      },
+      "data": {
+        "$ref": "#/components/schemas/LoginResult",
+        "description": "业务数据载体，成功时返回具体对象/集合，失败时通常为 null"
+      }
+    }
+  },
+  "LogoutRequest": {
+    "type": "object",
+    "description": "登出请求（access/refresh token）",
+    "properties": {
+      "accessToken": {
+        "type": "string",
+        "description": "待撤销的访问令牌",
+        "example": "eyJhbGciOiJIUzI1NiJ9.xxxxx.yyyyy"
+      },
+      "refreshToken": {
+        "type": "string",
+        "description": "待撤销的刷新令牌（与 accessToken 二选一）",
+        "example": "eyJhbGciOiJIUzI1NiJ9.xxxxx.yyyyy"
+      }
+    }
+  },
+  "LoginRequest": {
+    "type": "object",
+    "description": "登录请求（账号/密码/DPoP proof）",
+    "properties": {
+      "loginId": {
+        "type": "string",
+        "description": "登录ID",
+        "example": "admin"
+      },
+      "credential": {
+        "type": "string",
+        "description": "凭证：密码 / 短信码 / 第三方 code 等，按 type 解释",
+        "example": "P@ssw0rd"
+      },
+      "type": {
+        "type": "string",
+        "description": "登录方式：password / sms / ldap ... 默认 password",
+        "example": "default"
+      },
+      "tenantId": {
+        "type": "integer",
+        "format": "int64",
+        "description": "目标租户ID",
+        "example": 1
+      },
+      "publicKey": {
+        "type": "string",
+        "description": "客户端公钥（JWK JSON，EC P-256），用于 DPoP 绑定；可空（老客户端走 bearer）",
+        "example": {
+          "kty": "EC",
+          "crv": "P-256",
+          "x": "...",
+          "y": "..."
+        }
+      },
+      "clientType": {
+        "type": "string",
+        "description": "客户端类型，如 web/app/desktop；可空",
+        "example": "web"
+      },
+      "clientVersion": {
+        "type": "string",
+        "description": "客户端版本；可空",
+        "example": "1.0.0"
+      },
+      "mac": {
+        "type": "string",
+        "description": "设备 MAC（客户端上报，仅软信号）；可空",
+        "example": "00:1A:2B:3C:4D:5E"
+      },
+      "diskSerial": {
+        "type": "string",
+        "description": "硬盘号（客户端上报，仅软信号）；可空",
+        "example": "ABCD1234"
+      },
+      "fingerprint": {
+        "type": "string",
+        "description": "设备指纹（由 mac+硬盘号等派生的哈希），供 dnf 签名绑定；可空",
+        "example": "d41d8cd98f00b204e9800998ecf8427e"
+      }
+    }
+  },
+  "ResultVoListLong": {
+    "type": "object",
+    "description": "统一 API 响应包装体",
+    "properties": {
+      "errorNo": {
+        "type": "string",
+        "description": "业务状态码，0 表示成功，非 0 表示业务错误",
+        "example": "0"
+      },
+      "errorMsg": {
+        "type": "string",
+        "description": "提示信息，成功或失败的描述文本",
+        "example": "success"
+      },
+      "data": {
+        "type": "array",
+        "description": "业务数据载体，成功时返回具体对象/集合，失败时通常为 null",
+        "items": {
+          "type": "integer",
+          "format": "int64"
+        }
+      }
+    }
+  },
+  "MenuTreeVO": {
+    "type": "object",
+    "description": "导航菜单树节点（frame 用）",
+    "properties": {
+      "id": {
+        "type": "integer",
+        "format": "int64",
+        "description": "菜单 ID",
+        "example": 1
+      },
+      "parentId": {
+        "type": "integer",
+        "format": "int64",
+        "description": "父菜单 ID",
+        "example": 0
+      },
+      "name": {
+        "type": "string",
+        "description": "菜单名称",
+        "example": "示例名称"
+      },
+      "code": {
+        "type": "string",
+        "description": "菜单编码",
+        "example": "demo_code"
+      },
+      "nodeDesc": {
+        "type": "string",
+        "description": "节点描述",
+        "example": "系统管理根菜单"
+      },
+      "menuType": {
+        "type": "string",
+        "description": "菜单类型（M目录/D菜单/B按钮）",
+        "enum": [
+          "M",
+          "D",
+          "B"
+        ],
+        "example": "M"
+      },
+      "routePath": {
+        "type": "string",
+        "description": "路由路径",
+        "example": "/system/user"
+      },
+      "component": {
+        "type": "string",
+        "description": "前端组件",
+        "example": "system/user/index"
+      },
+      "icon": {
+        "type": "string",
+        "description": "图标",
+        "example": "el-icon-setting"
+      },
+      "redirect": {
+        "type": "string",
+        "description": "重定向地址",
+        "example": "/system/user"
+      },
+      "keepAlive": {
+        "type": "string",
+        "description": "是否缓存（1是/0否）",
+        "enum": [
+          "0",
+          "1"
+        ],
+        "example": "1"
+      },
+      "showStatus": {
+        "type": "string",
+        "description": "显示状态（1显示/0隐藏）",
+        "enum": [
+          "0",
+          "1"
+        ],
+        "example": "1"
+      },
+      "alwaysShow": {
+        "type": "string",
+        "description": "是否总是显示（1是/0否）",
+        "enum": [
+          "0",
+          "1"
+        ],
+        "example": "0"
+      },
+      "jumpType": {
+        "type": "string",
+        "description": "跳转类型（1应用内路由/2外链/3内嵌iframe）",
+        "enum": [
+          "1",
+          "2",
+          "3"
+        ],
+        "example": "1"
+      },
+      "jumpTarget": {
+        "type": "string",
+        "description": "跳转目标",
+        "example": "https://example.com"
+      },
+      "orderNum": {
+        "type": "integer",
+        "format": "int32",
+        "description": "排序号",
+        "example": 1
+      },
+      "children": {
+        "type": "array",
+        "description": "子菜单集合",
+        "example": [],
+        "items": {
+          "$ref": "#/components/schemas/MenuTreeVO"
+        }
+      }
+    }
+  },
+  "FrameUserVO": {
+    "type": "object",
+    "description": "当前登录用户基础资料（frame 用，不含密码等敏感字段）",
+    "properties": {
+      "id": {
+        "type": "integer",
+        "format": "int64",
+        "description": "用户 ID",
+        "example": 1
+      },
+      "loginId": {
+        "type": "string",
+        "description": "登录账号",
+        "example": "admin"
+      },
+      "nickName": {
+        "type": "string",
+        "description": "昵称",
+        "example": "张三"
+      },
+      "avatar": {
+        "type": "string",
+        "description": "头像 URL",
+        "example": "https://cdn.example.com/avatar/1001.png"
+      },
+      "tenantId": {
+        "type": "integer",
+        "format": "int64",
+        "description": "租户 ID",
+        "example": 1
+      },
+      "tenantName": {
+        "type": "string",
+        "description": "租户名称",
+        "example": "演示租户"
+      },
+      "userPoolId": {
+        "type": "integer",
+        "format": "int64",
+        "description": "用户池 ID",
+        "example": 1
+      },
+      "userPoolName": {
+        "type": "string",
+        "description": "用户池名称",
+        "example": "默认用户池"
+      },
+      "isRoot": {
+        "type": "boolean",
+        "description": "是否平台超级管理员(ROOT)",
+        "example": false
+      },
+      "tenantType": {
+        "type": "string",
+        "description": "租户类型",
+        "example": "1"
+      },
+      "roleNames": {
+        "type": "array",
+        "description": "角色名称集合",
+        "example": "示例名称",
+        "items": {
+          "type": "string"
+        }
+      },
+      "perms": {
+        "type": "array",
+        "description": "扁平权限码集合（菜单中按钮类型的权限码汇总）",
+        "example": "module:res:action",
+        "items": {
+          "type": "string"
+        }
+      }
+    }
+  },
+  "FrameBootstrapVO": {
+    "type": "object",
+    "description": "应用外壳(frame)引导数据聚合体",
+    "properties": {
+      "user": {
+        "$ref": "#/components/schemas/FrameUserVO",
+        "description": "当前用户资料（含角色名、权限码）"
+      },
+      "menus": {
+        "type": "array",
+        "description": "当前租户下当前用户可见的导航菜单树（仅目录/菜单）",
+        "example": [],
+        "items": {
+          "$ref": "#/components/schemas/MenuTreeVO"
+        }
+      }
+    }
+  }
+}

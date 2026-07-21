@@ -1,0 +1,1472 @@
+[
+  {
+    "method": "POST",
+    "path": "/api/user/page",
+    "operationId": "page",
+    "tag": "用户",
+    "summary": "分页查询",
+    "reqRef": "UserQuery",
+    "respRef": "ResultVoPageVoUserDto",
+    "pathParams": []
+  },
+  {
+    "method": "POST",
+    "path": "/api/user/list",
+    "operationId": "list",
+    "tag": "用户",
+    "summary": "列表查询",
+    "reqRef": "UserQuery",
+    "respRef": "ResultVoListUserDto",
+    "pathParams": []
+  },
+  {
+    "method": "POST",
+    "path": "/api/user/form",
+    "operationId": "formItem",
+    "tag": "用户",
+    "summary": "获取表单数据",
+    "reqRef": "integer",
+    "respRef": "ResultVoUserForm",
+    "pathParams": []
+  },
+  {
+    "method": "POST",
+    "path": "/api/user/edit",
+    "operationId": "edit",
+    "tag": "用户",
+    "summary": "编辑",
+    "reqRef": "UserForm",
+    "respRef": "ResultVoUserForm",
+    "pathParams": []
+  },
+  {
+    "method": "POST",
+    "path": "/api/user/delete",
+    "operationId": "delete",
+    "tag": "用户",
+    "summary": "删除",
+    "reqRef": "integer",
+    "respRef": "ResultVoVoid",
+    "pathParams": []
+  },
+  {
+    "method": "POST",
+    "path": "/api/user/deleteAll",
+    "operationId": "deleteAll",
+    "tag": "用户",
+    "summary": "批量删除",
+    "reqRef": "array",
+    "respRef": "ResultVoVoid",
+    "pathParams": []
+  },
+  {
+    "method": "POST",
+    "path": "/api/user/add",
+    "operationId": "add",
+    "tag": "用户",
+    "summary": "新增",
+    "reqRef": "UserForm",
+    "respRef": "ResultVoUserForm",
+    "pathParams": []
+  },
+  {
+    "method": "POST",
+    "path": "/api/user-pool/users/page",
+    "operationId": "poolUsers",
+    "tag": "用户池",
+    "summary": "用户池用户列表",
+    "reqRef": "UserPoolQuery",
+    "respRef": "ResultVoPageVoUserDto",
+    "pathParams": []
+  },
+  {
+    "method": "POST",
+    "path": "/api/user-pool/page",
+    "operationId": "page_1",
+    "tag": "用户池",
+    "summary": "分页查询",
+    "reqRef": "UserPoolQuery",
+    "respRef": "ResultVoPageVoUserPoolDto",
+    "pathParams": []
+  },
+  {
+    "method": "POST",
+    "path": "/api/user-pool/list",
+    "operationId": "list_1",
+    "tag": "用户池",
+    "summary": "列表查询",
+    "reqRef": "UserPoolQuery",
+    "respRef": "ResultVoListUserPoolDto",
+    "pathParams": []
+  },
+  {
+    "method": "POST",
+    "path": "/api/user-pool/form",
+    "operationId": "formItem_1",
+    "tag": "用户池",
+    "summary": "获取表单数据",
+    "reqRef": "integer",
+    "respRef": "ResultVoUserPoolForm",
+    "pathParams": []
+  },
+  {
+    "method": "POST",
+    "path": "/api/user-pool/edit",
+    "operationId": "edit_1",
+    "tag": "用户池",
+    "summary": "编辑",
+    "reqRef": "UserPoolForm",
+    "respRef": "ResultVoUserPoolForm",
+    "pathParams": []
+  },
+  {
+    "method": "POST",
+    "path": "/api/user-pool/delete",
+    "operationId": "delete_1",
+    "tag": "用户池",
+    "summary": "删除",
+    "reqRef": "integer",
+    "respRef": "ResultVoVoid",
+    "pathParams": []
+  },
+  {
+    "method": "POST",
+    "path": "/api/user-pool/deleteAll",
+    "operationId": "deleteAll_1",
+    "tag": "用户池",
+    "summary": "批量删除",
+    "reqRef": "array",
+    "respRef": "ResultVoVoid",
+    "pathParams": []
+  },
+  {
+    "method": "POST",
+    "path": "/api/user-pool/add",
+    "operationId": "add_1",
+    "tag": "用户池",
+    "summary": "新增",
+    "reqRef": "UserPoolForm",
+    "respRef": "ResultVoUserPoolForm",
+    "pathParams": []
+  },
+  {
+    "method": "POST",
+    "path": "/api/tenant/page",
+    "operationId": "page_2",
+    "tag": "租户",
+    "summary": "分页查询",
+    "reqRef": "TenantQuery",
+    "respRef": "ResultVoPageVoTenantDto",
+    "pathParams": []
+  },
+  {
+    "method": "POST",
+    "path": "/api/tenant/list",
+    "operationId": "list_2",
+    "tag": "租户",
+    "summary": "列表查询",
+    "reqRef": "TenantQuery",
+    "respRef": "ResultVoListTenantDto",
+    "pathParams": []
+  },
+  {
+    "method": "POST",
+    "path": "/api/tenant/init-menu-from-template",
+    "operationId": "initMenuFromTemplate",
+    "tag": "租户",
+    "summary": "按菜单模板初始化租户菜单",
+    "reqRef": "TenantMenuInitForm",
+    "respRef": "ResultVoVoid",
+    "pathParams": []
+  },
+  {
+    "method": "POST",
+    "path": "/api/tenant/form",
+    "operationId": "formItem_2",
+    "tag": "租户",
+    "summary": "获取表单数据",
+    "reqRef": "integer",
+    "respRef": "ResultVoTenantForm",
+    "pathParams": []
+  },
+  {
+    "method": "POST",
+    "path": "/api/tenant/edit",
+    "operationId": "edit_2",
+    "tag": "租户",
+    "summary": "编辑",
+    "reqRef": "TenantForm",
+    "respRef": "ResultVoTenantForm",
+    "pathParams": []
+  },
+  {
+    "method": "POST",
+    "path": "/api/tenant/delete",
+    "operationId": "delete_2",
+    "tag": "租户",
+    "summary": "删除",
+    "reqRef": "integer",
+    "respRef": "ResultVoVoid",
+    "pathParams": []
+  },
+  {
+    "method": "POST",
+    "path": "/api/tenant/deleteAll",
+    "operationId": "deleteAll_2",
+    "tag": "租户",
+    "summary": "批量删除",
+    "reqRef": "array",
+    "respRef": "ResultVoVoid",
+    "pathParams": []
+  },
+  {
+    "method": "POST",
+    "path": "/api/tenant/add",
+    "operationId": "add_2",
+    "tag": "租户",
+    "summary": "新增",
+    "reqRef": "TenantForm",
+    "respRef": "ResultVoTenantForm",
+    "pathParams": []
+  },
+  {
+    "method": "POST",
+    "path": "/api/tenant-user/page",
+    "operationId": "page_3",
+    "tag": "租户用户",
+    "summary": "分页查询",
+    "reqRef": "TenantUserQuery",
+    "respRef": "ResultVoPageVoTenantUserDto",
+    "pathParams": []
+  },
+  {
+    "method": "POST",
+    "path": "/api/tenant-user/list",
+    "operationId": "list_3",
+    "tag": "租户用户",
+    "summary": "列表查询",
+    "reqRef": "TenantUserQuery",
+    "respRef": "ResultVoListTenantUserDto",
+    "pathParams": []
+  },
+  {
+    "method": "POST",
+    "path": "/api/tenant-user/form",
+    "operationId": "formItem_3",
+    "tag": "租户用户",
+    "summary": "获取表单数据",
+    "reqRef": "integer",
+    "respRef": "ResultVoTenantUserForm",
+    "pathParams": []
+  },
+  {
+    "method": "POST",
+    "path": "/api/tenant-user/edit",
+    "operationId": "edit_3",
+    "tag": "租户用户",
+    "summary": "编辑",
+    "reqRef": "TenantUserForm",
+    "respRef": "ResultVoTenantUserForm",
+    "pathParams": []
+  },
+  {
+    "method": "POST",
+    "path": "/api/tenant-user/delete",
+    "operationId": "delete_3",
+    "tag": "租户用户",
+    "summary": "删除",
+    "reqRef": "integer",
+    "respRef": "ResultVoVoid",
+    "pathParams": []
+  },
+  {
+    "method": "POST",
+    "path": "/api/tenant-user/deleteAll",
+    "operationId": "deleteAll_3",
+    "tag": "租户用户",
+    "summary": "批量删除",
+    "reqRef": "array",
+    "respRef": "ResultVoVoid",
+    "pathParams": []
+  },
+  {
+    "method": "POST",
+    "path": "/api/tenant-user/add",
+    "operationId": "add_3",
+    "tag": "租户用户",
+    "summary": "新增",
+    "reqRef": "TenantUserForm",
+    "respRef": "ResultVoTenantUserForm",
+    "pathParams": []
+  },
+  {
+    "method": "POST",
+    "path": "/api/tenant-user-role/page",
+    "operationId": "page_4",
+    "tag": "租户用户角色",
+    "summary": "分页查询",
+    "reqRef": "TenantUserRoleQuery",
+    "respRef": "ResultVoPageVoTenantUserRoleDto",
+    "pathParams": []
+  },
+  {
+    "method": "POST",
+    "path": "/api/tenant-user-role/list",
+    "operationId": "list_4",
+    "tag": "租户用户角色",
+    "summary": "列表查询",
+    "reqRef": "TenantUserRoleQuery",
+    "respRef": "ResultVoListTenantUserRoleDto",
+    "pathParams": []
+  },
+  {
+    "method": "POST",
+    "path": "/api/tenant-user-role/form",
+    "operationId": "formItem_4",
+    "tag": "租户用户角色",
+    "summary": "获取表单数据",
+    "reqRef": "integer",
+    "respRef": "ResultVoTenantUserRoleForm",
+    "pathParams": []
+  },
+  {
+    "method": "POST",
+    "path": "/api/tenant-user-role/edit",
+    "operationId": "edit_4",
+    "tag": "租户用户角色",
+    "summary": "编辑",
+    "reqRef": "TenantUserRoleForm",
+    "respRef": "ResultVoTenantUserRoleForm",
+    "pathParams": []
+  },
+  {
+    "method": "POST",
+    "path": "/api/tenant-user-role/delete",
+    "operationId": "delete_4",
+    "tag": "租户用户角色",
+    "summary": "删除",
+    "reqRef": "integer",
+    "respRef": "ResultVoVoid",
+    "pathParams": []
+  },
+  {
+    "method": "POST",
+    "path": "/api/tenant-user-role/deleteAll",
+    "operationId": "deleteAll_4",
+    "tag": "租户用户角色",
+    "summary": "批量删除",
+    "reqRef": "array",
+    "respRef": "ResultVoVoid",
+    "pathParams": []
+  },
+  {
+    "method": "POST",
+    "path": "/api/tenant-user-role/add",
+    "operationId": "add_4",
+    "tag": "租户用户角色",
+    "summary": "新增",
+    "reqRef": "TenantUserRoleForm",
+    "respRef": "ResultVoTenantUserRoleForm",
+    "pathParams": []
+  },
+  {
+    "method": "POST",
+    "path": "/api/system/init",
+    "operationId": "init",
+    "tag": "系统初始化",
+    "summary": "初始化基础数据",
+    "reqRef": null,
+    "respRef": "ResultVoMapStringObject",
+    "pathParams": []
+  },
+  {
+    "method": "POST",
+    "path": "/api/sys/log/page",
+    "operationId": "page_5",
+    "tag": "系统日志",
+    "summary": "分页查询",
+    "reqRef": "SysLogQuery",
+    "respRef": "ResultVoPageVoSysLogDto",
+    "pathParams": []
+  },
+  {
+    "method": "POST",
+    "path": "/api/sys/log/list",
+    "operationId": "list_5",
+    "tag": "系统日志",
+    "summary": "列表查询",
+    "reqRef": "SysLogQuery",
+    "respRef": "ResultVoListSysLogDto",
+    "pathParams": []
+  },
+  {
+    "method": "POST",
+    "path": "/api/sys/log/form",
+    "operationId": "formItem_5",
+    "tag": "系统日志",
+    "summary": "获取表单数据",
+    "reqRef": "integer",
+    "respRef": "ResultVoSysLogForm",
+    "pathParams": []
+  },
+  {
+    "method": "POST",
+    "path": "/api/sys/log/edit",
+    "operationId": "edit_5",
+    "tag": "系统日志",
+    "summary": "编辑",
+    "reqRef": "SysLogForm",
+    "respRef": "ResultVoSysLogForm",
+    "pathParams": []
+  },
+  {
+    "method": "POST",
+    "path": "/api/sys/log/delete",
+    "operationId": "delete_5",
+    "tag": "系统日志",
+    "summary": "删除",
+    "reqRef": "integer",
+    "respRef": "ResultVoVoid",
+    "pathParams": []
+  },
+  {
+    "method": "POST",
+    "path": "/api/sys/log/deleteAll",
+    "operationId": "deleteAll_5",
+    "tag": "系统日志",
+    "summary": "批量删除",
+    "reqRef": "array",
+    "respRef": "ResultVoVoid",
+    "pathParams": []
+  },
+  {
+    "method": "POST",
+    "path": "/api/sys/log/add",
+    "operationId": "add_5",
+    "tag": "系统日志",
+    "summary": "新增",
+    "reqRef": "SysLogForm",
+    "respRef": "ResultVoSysLogForm",
+    "pathParams": []
+  },
+  {
+    "method": "POST",
+    "path": "/api/role/page",
+    "operationId": "page_6",
+    "tag": "角色",
+    "summary": "分页查询",
+    "reqRef": "RoleQuery",
+    "respRef": "ResultVoPageVoRoleDto",
+    "pathParams": []
+  },
+  {
+    "method": "POST",
+    "path": "/api/role/list",
+    "operationId": "list_6",
+    "tag": "角色",
+    "summary": "列表查询",
+    "reqRef": "RoleQuery",
+    "respRef": "ResultVoListRoleDto",
+    "pathParams": []
+  },
+  {
+    "method": "POST",
+    "path": "/api/role/form",
+    "operationId": "formItem_6",
+    "tag": "角色",
+    "summary": "获取表单数据",
+    "reqRef": "integer",
+    "respRef": "ResultVoRoleForm",
+    "pathParams": []
+  },
+  {
+    "method": "POST",
+    "path": "/api/role/edit",
+    "operationId": "edit_6",
+    "tag": "角色",
+    "summary": "编辑",
+    "reqRef": "RoleForm",
+    "respRef": "ResultVoRoleForm",
+    "pathParams": []
+  },
+  {
+    "method": "POST",
+    "path": "/api/role/delete",
+    "operationId": "delete_6",
+    "tag": "角色",
+    "summary": "删除",
+    "reqRef": "integer",
+    "respRef": "ResultVoVoid",
+    "pathParams": []
+  },
+  {
+    "method": "POST",
+    "path": "/api/role/deleteAll",
+    "operationId": "deleteAll_6",
+    "tag": "角色",
+    "summary": "批量删除",
+    "reqRef": "array",
+    "respRef": "ResultVoVoid",
+    "pathParams": []
+  },
+  {
+    "method": "POST",
+    "path": "/api/role/add",
+    "operationId": "add_6",
+    "tag": "角色",
+    "summary": "新增",
+    "reqRef": "RoleForm",
+    "respRef": "ResultVoRoleForm",
+    "pathParams": []
+  },
+  {
+    "method": "POST",
+    "path": "/api/role-template/page",
+    "operationId": "page_7",
+    "tag": "角色模板",
+    "summary": "分页查询",
+    "reqRef": "RoleTemplateQuery",
+    "respRef": "ResultVoPageVoRoleTemplateDto",
+    "pathParams": []
+  },
+  {
+    "method": "POST",
+    "path": "/api/role-template/list",
+    "operationId": "list_7",
+    "tag": "角色模板",
+    "summary": "列表查询",
+    "reqRef": "RoleTemplateQuery",
+    "respRef": "ResultVoListRoleTemplateDto",
+    "pathParams": []
+  },
+  {
+    "method": "POST",
+    "path": "/api/role-template/form",
+    "operationId": "formItem_7",
+    "tag": "角色模板",
+    "summary": "获取表单数据",
+    "reqRef": "integer",
+    "respRef": "ResultVoRoleTemplateForm",
+    "pathParams": []
+  },
+  {
+    "method": "POST",
+    "path": "/api/role-template/edit",
+    "operationId": "edit_7",
+    "tag": "角色模板",
+    "summary": "编辑",
+    "reqRef": "RoleTemplateForm",
+    "respRef": "ResultVoRoleTemplateForm",
+    "pathParams": []
+  },
+  {
+    "method": "POST",
+    "path": "/api/role-template/delete",
+    "operationId": "delete_7",
+    "tag": "角色模板",
+    "summary": "删除",
+    "reqRef": "integer",
+    "respRef": "ResultVoVoid",
+    "pathParams": []
+  },
+  {
+    "method": "POST",
+    "path": "/api/role-template/deleteAll",
+    "operationId": "deleteAll_7",
+    "tag": "角色模板",
+    "summary": "批量删除",
+    "reqRef": "array",
+    "respRef": "ResultVoVoid",
+    "pathParams": []
+  },
+  {
+    "method": "POST",
+    "path": "/api/role-template/add",
+    "operationId": "add_7",
+    "tag": "角色模板",
+    "summary": "新增",
+    "reqRef": "RoleTemplateForm",
+    "respRef": "ResultVoRoleTemplateForm",
+    "pathParams": []
+  },
+  {
+    "method": "POST",
+    "path": "/api/role-menu/assign",
+    "operationId": "assign",
+    "tag": "角色菜单授权",
+    "summary": "保存角色菜单授权",
+    "reqRef": "RoleMenuAssignForm",
+    "respRef": "ResultVoVoid",
+    "pathParams": []
+  },
+  {
+    "method": "POST",
+    "path": "/api/role-group/tree",
+    "operationId": "tree",
+    "tag": "role-group-controller",
+    "summary": "树形查询",
+    "reqRef": "RoleGroupQuery",
+    "respRef": "ResultVoListRoleGroupDto",
+    "pathParams": []
+  },
+  {
+    "method": "POST",
+    "path": "/api/role-group/page",
+    "operationId": "page_8",
+    "tag": "role-group-controller",
+    "summary": "分页查询",
+    "reqRef": "RoleGroupQuery",
+    "respRef": "ResultVoPageVoRoleGroupDto",
+    "pathParams": []
+  },
+  {
+    "method": "POST",
+    "path": "/api/role-group/list",
+    "operationId": "list_8",
+    "tag": "role-group-controller",
+    "summary": "列表查询",
+    "reqRef": "RoleGroupQuery",
+    "respRef": "ResultVoListRoleGroupDto",
+    "pathParams": []
+  },
+  {
+    "method": "POST",
+    "path": "/api/role-group/form",
+    "operationId": "formItem_8",
+    "tag": "role-group-controller",
+    "summary": "获取表单数据",
+    "reqRef": "integer",
+    "respRef": "ResultVoRoleGroupForm",
+    "pathParams": []
+  },
+  {
+    "method": "POST",
+    "path": "/api/role-group/edit",
+    "operationId": "edit_8",
+    "tag": "role-group-controller",
+    "summary": "编辑",
+    "reqRef": "RoleGroupForm",
+    "respRef": "ResultVoRoleGroupForm",
+    "pathParams": []
+  },
+  {
+    "method": "POST",
+    "path": "/api/role-group/delete",
+    "operationId": "delete_8",
+    "tag": "role-group-controller",
+    "summary": "删除",
+    "reqRef": "integer",
+    "respRef": "ResultVoVoid",
+    "pathParams": []
+  },
+  {
+    "method": "POST",
+    "path": "/api/role-group/deleteAll",
+    "operationId": "deleteAll_8",
+    "tag": "role-group-controller",
+    "summary": "批量删除",
+    "reqRef": "array",
+    "respRef": "ResultVoVoid",
+    "pathParams": []
+  },
+  {
+    "method": "POST",
+    "path": "/api/role-group/add",
+    "operationId": "add_8",
+    "tag": "role-group-controller",
+    "summary": "新增",
+    "reqRef": "RoleGroupForm",
+    "respRef": "ResultVoRoleGroupForm",
+    "pathParams": []
+  },
+  {
+    "method": "POST",
+    "path": "/api/org/unit/tree",
+    "operationId": "tree_1",
+    "tag": "组织单元",
+    "summary": "树形查询",
+    "reqRef": "OrgUnitQuery",
+    "respRef": "ResultVoListOrgUnitDto",
+    "pathParams": []
+  },
+  {
+    "method": "POST",
+    "path": "/api/org/unit/page",
+    "operationId": "page_9",
+    "tag": "组织单元",
+    "summary": "分页查询",
+    "reqRef": "OrgUnitQuery",
+    "respRef": "ResultVoPageVoOrgUnitDto",
+    "pathParams": []
+  },
+  {
+    "method": "POST",
+    "path": "/api/org/unit/list",
+    "operationId": "list_9",
+    "tag": "组织单元",
+    "summary": "列表查询",
+    "reqRef": "OrgUnitQuery",
+    "respRef": "ResultVoListOrgUnitDto",
+    "pathParams": []
+  },
+  {
+    "method": "POST",
+    "path": "/api/org/unit/form",
+    "operationId": "formItem_9",
+    "tag": "组织单元",
+    "summary": "获取表单数据",
+    "reqRef": "integer",
+    "respRef": "ResultVoOrgUnitForm",
+    "pathParams": []
+  },
+  {
+    "method": "POST",
+    "path": "/api/org/unit/edit",
+    "operationId": "edit_9",
+    "tag": "组织单元",
+    "summary": "编辑",
+    "reqRef": "OrgUnitForm",
+    "respRef": "ResultVoOrgUnitForm",
+    "pathParams": []
+  },
+  {
+    "method": "POST",
+    "path": "/api/org/unit/delete",
+    "operationId": "delete_9",
+    "tag": "组织单元",
+    "summary": "删除",
+    "reqRef": "integer",
+    "respRef": "ResultVoVoid",
+    "pathParams": []
+  },
+  {
+    "method": "POST",
+    "path": "/api/org/unit/deleteAll",
+    "operationId": "deleteAll_9",
+    "tag": "组织单元",
+    "summary": "批量删除",
+    "reqRef": "array",
+    "respRef": "ResultVoVoid",
+    "pathParams": []
+  },
+  {
+    "method": "POST",
+    "path": "/api/org/unit/add",
+    "operationId": "add_9",
+    "tag": "组织单元",
+    "summary": "新增",
+    "reqRef": "OrgUnitForm",
+    "respRef": "ResultVoOrgUnitForm",
+    "pathParams": []
+  },
+  {
+    "method": "POST",
+    "path": "/api/menu/tree",
+    "operationId": "tree_2",
+    "tag": "菜单",
+    "summary": "树形查询",
+    "reqRef": "MenuQuery",
+    "respRef": "ResultVoListMenuDto",
+    "pathParams": []
+  },
+  {
+    "method": "POST",
+    "path": "/api/menu/page",
+    "operationId": "page_10",
+    "tag": "菜单",
+    "summary": "分页查询",
+    "reqRef": "MenuQuery",
+    "respRef": "ResultVoPageVoMenuDto",
+    "pathParams": []
+  },
+  {
+    "method": "POST",
+    "path": "/api/menu/list",
+    "operationId": "list_10",
+    "tag": "菜单",
+    "summary": "列表查询",
+    "reqRef": "MenuQuery",
+    "respRef": "ResultVoListMenuDto",
+    "pathParams": []
+  },
+  {
+    "method": "POST",
+    "path": "/api/menu/form",
+    "operationId": "formItem_10",
+    "tag": "菜单",
+    "summary": "获取表单数据",
+    "reqRef": "integer",
+    "respRef": "ResultVoMenuForm",
+    "pathParams": []
+  },
+  {
+    "method": "POST",
+    "path": "/api/menu/edit",
+    "operationId": "edit_10",
+    "tag": "菜单",
+    "summary": "编辑",
+    "reqRef": "MenuForm",
+    "respRef": "ResultVoMenuForm",
+    "pathParams": []
+  },
+  {
+    "method": "POST",
+    "path": "/api/menu/delete",
+    "operationId": "delete_10",
+    "tag": "菜单",
+    "summary": "删除",
+    "reqRef": "integer",
+    "respRef": "ResultVoVoid",
+    "pathParams": []
+  },
+  {
+    "method": "POST",
+    "path": "/api/menu/deleteAll",
+    "operationId": "deleteAll_10",
+    "tag": "菜单",
+    "summary": "批量删除",
+    "reqRef": "array",
+    "respRef": "ResultVoVoid",
+    "pathParams": []
+  },
+  {
+    "method": "POST",
+    "path": "/api/menu/add",
+    "operationId": "add_10",
+    "tag": "菜单",
+    "summary": "新增",
+    "reqRef": "MenuForm",
+    "respRef": "ResultVoMenuForm",
+    "pathParams": []
+  },
+  {
+    "method": "POST",
+    "path": "/api/menu-template/page",
+    "operationId": "page_11",
+    "tag": "菜单模板",
+    "summary": "分页查询",
+    "reqRef": "MenuTemplateQuery",
+    "respRef": "ResultVoPageVoMenuTemplateDto",
+    "pathParams": []
+  },
+  {
+    "method": "POST",
+    "path": "/api/menu-template/list",
+    "operationId": "list_11",
+    "tag": "菜单模板",
+    "summary": "列表查询",
+    "reqRef": "MenuTemplateQuery",
+    "respRef": "ResultVoListMenuTemplateDto",
+    "pathParams": []
+  },
+  {
+    "method": "POST",
+    "path": "/api/menu-template/form",
+    "operationId": "formItem_11",
+    "tag": "菜单模板",
+    "summary": "获取表单数据",
+    "reqRef": "integer",
+    "respRef": "ResultVoMenuTemplateForm",
+    "pathParams": []
+  },
+  {
+    "method": "POST",
+    "path": "/api/menu-template/edit",
+    "operationId": "edit_11",
+    "tag": "菜单模板",
+    "summary": "编辑",
+    "reqRef": "MenuTemplateForm",
+    "respRef": "ResultVoMenuTemplateForm",
+    "pathParams": []
+  },
+  {
+    "method": "POST",
+    "path": "/api/menu-template/delete",
+    "operationId": "delete_11",
+    "tag": "菜单模板",
+    "summary": "删除",
+    "reqRef": "integer",
+    "respRef": "ResultVoVoid",
+    "pathParams": []
+  },
+  {
+    "method": "POST",
+    "path": "/api/menu-template/deleteAll",
+    "operationId": "deleteAll_11",
+    "tag": "菜单模板",
+    "summary": "批量删除",
+    "reqRef": "array",
+    "respRef": "ResultVoVoid",
+    "pathParams": []
+  },
+  {
+    "method": "POST",
+    "path": "/api/menu-template/add",
+    "operationId": "add_11",
+    "tag": "菜单模板",
+    "summary": "新增",
+    "reqRef": "MenuTemplateForm",
+    "respRef": "ResultVoMenuTemplateForm",
+    "pathParams": []
+  },
+  {
+    "method": "POST",
+    "path": "/api/menu-template-item/tree",
+    "operationId": "tree_3",
+    "tag": "菜单模板项",
+    "summary": "树形查询",
+    "reqRef": "MenuTemplateItemQuery",
+    "respRef": "ResultVoListMenuTemplateItemDto",
+    "pathParams": []
+  },
+  {
+    "method": "POST",
+    "path": "/api/menu-template-item/page",
+    "operationId": "page_12",
+    "tag": "菜单模板项",
+    "summary": "分页查询",
+    "reqRef": "MenuTemplateItemQuery",
+    "respRef": "ResultVoPageVoMenuTemplateItemDto",
+    "pathParams": []
+  },
+  {
+    "method": "POST",
+    "path": "/api/menu-template-item/list",
+    "operationId": "list_12",
+    "tag": "菜单模板项",
+    "summary": "列表查询",
+    "reqRef": "MenuTemplateItemQuery",
+    "respRef": "ResultVoListMenuTemplateItemDto",
+    "pathParams": []
+  },
+  {
+    "method": "POST",
+    "path": "/api/menu-template-item/form",
+    "operationId": "formItem_12",
+    "tag": "菜单模板项",
+    "summary": "获取表单数据",
+    "reqRef": "integer",
+    "respRef": "ResultVoMenuTemplateItemForm",
+    "pathParams": []
+  },
+  {
+    "method": "POST",
+    "path": "/api/menu-template-item/edit",
+    "operationId": "edit_12",
+    "tag": "菜单模板项",
+    "summary": "编辑",
+    "reqRef": "MenuTemplateItemForm",
+    "respRef": "ResultVoMenuTemplateItemForm",
+    "pathParams": []
+  },
+  {
+    "method": "POST",
+    "path": "/api/menu-template-item/delete",
+    "operationId": "delete_12",
+    "tag": "菜单模板项",
+    "summary": "删除",
+    "reqRef": "integer",
+    "respRef": "ResultVoVoid",
+    "pathParams": []
+  },
+  {
+    "method": "POST",
+    "path": "/api/menu-template-item/deleteAll",
+    "operationId": "deleteAll_12",
+    "tag": "菜单模板项",
+    "summary": "批量删除",
+    "reqRef": "array",
+    "respRef": "ResultVoVoid",
+    "pathParams": []
+  },
+  {
+    "method": "POST",
+    "path": "/api/menu-template-item/add",
+    "operationId": "add_12",
+    "tag": "菜单模板项",
+    "summary": "新增",
+    "reqRef": "MenuTemplateItemForm",
+    "respRef": "ResultVoMenuTemplateItemForm",
+    "pathParams": []
+  },
+  {
+    "method": "POST",
+    "path": "/api/login/log/page",
+    "operationId": "page_13",
+    "tag": "登录日志",
+    "summary": "分页查询",
+    "reqRef": "LoginLogQuery",
+    "respRef": "ResultVoPageVoLoginLogDto",
+    "pathParams": []
+  },
+  {
+    "method": "POST",
+    "path": "/api/login/log/list",
+    "operationId": "list_13",
+    "tag": "登录日志",
+    "summary": "列表查询",
+    "reqRef": "LoginLogQuery",
+    "respRef": "ResultVoListLoginLogDto",
+    "pathParams": []
+  },
+  {
+    "method": "POST",
+    "path": "/api/login/log/form",
+    "operationId": "formItem_13",
+    "tag": "登录日志",
+    "summary": "获取表单数据",
+    "reqRef": "integer",
+    "respRef": "ResultVoLoginLogForm",
+    "pathParams": []
+  },
+  {
+    "method": "POST",
+    "path": "/api/login/log/edit",
+    "operationId": "edit_13",
+    "tag": "登录日志",
+    "summary": "编辑",
+    "reqRef": "LoginLogForm",
+    "respRef": "ResultVoLoginLogForm",
+    "pathParams": []
+  },
+  {
+    "method": "POST",
+    "path": "/api/login/log/delete",
+    "operationId": "delete_13",
+    "tag": "登录日志",
+    "summary": "删除",
+    "reqRef": "integer",
+    "respRef": "ResultVoVoid",
+    "pathParams": []
+  },
+  {
+    "method": "POST",
+    "path": "/api/login/log/deleteAll",
+    "operationId": "deleteAll_13",
+    "tag": "登录日志",
+    "summary": "批量删除",
+    "reqRef": "array",
+    "respRef": "ResultVoVoid",
+    "pathParams": []
+  },
+  {
+    "method": "POST",
+    "path": "/api/login/log/add",
+    "operationId": "add_13",
+    "tag": "登录日志",
+    "summary": "新增",
+    "reqRef": "LoginLogForm",
+    "respRef": "ResultVoLoginLogForm",
+    "pathParams": []
+  },
+  {
+    "method": "POST",
+    "path": "/api/dict/type/tree",
+    "operationId": "tree_4",
+    "tag": "字典类型",
+    "summary": "树形查询",
+    "reqRef": "DictTypeQuery",
+    "respRef": "ResultVoListDictTypeDto",
+    "pathParams": []
+  },
+  {
+    "method": "POST",
+    "path": "/api/dict/type/page",
+    "operationId": "page_14",
+    "tag": "字典类型",
+    "summary": "分页查询",
+    "reqRef": "DictTypeQuery",
+    "respRef": "ResultVoPageVoDictTypeDto",
+    "pathParams": []
+  },
+  {
+    "method": "POST",
+    "path": "/api/dict/type/list",
+    "operationId": "list_14",
+    "tag": "字典类型",
+    "summary": "列表查询",
+    "reqRef": "DictTypeQuery",
+    "respRef": "ResultVoListDictTypeDto",
+    "pathParams": []
+  },
+  {
+    "method": "POST",
+    "path": "/api/dict/type/form",
+    "operationId": "formItem_14",
+    "tag": "字典类型",
+    "summary": "获取表单数据",
+    "reqRef": "integer",
+    "respRef": "ResultVoDictTypeForm",
+    "pathParams": []
+  },
+  {
+    "method": "POST",
+    "path": "/api/dict/type/edit",
+    "operationId": "edit_14",
+    "tag": "字典类型",
+    "summary": "编辑",
+    "reqRef": "DictTypeForm",
+    "respRef": "ResultVoDictTypeForm",
+    "pathParams": []
+  },
+  {
+    "method": "POST",
+    "path": "/api/dict/type/delete",
+    "operationId": "delete_14",
+    "tag": "字典类型",
+    "summary": "删除",
+    "reqRef": "integer",
+    "respRef": "ResultVoVoid",
+    "pathParams": []
+  },
+  {
+    "method": "POST",
+    "path": "/api/dict/type/deleteAll",
+    "operationId": "deleteAll_14",
+    "tag": "字典类型",
+    "summary": "批量删除",
+    "reqRef": "array",
+    "respRef": "ResultVoVoid",
+    "pathParams": []
+  },
+  {
+    "method": "POST",
+    "path": "/api/dict/type/add",
+    "operationId": "add_14",
+    "tag": "字典类型",
+    "summary": "新增",
+    "reqRef": "DictTypeForm",
+    "respRef": "ResultVoDictTypeForm",
+    "pathParams": []
+  },
+  {
+    "method": "POST",
+    "path": "/api/dict/entry/page",
+    "operationId": "page_15",
+    "tag": "字典项",
+    "summary": "分页查询",
+    "reqRef": "DictEntryQuery",
+    "respRef": "ResultVoPageVoDictEntryDto",
+    "pathParams": []
+  },
+  {
+    "method": "POST",
+    "path": "/api/dict/entry/list",
+    "operationId": "list_15",
+    "tag": "字典项",
+    "summary": "列表查询",
+    "reqRef": "DictEntryQuery",
+    "respRef": "ResultVoListDictEntryDto",
+    "pathParams": []
+  },
+  {
+    "method": "POST",
+    "path": "/api/dict/entry/form",
+    "operationId": "formItem_15",
+    "tag": "字典项",
+    "summary": "获取表单数据",
+    "reqRef": "integer",
+    "respRef": "ResultVoDictEntryForm",
+    "pathParams": []
+  },
+  {
+    "method": "POST",
+    "path": "/api/dict/entry/edit",
+    "operationId": "edit_15",
+    "tag": "字典项",
+    "summary": "编辑",
+    "reqRef": "DictEntryForm",
+    "respRef": "ResultVoDictEntryForm",
+    "pathParams": []
+  },
+  {
+    "method": "POST",
+    "path": "/api/dict/entry/delete",
+    "operationId": "delete_15",
+    "tag": "字典项",
+    "summary": "删除",
+    "reqRef": "integer",
+    "respRef": "ResultVoVoid",
+    "pathParams": []
+  },
+  {
+    "method": "POST",
+    "path": "/api/dict/entry/deleteAll",
+    "operationId": "deleteAll_15",
+    "tag": "字典项",
+    "summary": "批量删除",
+    "reqRef": "array",
+    "respRef": "ResultVoVoid",
+    "pathParams": []
+  },
+  {
+    "method": "POST",
+    "path": "/api/dict/entry/add",
+    "operationId": "add_15",
+    "tag": "字典项",
+    "summary": "新增",
+    "reqRef": "DictEntryForm",
+    "respRef": "ResultVoDictEntryForm",
+    "pathParams": []
+  },
+  {
+    "method": "POST",
+    "path": "/api/dict-template/tree",
+    "operationId": "tree_5",
+    "tag": "字典模板",
+    "summary": "树形查询",
+    "reqRef": "DictTemplateQuery",
+    "respRef": "ResultVoListDictTemplateDto",
+    "pathParams": []
+  },
+  {
+    "method": "POST",
+    "path": "/api/dict-template/page",
+    "operationId": "page_16",
+    "tag": "字典模板",
+    "summary": "分页查询",
+    "reqRef": "DictTemplateQuery",
+    "respRef": "ResultVoPageVoDictTemplateDto",
+    "pathParams": []
+  },
+  {
+    "method": "POST",
+    "path": "/api/dict-template/list",
+    "operationId": "list_16",
+    "tag": "字典模板",
+    "summary": "列表查询",
+    "reqRef": "DictTemplateQuery",
+    "respRef": "ResultVoListDictTemplateDto",
+    "pathParams": []
+  },
+  {
+    "method": "POST",
+    "path": "/api/dict-template/form",
+    "operationId": "formItem_16",
+    "tag": "字典模板",
+    "summary": "获取表单数据",
+    "reqRef": "integer",
+    "respRef": "ResultVoDictTemplateForm",
+    "pathParams": []
+  },
+  {
+    "method": "POST",
+    "path": "/api/dict-template/edit",
+    "operationId": "edit_16",
+    "tag": "字典模板",
+    "summary": "编辑",
+    "reqRef": "DictTemplateForm",
+    "respRef": "ResultVoDictTemplateForm",
+    "pathParams": []
+  },
+  {
+    "method": "POST",
+    "path": "/api/dict-template/delete",
+    "operationId": "delete_16",
+    "tag": "字典模板",
+    "summary": "删除",
+    "reqRef": "integer",
+    "respRef": "ResultVoVoid",
+    "pathParams": []
+  },
+  {
+    "method": "POST",
+    "path": "/api/dict-template/deleteAll",
+    "operationId": "deleteAll_16",
+    "tag": "字典模板",
+    "summary": "批量删除",
+    "reqRef": "array",
+    "respRef": "ResultVoVoid",
+    "pathParams": []
+  },
+  {
+    "method": "POST",
+    "path": "/api/dict-template/add",
+    "operationId": "add_16",
+    "tag": "字典模板",
+    "summary": "新增",
+    "reqRef": "DictTemplateForm",
+    "respRef": "ResultVoDictTemplateForm",
+    "pathParams": []
+  },
+  {
+    "method": "POST",
+    "path": "/api/dict-template-entry/page",
+    "operationId": "page_17",
+    "tag": "字典模板项",
+    "summary": "分页查询",
+    "reqRef": "DictTemplateEntryQuery",
+    "respRef": "ResultVoPageVoDictTemplateEntryDto",
+    "pathParams": []
+  },
+  {
+    "method": "POST",
+    "path": "/api/dict-template-entry/list",
+    "operationId": "list_17",
+    "tag": "字典模板项",
+    "summary": "列表查询",
+    "reqRef": "DictTemplateEntryQuery",
+    "respRef": "ResultVoListDictTemplateEntryDto",
+    "pathParams": []
+  },
+  {
+    "method": "POST",
+    "path": "/api/dict-template-entry/form",
+    "operationId": "formItem_17",
+    "tag": "字典模板项",
+    "summary": "获取表单数据",
+    "reqRef": "integer",
+    "respRef": "ResultVoDictTemplateEntryForm",
+    "pathParams": []
+  },
+  {
+    "method": "POST",
+    "path": "/api/dict-template-entry/edit",
+    "operationId": "edit_17",
+    "tag": "字典模板项",
+    "summary": "编辑",
+    "reqRef": "DictTemplateEntryForm",
+    "respRef": "ResultVoDictTemplateEntryForm",
+    "pathParams": []
+  },
+  {
+    "method": "POST",
+    "path": "/api/dict-template-entry/delete",
+    "operationId": "delete_17",
+    "tag": "字典模板项",
+    "summary": "删除",
+    "reqRef": "integer",
+    "respRef": "ResultVoVoid",
+    "pathParams": []
+  },
+  {
+    "method": "POST",
+    "path": "/api/dict-template-entry/deleteAll",
+    "operationId": "deleteAll_17",
+    "tag": "字典模板项",
+    "summary": "批量删除",
+    "reqRef": "array",
+    "respRef": "ResultVoVoid",
+    "pathParams": []
+  },
+  {
+    "method": "POST",
+    "path": "/api/dict-template-entry/add",
+    "operationId": "add_17",
+    "tag": "字典模板项",
+    "summary": "新增",
+    "reqRef": "DictTemplateEntryForm",
+    "respRef": "ResultVoDictTemplateEntryForm",
+    "pathParams": []
+  },
+  {
+    "method": "POST",
+    "path": "/api/auth/token/revoke-user",
+    "operationId": "revokeUser",
+    "tag": "令牌管理 TokenAdmin",
+    "summary": "",
+    "reqRef": "TokenAdminRequest",
+    "respRef": "ResultVoVoid",
+    "pathParams": []
+  },
+  {
+    "method": "POST",
+    "path": "/api/auth/token/revoke-tenant",
+    "operationId": "revokeTenant",
+    "tag": "令牌管理 TokenAdmin",
+    "summary": "吊销租户令牌",
+    "reqRef": "TokenAdminRequest",
+    "respRef": "ResultVoVoid",
+    "pathParams": []
+  },
+  {
+    "method": "POST",
+    "path": "/api/auth/token/list-by-user",
+    "operationId": "listByUser",
+    "tag": "令牌管理 TokenAdmin",
+    "summary": "按用户查询令牌",
+    "reqRef": "TokenAdminRequest",
+    "respRef": "ResultVoListTokenSummary",
+    "pathParams": []
+  },
+  {
+    "method": "POST",
+    "path": "/api/auth/token/list-by-tenant",
+    "operationId": "listByTenant",
+    "tag": "令牌管理 TokenAdmin",
+    "summary": "按租户查询令牌",
+    "reqRef": "TokenAdminRequest",
+    "respRef": "ResultVoListTokenSummary",
+    "pathParams": []
+  },
+  {
+    "method": "POST",
+    "path": "/api/auth/refresh",
+    "operationId": "refresh",
+    "tag": "认证 Auth",
+    "summary": "刷新令牌",
+    "reqRef": "RefreshRequest",
+    "respRef": "ResultVoLoginResult",
+    "pathParams": []
+  },
+  {
+    "method": "POST",
+    "path": "/api/auth/logout",
+    "operationId": "logout",
+    "tag": "认证 Auth",
+    "summary": "登出",
+    "reqRef": "LogoutRequest",
+    "respRef": "ResultVoVoid",
+    "pathParams": []
+  },
+  {
+    "method": "POST",
+    "path": "/api/auth/login",
+    "operationId": "login",
+    "tag": "认证 Auth",
+    "summary": "登录",
+    "reqRef": "LoginRequest",
+    "respRef": "ResultVoLoginResult",
+    "pathParams": []
+  },
+  {
+    "method": "GET",
+    "path": "/api/role-menu",
+    "operationId": "listByRole",
+    "tag": "角色菜单授权",
+    "summary": "查询角色已授权菜单ID",
+    "reqRef": null,
+    "respRef": "ResultVoListLong",
+    "pathParams": []
+  },
+  {
+    "method": "GET",
+    "path": "/api/frame/menu",
+    "operationId": "menus",
+    "tag": "应用外壳 Frame",
+    "summary": "导航菜单树",
+    "reqRef": null,
+    "respRef": null,
+    "pathParams": []
+  },
+  {
+    "method": "GET",
+    "path": "/api/frame/me",
+    "operationId": "user",
+    "tag": "应用外壳 Frame",
+    "summary": "当前用户资料",
+    "reqRef": null,
+    "respRef": "FrameUserVO",
+    "pathParams": []
+  },
+  {
+    "method": "GET",
+    "path": "/api/frame/bootstrap",
+    "operationId": "bootstrap",
+    "tag": "应用外壳 Frame",
+    "summary": "应用引导数据",
+    "reqRef": null,
+    "respRef": "FrameBootstrapVO",
+    "pathParams": []
+  }
+]
