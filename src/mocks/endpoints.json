@@ -1446,7 +1446,7 @@
     "tag": "应用外壳 Frame",
     "summary": "导航菜单树",
     "reqRef": null,
-    "respRef": null,
+    "respRef": "ResultVoListMenuTreeVO",
     "pathParams": []
   },
   {
@@ -1456,7 +1456,7 @@
     "tag": "应用外壳 Frame",
     "summary": "当前用户资料",
     "reqRef": null,
-    "respRef": "FrameUserVO",
+    "respRef": "ResultVoFrameUserVO",
     "pathParams": []
   },
   {
@@ -1466,7 +1466,7 @@
     "tag": "应用外壳 Frame",
     "summary": "应用引导数据",
     "reqRef": null,
-    "respRef": "FrameBootstrapVO",
+    "respRef": "ResultVoFrameBootstrapVO",
     "pathParams": []
   }
 ]

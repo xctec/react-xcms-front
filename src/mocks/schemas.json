@@ -5335,5 +5335,68 @@
         }
       }
     }
+  },
+  "ResultVoListMenuTreeVO": {
+    "type": "object",
+    "description": "统一 API 响应包装体（导航菜单树）",
+    "properties": {
+      "errorNo": {
+        "type": "string",
+        "description": "业务状态码，0 表示成功，非 0 表示业务错误",
+        "example": "0"
+      },
+      "errorMsg": {
+        "type": "string",
+        "description": "提示信息，成功或失败的描述文本",
+        "example": "success"
+      },
+      "data": {
+        "type": "array",
+        "description": "业务数据载体，成功时返回具体对象/集合，失败时通常为 null",
+        "items": {
+          "$ref": "#/components/schemas/MenuTreeVO"
+        }
+      }
+    }
+  },
+  "ResultVoFrameUserVO": {
+    "type": "object",
+    "description": "统一 API 响应包装体（当前用户资料）",
+    "properties": {
+      "errorNo": {
+        "type": "string",
+        "description": "业务状态码，0 表示成功，非 0 表示业务错误",
+        "example": "0"
+      },
+      "errorMsg": {
+        "type": "string",
+        "description": "提示信息，成功或失败的描述文本",
+        "example": "success"
+      },
+      "data": {
+        "$ref": "#/components/schemas/FrameUserVO",
+        "description": "业务数据载体，成功时返回具体对象/集合，失败时通常为 null"
+      }
+    }
+  },
+  "ResultVoFrameBootstrapVO": {
+    "type": "object",
+    "description": "统一 API 响应包装体（应用引导数据）",
+    "properties": {
+      "errorNo": {
+        "type": "string",
+        "description": "业务状态码，0 表示成功，非 0 表示业务错误",
+        "example": "0"
+      },
+      "errorMsg": {
+        "type": "string",
+        "description": "提示信息，成功或失败的描述文本",
+        "example": "success"
+      },
+      "data": {
+        "$ref": "#/components/schemas/FrameBootstrapVO",
+        "description": "业务数据载体，成功时返回具体对象/集合，失败时通常为 null"
+      }
+    }
   }
 }
