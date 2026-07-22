@@ -2,6 +2,8 @@ import { lazy, Suspense } from 'react'
 import { Loader2 } from 'lucide-react'
 import type { RouteObject } from 'react-router-dom'
 import { AppLayout } from '@/layouts/AppLayout'
+import { NotFound } from '@/views/error/NotFound'
+import { Unauthorized } from '@/views/error/Unauthorized'
 
 const LoginLazy = lazy(() => import('@/views/login').then((m) => ({ default: m.Login })))
 
@@ -30,5 +32,8 @@ export const routes: RouteObject[] = [
       </Suspense>
     ),
   },
+  // 状态页：全屏渲染，不套用主框架布局
+  { path: '/401', element: <Unauthorized /> },
+  { path: '/404', element: <NotFound /> },
   { path: '*', element: <AppLayout /> },
 ]

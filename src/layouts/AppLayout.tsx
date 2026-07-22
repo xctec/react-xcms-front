@@ -8,6 +8,7 @@ import { useBootstrap } from '@/lib/store/bootstrap'
 import { buildMenuRouteObjects } from '@/router/menuRoutes'
 import { Toaster } from '@/components/ui/sonner'
 import { getAccessToken, onUnauthorized } from '@/utils/request'
+import { NotFound } from '@/views/error/NotFound'
 
 /** 路由懒加载时的内容区占位 */
 function PageLoading() {
@@ -42,12 +43,12 @@ export function AppLayout() {
     () => [
       { index: true, element: <Navigate to={firstPath} replace /> },
       ...buildMenuRouteObjects(tree),
-      // 菜单就绪后才用兜底重定向；加载中/为空时渲染加载占位，避免误跳转
+      // 菜单就绪后未匹配路径渲染 404；加载中/为空时渲染加载占位，避免误跳转
       {
         path: '*',
         element: loading || items.length === 0
           ? <PageLoading />
-          : <Navigate to={firstPath} replace />,
+          : <NotFound />,
       },
     ],
     [tree, items, firstPath, loading],
@@ -77,9 +78,9 @@ export function AppLayout() {
     return () => window.removeEventListener('xcms:toggle-sidebar', handler)
   }, [])
 
-  // 后端返回 401 时跳回登录页
+  // 后端返回 401 时跳转到 401 专用页（页面内提供重新登录入口）
   useEffect(() => {
-    onUnauthorized(() => navigate('/login'))
+    onUnauthorized(() => navigate('/401', { replace: true }))
   }, [navigate])
 
   return (
