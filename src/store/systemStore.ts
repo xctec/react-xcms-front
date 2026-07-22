@@ -32,6 +32,8 @@ export interface SystemSettings {
   defaultMode: ThemeMode
   /** 默认语言 */
   locale: string
+  /** 默认租户 ID（登录页 URL 无 tenantId 时回退） */
+  defaultTenantId: number
 }
 
 /** 出厂默认配置；后端返回时按字段浅合并覆盖 */
@@ -45,6 +47,7 @@ export const DEFAULT_SYSTEM_SETTINGS: SystemSettings = {
   defaultBrand: DEFAULT_BRAND,
   defaultMode: 'light',
   locale: 'zh-CN',
+  defaultTenantId: 1,
 }
 
 /* ===================== document 写入辅助（SSR 安全） ===================== */

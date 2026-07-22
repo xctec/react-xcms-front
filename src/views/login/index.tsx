@@ -1,5 +1,5 @@
-import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useState, useMemo } from 'react'
+import { useNavigate, useSearchParams } from 'react-router-dom'
 import {
   Boxes, User, Lock, Eye, EyeOff, ArrowRight, ShieldCheck, Layers,
   Building2, KeyRound, Zap,
@@ -10,6 +10,7 @@ import { Label } from '@/components/ui/label'
 import { Checkbox } from '@/components/ui/checkbox'
 import { ThemeSwitcher } from '@/components/ThemeSwitcher'
 import { useUserStore } from '@/store/userStore'
+import { useSystemStore } from '@/store/systemStore'
 
 export function Login() {
   const [showPwd, setShowPwd] = useState(false)
@@ -20,6 +21,15 @@ export function Login() {
   const [password, setPassword] = useState('admin123')
 
   const navigate = useNavigate()
+  const [searchParams] = useSearchParams()
+
+  // 加载时解析租户：优先取 URL ?tenantId=，缺省回退系统默认
+  const tenantId = useMemo(() => {
+    const raw = searchParams.get('tenantId')
+    const parsed = raw != null ? Number(raw) : NaN
+    if (raw != null && !Number.isNaN(parsed) && parsed > 0) return parsed
+    return useSystemStore.getState().settings.defaultTenantId
+  }, [searchParams])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -30,7 +40,7 @@ export function Login() {
         loginId: username,
         credential: password,
         type: 'password',
-        tenantId: 1,
+        tenantId,
       })
       if (!result.ok) {
         setError(result.message)
