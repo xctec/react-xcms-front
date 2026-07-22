@@ -1,42 +1,16 @@
 import { useState } from 'react'
 import { Popover, PopoverTrigger, PopoverContent } from '@/components/ui/popover'
-import { ScrollArea } from '@/components/ui/scroll-area'
 import { Button } from '@/components/ui/button'
-import {
-  Bell, CircleCheck, ShieldAlert, ListTodo, MessageSquare, CheckCheck,
-  type LucideIcon,
-} from 'lucide-react'
+import { Bell, CheckCheck } from 'lucide-react'
 import { cn } from '@/lib/utils'
-
-type NType = 'system' | 'security' | 'task' | 'message'
-
-interface Notification {
-  id: string
-  type: NType
-  title: string
-  desc: string
-  time: string
-  read: boolean
-}
-
-const meta: Record<NType, { icon: LucideIcon; color: string }> = {
-  system: { icon: CircleCheck, color: 'text-brand-500 bg-brand-500/10' },
-  security: { icon: ShieldAlert, color: 'text-destructive bg-destructive/10' },
-  task: { icon: ListTodo, color: 'text-warning bg-warning/10' },
-  message: { icon: MessageSquare, color: 'text-emerald-500 bg-emerald-500/10' },
-}
-
-const initial: Notification[] = [
-  { id: '1', type: 'security', title: '异地登录提醒', desc: '账号 admin 于「上海」登录，如非本人操作请尽快修改密码', time: '2 分钟前', read: false },
-  { id: '2', type: 'task', title: '菜单授权待审批', desc: '角色「运营管理员」申请 3 项菜单权限，等待你审批', time: '15 分钟前', read: false },
-  { id: '3', type: 'system', title: '租户「华东工厂」已创建', desc: '模板复制完成，8 个菜单、12 个角色已就绪', time: '1 小时前', read: false },
-  { id: '4', type: 'message', title: '李某某 给你留言', desc: '组织机构调整方案已更新，请评审', time: '3 小时前', read: true },
-  { id: '5', type: 'system', title: '系统备份成功', desc: '每日 02:00 全量备份已完成', time: '昨天 02:00', read: true },
-  { id: '6', type: 'task', title: '字典项待同步', desc: '「证件类型」字典新增 2 项，等待发布', time: '昨天', read: true },
-]
+import {
+  INITIAL_NOTIFICATIONS,
+  notificationMeta,
+  type AppNotification,
+} from '@/data/notifications'
 
 export function NotificationBell({ onViewAll }: { onViewAll: () => void }) {
-  const [items, setItems] = useState<Notification[]>(initial)
+  const [items, setItems] = useState<AppNotification[]>(INITIAL_NOTIFICATIONS)
   const [filter, setFilter] = useState<'all' | 'unread'>('all')
   const [open, setOpen] = useState(false)
 
@@ -47,6 +21,13 @@ export function NotificationBell({ onViewAll }: { onViewAll: () => void }) {
     setItems((s) => s.map((i) => (i.id === id ? { ...i, read: true } : i)))
 
   const markAllRead = () => setItems((s) => s.map((i) => ({ ...i, read: true })))
+
+  // 点击单条：标记已读并进入通知中心
+  const openItem = (id: string) => {
+    markRead(id)
+    setOpen(false)
+    onViewAll()
+  }
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -61,9 +42,9 @@ export function NotificationBell({ onViewAll }: { onViewAll: () => void }) {
         </Button>
       </PopoverTrigger>
 
-      <PopoverContent align="end" className="w-80 p-0">
+      <PopoverContent align="end" className="w-80 flex max-h-[92vh] flex-col p-0">
         {/* 头部 */}
-        <div className="flex items-center justify-between border-b border-border px-4 py-3">
+        <div className="flex shrink-0 items-center justify-between border-b border-border px-4 py-3">
           <div className="flex items-center gap-2">
             <span className="text-sm font-semibold text-foreground">通知</span>
             {unread > 0 && (
@@ -83,7 +64,7 @@ export function NotificationBell({ onViewAll }: { onViewAll: () => void }) {
         </div>
 
         {/* 过滤 tab */}
-        <div className="flex items-center gap-1 border-b border-border px-3 py-2">
+        <div className="flex shrink-0 items-center gap-1 border-b border-border px-3 py-2">
           {(['all', 'unread'] as const).map((f) => (
             <button
               key={f}
@@ -100,19 +81,19 @@ export function NotificationBell({ onViewAll }: { onViewAll: () => void }) {
           ))}
         </div>
 
-        {/* 列表 */}
-        <ScrollArea className="max-h-80">
+        {/* 列表（可滚动区域；max-h + overflow 自包含，超出在内部滚动，不撑高 Popover） */}
+        <div className="min-h-0 flex-1 max-h-[60vh] overflow-y-auto">
           <div className="py-1">
             {list.length === 0 ? (
               <div className="px-4 py-10 text-center text-sm text-muted-foreground">没有未读通知</div>
             ) : (
               list.map((n) => {
-                const M = meta[n.type]
+                const M = notificationMeta[n.type]
                 const Icon = M.icon
                 return (
                   <button
                     key={n.id}
-                    onClick={() => markRead(n.id)}
+                    onClick={() => openItem(n.id)}
                     className={cn(
                       'flex w-full items-start gap-3 px-4 py-3 text-left transition-colors hover:bg-muted/60',
                       !n.read && 'bg-brand-500/[0.04]'
@@ -134,11 +115,18 @@ export function NotificationBell({ onViewAll }: { onViewAll: () => void }) {
               })
             )}
           </div>
-        </ScrollArea>
+        </div>
 
         {/* 底部 */}
-        <div className="border-t border-border p-2">
-          <Button variant="ghost" className="h-8 w-full justify-center text-xs text-muted-foreground" onClick={() => { setOpen(false); onViewAll() }}>
+        <div className="shrink-0 border-t border-border p-2">
+          <Button
+            variant="ghost"
+            className="h-8 w-full justify-center text-xs text-muted-foreground"
+            onClick={() => {
+              setOpen(false)
+              onViewAll()
+            }}
+          >
             查看全部通知
           </Button>
         </div>

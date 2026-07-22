@@ -205,7 +205,7 @@ export const STATIC_MENU: MenuTreeVO[] = [
     children: [
       { id: 41, menuType: 'D', name: '个人设置', routePath: '/profile', component: 'account/profile/index', icon: 'user', orderNum: 1 },
       { id: 42, menuType: 'D', name: '账号设置', routePath: '/account', component: 'account/settings/index', icon: 'settings', orderNum: 2 },
-      { id: 43, menuType: 'D', name: '通知中心', routePath: '/notifications', component: undefined, icon: 'bell', orderNum: 3 },
+      { id: 43, menuType: 'D', name: '通知中心', routePath: '/notifications', component: 'notification/index', icon: 'bell', orderNum: 3 },
     ],
   },
 ]
