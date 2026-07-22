@@ -9,6 +9,7 @@ import { buildMenuRouteObjects } from '@/router/menuRoutes'
 import { Toaster } from '@/components/ui/sonner'
 import { getAccessToken, onUnauthorized } from '@/utils/request'
 import { NotFound } from '@/views/error/NotFound'
+import { useSystemStore } from '@/store/systemStore'
 
 /** 路由懒加载时的内容区占位 */
 function PageLoading() {
@@ -27,6 +28,12 @@ export function AppLayout() {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
   const [commandOpen, setCommandOpen] = useState(false)
   const { tree, items, loading } = useBootstrap()
+  const sys = useSystemStore((s) => s.settings)
+
+  // 主框架挂载后装载系统设置（标题/meta/默认主题等），best-effort
+  useEffect(() => {
+    void useSystemStore.getState().hydrate()
+  }, [])
 
   // 登录态守卫：无 token 且当前非登录页，则跳转登录
   if (!getAccessToken() && location.pathname !== '/login') {
@@ -102,6 +109,10 @@ export function AppLayout() {
           {/* 菜单路由按需懒加载，Suspense 仅覆盖内容区，侧栏/顶栏不闪烁 */}
           <Suspense fallback={<PageLoading />}>{content}</Suspense>
         </main>
+        <footer className="shrink-0 border-t border-border bg-background px-4 py-2 text-center text-xs text-muted-foreground">
+          {sys.copyright}
+          {sys.icp ? <span className="ml-2">{sys.icp}</span> : null}
+        </footer>
       </div>
       <CommandPalette open={commandOpen} onOpenChange={setCommandOpen} items={items} />
       <Toaster />

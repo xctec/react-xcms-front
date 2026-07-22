@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { ChevronLeft, ChevronRight, Hexagon } from 'lucide-react'
 import type { AppMenuNode } from '@/router/menu'
 import { cn } from '@/lib/utils'
+import { useSystemStore } from '@/store/systemStore'
 
 interface SidebarProps {
   tree: AppMenuNode[]
@@ -38,6 +39,7 @@ function containsPath(node: AppMenuNode, path: string): boolean {
 
 export function Sidebar({ tree, currentPath, collapsed, onToggleCollapse }: SidebarProps) {
   const navigate = useNavigate()
+  const sys = useSystemStore((s) => s.settings)
   const [expanded, setExpanded] = useState<Record<string, boolean>>(() => computeExpanded(tree, currentPath))
 
   // 路由变化时，确保当前页所在的目录链自动展开
@@ -136,17 +138,21 @@ export function Sidebar({ tree, currentPath, collapsed, onToggleCollapse }: Side
       )}
     >
       <div className="flex items-center h-14 px-4 border-b border-sidebar-border shrink-0">
-        <div className="flex items-center gap-2.5 overflow-hidden">
-          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-brand-500 text-white shrink-0 shadow-sm">
-            <Hexagon className="h-4 w-4" />
-          </div>
-          {!collapsed && (
-            <div className="flex flex-col leading-tight">
-              <span className="text-sm font-bold text-foreground">XCMS</span>
-              <span className="text-[10px] text-muted-foreground">中台骨架 · v1.0</span>
+          <div className="flex items-center gap-2.5 overflow-hidden">
+            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-brand-500 text-white shrink-0 shadow-sm overflow-hidden">
+              {sys.logo ? (
+                <img src={sys.logo} alt={sys.name} className="h-full w-full object-cover" />
+              ) : (
+                <Hexagon className="h-4 w-4" />
+              )}
             </div>
-          )}
-        </div>
+            {!collapsed && (
+              <div className="flex flex-col leading-tight">
+                <span className="text-sm font-bold text-foreground">{sys.name}</span>
+                {sys.subtitle && <span className="text-[10px] text-muted-foreground">{sys.subtitle}</span>}
+              </div>
+            )}
+          </div>
       </div>
 
       <nav className="flex-1 overflow-y-auto overflow-x-hidden py-3">
