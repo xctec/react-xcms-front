@@ -18,7 +18,7 @@ function computeExpanded(tree: AppMenuNode[], path: string): Record<string, bool
     for (const n of nodes) {
       if (n.children?.length) {
         const hit = n.children.some(
-          (c) => (!c.children?.length && c.path === path) || containsPath(c, path),
+          (c) => (!c.children?.length && c.fullPath === path) || containsPath(c, path),
         )
         if (hit) map[n.key] = true
         walk(n.children)
@@ -31,9 +31,9 @@ function computeExpanded(tree: AppMenuNode[], path: string): Record<string, bool
 
 function containsPath(node: AppMenuNode, path: string): boolean {
   if (node.children?.length) {
-    return node.children.some((c) => (!c.children?.length && c.path === path) || containsPath(c, path))
+    return node.children.some((c) => (!c.children?.length && c.fullPath === path) || containsPath(c, path))
   }
-  return node.path === path
+  return node.fullPath === path
 }
 
 export function Sidebar({ tree, currentPath, collapsed, onToggleCollapse }: SidebarProps) {
@@ -50,8 +50,8 @@ export function Sidebar({ tree, currentPath, collapsed, onToggleCollapse }: Side
   const go = (node: AppMenuNode) => {
     if (node.jumpType === '2' && node.jumpTarget) {
       window.open(node.jumpTarget, '_blank')
-    } else if (node.path) {
-      navigate(node.path)
+    } else if (node.fullPath) {
+      navigate(node.fullPath)
     }
   }
 
@@ -61,7 +61,7 @@ export function Sidebar({ tree, currentPath, collapsed, onToggleCollapse }: Side
       .map((node) => {
         const Icon = node.icon
       const isCatalog = !!node.children?.length
-      const active = !isCatalog && currentPath === node.path
+      const active = !isCatalog && currentPath === node.fullPath
       const isOpen = expanded[node.key]
 
       // 收起态：仅以图标呈现，目录点击展开侧栏并展开该目录以便查看子项

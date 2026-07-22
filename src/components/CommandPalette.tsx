@@ -22,7 +22,7 @@ export function CommandPalette({ open, onOpenChange, items }: CommandPaletteProp
     const q = query.trim().toLowerCase()
     if (!q) return items
     return items.filter(
-      (it) => it.label.toLowerCase().includes(q) || it.path.toLowerCase().includes(q),
+      (it) => it.label.toLowerCase().includes(q) || (it.fullPath ?? '').toLowerCase().includes(q),
     )
   }, [query, items])
 
@@ -35,7 +35,7 @@ export function CommandPalette({ open, onOpenChange, items }: CommandPaletteProp
   }, [open])
 
   const run = (item?: AppMenuItem) => {
-    if (item) navigate(item.path)
+    if (item) navigate(item.fullPath ?? '/')
     onOpenChange(false)
   }
 
@@ -80,7 +80,7 @@ export function CommandPalette({ open, onOpenChange, items }: CommandPaletteProp
               const Icon = item.icon
               return (
                 <button
-                  key={item.path}
+                  key={item.fullPath ?? ''}
                   onMouseEnter={() => setActiveIndex(idx)}
                   onClick={() => run(item)}
                   className={cn(
@@ -90,7 +90,7 @@ export function CommandPalette({ open, onOpenChange, items }: CommandPaletteProp
                 >
                   <Icon className="h-4 w-4 text-muted-foreground shrink-0" />
                   <span className="flex-1 text-left truncate">{item.label}</span>
-                  <span className="text-[11px] text-muted-foreground/50">{item.path}</span>
+                  <span className="text-[11px] text-muted-foreground/50">{item.fullPath ?? ''}</span>
                 </button>
               )
             })

@@ -33,7 +33,7 @@ export function AppLayout() {
   }
 
   const currentPath = location.pathname
-  const firstPath = items[0]?.path || '/dashboard'
+  const firstPath = items[0]?.fullPath || '/dashboard'
 
   // 由动态菜单构建内容路由配置（独立路由上下文，绝对路径直接匹配）
   // 菜单未加载完成前，未匹配路径不急于重定向到首个菜单页——否则直接深链

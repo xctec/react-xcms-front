@@ -45,7 +45,7 @@ interface MenuTreeVO {
 
 /** 经前端加工后的菜单项（叶子节点 = 可导航页面） */
 export interface AppMenuItem {
-  /** 路由路径，用作导航与高亮的唯一键（如 /role） */
+  /** 真正用于导航 / 高亮的绝对路径（如 /system/org-unit），已按路由树拼接父路径 */
   path: string
   label: string
   icon: LucideIcon
@@ -58,6 +58,8 @@ export interface AppMenuItem {
   jumpTarget?: string
   /** 是否为已实现的页面（false 走占位页） */
   ready: boolean
+  /** 真正用于导航 / 路由注册的绝对路径（与 AppMenuNode.fullPath 一致） */
+  fullPath?: string
 }
 
 /**
@@ -69,8 +71,10 @@ export interface AppMenuNode {
   key: string
   label: string
   icon: LucideIcon
-  /** 站内路由路径（目录节点可能为空） */
+  /** 原始 routePath（可能相对，也可能绝对，仅用于路由生成参考） */
   path?: string
+  /** 真正用于导航 / 高亮 / 路由注册的绝对路径（已按路由树拼接父路径） */
+  fullPath?: string
   component?: string
   /** 后端菜单编码，用作路由与高亮的唯一键 */
   code?: string
@@ -112,7 +116,23 @@ function resolveIcon(name?: string): LucideIcon {
 
 /* ============================ 菜单树 -> 递归节点树 ============================ */
 
-function toNode(node: MenuTreeVO, parentKey: string, index: number): AppMenuNode {
+/**
+ * 按 react-router 的路由解析规则，由父路径 + 本节点 routePath 计算真正可用于
+ * 导航 / 路由注册的绝对路径：
+ *   - routePath 以 '/' 开头 → 作为根路径，忽略父路径（与 react-router 一致）
+ *   - routePath 为相对片段 → 拼接到父路径之后（去掉多余斜杠）
+ *   - routePath 为空（纯目录分组）→ 继承父路径（其子节点继续在此路径下拼接）
+ * 这样无论后端下发的是相对还是绝对 routePath，前端导航、高亮、路由三者始终一致。
+ */
+function resolveFullPath(parentPath: string | undefined, routePath?: string): string | undefined {
+  if (!routePath) return parentPath
+  const clean = routePath.replace(/\/+$/, '') || '/'
+  if (clean.startsWith('/')) return clean
+  const base = (parentPath || '').replace(/\/+$/, '')
+  return base ? `${base}/${clean}` : `/${clean}`
+}
+
+function toNode(node: MenuTreeVO, parentKey: string, index: number, parentPath?: string): AppMenuNode {
   const children = (node.children || []).filter(
     (c) => c.menuType !== 'B' && c.showStatus !== '0',
   )
@@ -120,11 +140,13 @@ function toNode(node: MenuTreeVO, parentKey: string, index: number): AppMenuNode
   const code = node.code
   const key = `${parentKey}${parentKey ? '-' : ''}${code ?? node.id ?? node.name ?? index}`
   const hasChildren = children.length > 0
+  const fullPath = resolveFullPath(parentPath, node.routePath)
   return {
     key,
     label: node.name || '',
     icon: resolveIcon(node.icon),
     path: node.routePath,
+    fullPath,
     component: node.component,
     code,
     hidden: node.hidden,
@@ -133,7 +155,7 @@ function toNode(node: MenuTreeVO, parentKey: string, index: number): AppMenuNode
     // 已实现：后端返回了 component 且该 component 对应的视图文件已被打包（glob 命中）
     ready: Boolean(node.component && viewModules[`../views/${node.component}.tsx`]),
     // 只要含可见子节点即为目录（M 嵌套 M 任意层均支持）
-    children: hasChildren ? children.map((c, i) => toNode(c, key, i)) : undefined,
+    children: hasChildren ? children.map((c, i) => toNode(c, key, i, fullPath)) : undefined,
   }
 }
 
@@ -144,14 +166,14 @@ export function toMenuTree(tree: MenuTreeVO[], keyPrefix = ''): AppMenuNode[] {
     .map((n, i) => toNode(n, keyPrefix, i))
 }
 
-/** 扁平化所有可导航叶子菜单项，供命令面板 / 路由使用（跳过 hidden 节点） */
+/** 扁平化所有可导航叶子菜单项，供命令面板 / 路由使用（跳过 hidden 节点与无路径叶子） */
 export function flattenMenuItems(nodes: AppMenuNode[]): AppMenuItem[] {
   const out: AppMenuItem[] = []
   const walk = (ns: AppMenuNode[]) => {
     for (const n of ns) {
       if (n.hidden) continue
       if (n.children?.length) walk(n.children)
-      else out.push({ path: n.path || '', label: n.label, icon: n.icon, component: n.component, code: n.code, jumpType: n.jumpType, jumpTarget: n.jumpTarget, ready: n.ready })
+      else if (n.fullPath) out.push({ path: n.fullPath, label: n.label, icon: n.icon, component: n.component, code: n.code, jumpTarget: n.jumpTarget, jumpType: n.jumpType, ready: n.ready, fullPath: n.fullPath })
     }
   }
   walk(nodes)
@@ -161,7 +183,7 @@ export function flattenMenuItems(nodes: AppMenuNode[]): AppMenuItem[] {
 /** 由当前路径反查从根到该节点的链路，用于面包屑 */
 export function findMenuChain(tree: AppMenuNode[], path: string): AppMenuNode[] {
   for (const n of tree) {
-    if (!n.children?.length && n.path === path) return [n]
+    if (!n.children?.length && n.fullPath === path) return [n]
     if (n.children?.length) {
       const sub = findMenuChain(n.children, path)
       if (sub.length) return [n, ...sub]
