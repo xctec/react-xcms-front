@@ -46,65 +46,12 @@ export const handlers = endpoints.map((e: any) => {
 })
 
 /* ============================================================================
- * 自定义 Mock：补齐 OpenAPI 中缺失、但前端页面需要的端点（已记入 docs/negotiation.md）
- * - GET  /api/org-unit/tree      组织机构树（openapi 无 org-unit 模块）
- * - POST /api/platform/user/page 平台用户分页（openapi 无 platform-user 模块）
- * 待后端补齐真实接口后，可直接删除此处自定义 handler。
+ * 自定义 Mock：自动生成器无法产出正确业务结构的端点，须手写返回。
+ * - GET /api/frame/menu  动态菜单树（含 routePath/component/code，须与前端视图路径一致，
+ *                          自动生成器只能产出随机数据，故手写 menuTree）
+ * 注：/api/org-unit/tree、/api/platform/user/page 此前也在此手写，但已确认它们分别对应
+ *     openapi 的 /api/org/unit/tree 与 /api/user/page，现已改回使用自动生成的通用 handler。
  * ========================================================================== */
-
-// 组织机构树（确定性手写数据，便于前端联调）
-const orgTree: any[] = [
-  {
-    id: 1, parentId: 0, code: 'HQ', name: '中台中心', nodeDesc: '集团总部', treeLevel: 0,
-    orgUnitStatus: '0', children: [
-      {
-        id: 11, parentId: 1, code: 'RD', name: '研发中心', nodeDesc: '负责平台研发', treeLevel: 1,
-        orgUnitStatus: '0', children: [
-          { id: 111, parentId: 11, code: 'FE', name: '前端组', nodeDesc: '', treeLevel: 2, orgUnitStatus: '0', children: [] },
-          { id: 112, parentId: 11, code: 'BE', name: '后端组', nodeDesc: '', treeLevel: 2, orgUnitStatus: '0', children: [] },
-        ],
-      },
-      {
-        id: 12, parentId: 1, code: 'OPS', name: '运营中心', nodeDesc: '负责客户与运营', treeLevel: 1,
-        orgUnitStatus: '0', children: [
-          { id: 121, parentId: 12, code: 'CUS', name: '客户成功组', nodeDesc: '', treeLevel: 2, orgUnitStatus: '0', children: [] },
-        ],
-      },
-      {
-        id: 13, parentId: 1, code: 'FIN', name: '财务中心', nodeDesc: '财务与合规', treeLevel: 1,
-        orgUnitStatus: '1', children: [],
-      },
-    ],
-  },
-  {
-    id: 2, parentId: 0, code: 'EAST', name: '华东制造工厂', nodeDesc: '生产制造租户', treeLevel: 0,
-    orgUnitStatus: '0', children: [
-      { id: 21, parentId: 2, code: 'PROD', name: '生产部', nodeDesc: '', treeLevel: 1, orgUnitStatus: '0', children: [] },
-      { id: 22, parentId: 2, code: 'QA', name: '质检部', nodeDesc: '', treeLevel: 1, orgUnitStatus: '0', children: [] },
-    ],
-  },
-  {
-    id: 3, parentId: 0, code: 'SOUTH', name: '华南物流', nodeDesc: '物流租户', treeLevel: 0,
-    orgUnitStatus: '0', children: [
-      { id: 31, parentId: 3, code: 'DISP', name: '调度组', nodeDesc: '', treeLevel: 1, orgUnitStatus: '0', children: [] },
-    ],
-  },
-]
-
-const platformUsers: any[] = Array.from({ length: 23 }, (_, i) => {
-  const id = i + 1
-  const tenants = ['PLATFORM', 'EAST-FACTORY', 'SOUTH-LOGI', 'WEST-RETAIL']
-  const tenant = tenants[id % tenants.length]
-  const allRoles = [['超级管理员'], ['租户管理员', '运营管理员'], ['审核员'], ['普通员工'], ['系统服务'], ['普通员工']]
-  return {
-    id,
-    loginId: ['admin', 'lihua', 'wang', 'zhao', 'svc-billing', 'chen'][i % 6] + (id > 6 ? String(id) : ''),
-    name: ['超级管理员', '李华', '王芳', '赵敏', '计费服务', '陈杰'][i % 6] + (id > 6 ? String(id) : ''),
-    tenant,
-    roles: allRoles[i % allRoles.length],
-    status: id % 7 === 4 ? 'inactive' : 'active',
-  }
-})
 
 /* 后端菜单接口：只返回「动态菜单」部分（系统管理 / 平台管理 等后台功能）。
  * 工作区、个人中心为前端静态路由，由 STATIC_MENU 内置，服务端不返回，避免重复。 */
@@ -165,22 +112,6 @@ const customHandlers = [
   http.get(API_BASE + '/api/frame/menu', () =>
     HttpResponse.json({ errorNo: '0', errorMsg: 'success', data: menuTree }),
   ),
-  http.get(API_BASE + '/api/org-unit/tree', () =>
-    HttpResponse.json({ errorNo: '0', errorMsg: 'success', data: orgTree }),
-  ),
-  http.post(API_BASE + '/api/platform/user/page', async ({ request }) => {
-    const body = (await request.clone().json().catch(() => ({}))) as any
-    const { pageNum: pageNo, pageSize } = readPageParams(body)
-    const kw = (body.keyword || '').toLowerCase()
-    const filtered = kw
-      ? platformUsers.filter((u) => u.loginId.toLowerCase().includes(kw) || u.name.toLowerCase().includes(kw))
-      : platformUsers
-    const start = (pageNo - 1) * pageSize
-    return HttpResponse.json({
-      errorNo: '0', errorMsg: 'success',
-      data: { total: filtered.length, data: filtered.slice(start, start + pageSize) },
-    })
-  }),
 ]
 
 export const allHandlers = [...handlers, ...customHandlers]

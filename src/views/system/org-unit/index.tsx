@@ -63,7 +63,7 @@ export function OrgUnit() {
   const [expanded, setExpanded] = useState<Set<string>>(new Set(['1', '2', '3']))
 
   const { data, loading } = useApi<OrgUnitTreeResp>(
-    () => (apiClient.GET as any)('/api/org-unit/tree', {}),
+    () => (apiClient.GET as any)('/api/org/unit/tree', {}),
     [],
   )
   const tree = (data?.data || []).map(toRow)

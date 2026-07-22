@@ -14,6 +14,8 @@ import { cn } from '@/lib/utils'
 import { Plus, RefreshCw, MoreHorizontal, Pencil, Trash2, Users, Building2 } from 'lucide-react'
 import { apiClient } from '@/utils/request'
 import { usePaged } from '@/lib/api/hooks'
+import type { components } from '@/lib/api/schema'
+type UserDto = components['schemas']['UserDto']
 
 interface PUser {
   id: number
@@ -23,6 +25,16 @@ interface PUser {
   roles: string[]
   status: 'active' | 'inactive'
 }
+
+// 后端 /api/user/page 返回 UserDto：含 loginId/nickName/userStatus，tenant/roles 当前未返回，待后端补充
+const toPUser = (u: UserDto): PUser => ({
+  id: u.id ?? 0,
+  loginId: u.loginId ?? '',
+  name: u.nickName || u.loginId || '',
+  tenant: (u as any).tenant ?? '',
+  roles: (u as any).roles ?? [],
+  status: u.userStatus === '1' ? 'active' : 'inactive',
+})
 
 const tenantName: Record<string, string> = {
   PLATFORM: '中台中心',
@@ -38,12 +50,14 @@ export function PlatformUser() {
   const [keyword, setKeyword] = useState('')
   const [tenant, setTenant] = useState('all')
 
-  const { list, total, loading } = usePaged<PUser>(
-    () => (apiClient.POST as any)('/api/platform/user/page', {
+  const { list: rawUsers, total, loading } = usePaged<UserDto>(
+    () => apiClient.POST('/api/user/page', {
       body: { pageNo: page, pageSize, keyword: keyword || undefined },
     }),
     [page, pageSize, keyword],
   )
+
+  const list = rawUsers.map(toPUser)
 
   const fetched = list.filter((u) => tenant === 'all' || u.tenant === tenant)
   const shownTotal = tenant === 'all' ? total : fetched.length
@@ -55,7 +69,7 @@ export function PlatformUser() {
     next.has(id) ? next.delete(id) : next.add(id)
     setSelected(next)
   }
-  const tenantOptions = ['all', ...Array.from(new Set(list.map((u) => u.tenant)))]
+  const tenantOptions = ['all', ...Array.from(new Set(list.map((u) => u.tenant).filter(Boolean)))]
 
   return (
     <div className="flex flex-col h-full">
