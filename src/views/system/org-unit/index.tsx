@@ -65,7 +65,7 @@ export function OrgUnit() {
   const [reloadKey, setReloadKey] = useState(0)
 
   const { data, loading } = useApi<OrgUnitTreeResp>(
-    () => (apiClient.GET as any)('/api/org/unit/tree', {}),
+    () => apiClient.POST('/api/org/unit/tree', { body: { keyword: keyword || undefined } } as any),
     [reloadKey],
   )
   const tree = (data?.data || []).map(toRow)
