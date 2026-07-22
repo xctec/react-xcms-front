@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react'
 import type { components } from '@/lib/api/schema'
-import { useMenus, type MenuState } from '@/lib/menu'
-import { useUserStore } from '@/lib/store/userStore'
+import { useMenus } from '@/hooks/useMenus'
+import type { MenuState } from '@/router/menu'
+import { useUserStore } from '@/store/userStore'
 
 /**
  * 应用引导：登录成功后一次性拉取 user + 菜单树（/api/frame/bootstrap），

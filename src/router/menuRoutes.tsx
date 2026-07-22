@@ -1,6 +1,6 @@
 import type { RouteObject } from 'react-router-dom'
-import type { AppMenuNode } from '@/lib/menu'
-import { lazyView } from '@/lib/menu'
+import type { AppMenuNode } from '@/router/menu'
+import { lazyView } from '@/router/menu'
 import { Placeholder } from './Placeholder'
 
 /**

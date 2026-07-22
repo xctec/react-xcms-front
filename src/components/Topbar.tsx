@@ -1,7 +1,7 @@
 import { Fragment } from 'react'
 import { useNavigate } from 'react-router-dom'
-import type { AppMenuNode } from '@/lib/menu'
-import { findMenuChain } from '@/lib/menu'
+import type { AppMenuNode } from '@/router/menu'
+import { findMenuChain } from '@/router/menu'
 import { cn } from '@/lib/utils'
 import { ThemeSwitcher } from './ThemeSwitcher'
 import { NotificationBell } from './NotificationBell'
@@ -13,7 +13,7 @@ import {
   DropdownMenuSeparator, DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import { apiClient, clearTokens, getAccessToken } from '@/utils/request'
-import { useUserStore } from '@/lib/store/userStore'
+import { useUserStore } from '@/store/userStore'
 
 interface TopbarProps {
   tree: AppMenuNode[]

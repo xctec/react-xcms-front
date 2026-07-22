@@ -1,4 +1,4 @@
-import { XcmsThemeProvider } from '@/lib/theme'
+import { XcmsThemeProvider } from '@/theme'
 import { AppRouter } from '@/router'
 
 export default function App() {

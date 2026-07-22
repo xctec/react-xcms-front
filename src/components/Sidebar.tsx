@@ -1,7 +1,7 @@
 import { useEffect, useState, type ReactNode } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { ChevronLeft, ChevronRight, Hexagon } from 'lucide-react'
-import type { AppMenuNode } from '@/lib/menu'
+import type { AppMenuNode } from '@/router/menu'
 import { cn } from '@/lib/utils'
 
 interface SidebarProps {

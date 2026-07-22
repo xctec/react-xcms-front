@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import type { AppMenuItem } from '@/lib/menu'
+import type { AppMenuItem } from '@/router/menu'
 import { Dialog, DialogContent } from '@/components/ui/dialog'
 import { Input } from '@/components/ui/input'
 import { LogOut, Search } from 'lucide-react'
