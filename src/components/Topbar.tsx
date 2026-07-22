@@ -13,6 +13,7 @@ import {
   DropdownMenuSeparator, DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import { apiClient, clearTokens, getAccessToken } from '@/utils/request'
+import { useUserStore } from '@/lib/store/userStore'
 
 interface TopbarProps {
   tree: AppMenuNode[]
@@ -23,9 +24,14 @@ interface TopbarProps {
 
 export function Topbar({ tree, currentPath, onToggleSidebar, onOpenCommand }: TopbarProps) {
   const navigate = useNavigate()
+  const user = useUserStore((s) => s.user)
+  const resetUser = useUserStore((s) => s.reset)
 
   // 由当前路径反查从根到该节点的链路，用于多级面包屑
   const chain = findMenuChain(tree, currentPath)
+
+  const displayName = user?.nickName || user?.loginId || '未登录'
+  const initial = (user?.nickName?.[0] || user?.loginId?.[0] || '?').toUpperCase()
 
   const handleLogout = () => {
     const token = getAccessToken()
@@ -34,6 +40,7 @@ export function Topbar({ tree, currentPath, onToggleSidebar, onOpenCommand }: To
       apiClient.POST('/api/auth/logout', { body: { accessToken: token } }).catch(() => {})
     }
     clearTokens()
+    resetUser()
     navigate('/login')
   }
 
@@ -86,13 +93,18 @@ export function Topbar({ tree, currentPath, onToggleSidebar, onOpenCommand }: To
             <button className="flex items-center gap-2 rounded-md px-1 py-1 transition-colors hover:bg-muted">
               <Avatar className="h-8 w-8 ring-2 ring-border">
                 <AvatarFallback className="bg-brand-500/15 text-brand-700 dark:text-brand-400 text-xs font-semibold">
-                  SA
+                  {initial}
                 </AvatarFallback>
               </Avatar>
             </button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="w-48">
-            <DropdownMenuLabel>Admin · 超级管理员</DropdownMenuLabel>
+            <DropdownMenuLabel>
+              {displayName}
+              {user?.tenantName ? (
+                <span className="block text-xs font-normal text-muted-foreground truncate">{user.tenantName}</span>
+              ) : null}
+            </DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuItem onSelect={() => navigate('/profile')}>个人设置</DropdownMenuItem>
             <DropdownMenuItem onSelect={() => navigate('/account')}>账号设置</DropdownMenuItem>

@@ -9,7 +9,7 @@ function AppRoutes() {
 
 export function AppRouter() {
   return (
-    <BrowserRouter>
+    <BrowserRouter future={{ v7_relativeSplatPath: true }}>
       <AppRoutes />
     </BrowserRouter>
   )

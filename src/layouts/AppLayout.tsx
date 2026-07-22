@@ -4,7 +4,7 @@ import { Loader2 } from 'lucide-react'
 import { Sidebar } from '@/components/Sidebar'
 import { Topbar } from '@/components/Topbar'
 import { CommandPalette } from '@/components/CommandPalette'
-import { useMenus } from '@/lib/menu'
+import { useBootstrap } from '@/lib/store/bootstrap'
 import { buildMenuRouteObjects } from '@/router/menuRoutes'
 import { Toaster } from '@/components/ui/sonner'
 import { getAccessToken, onUnauthorized } from '@/utils/request'
@@ -25,7 +25,7 @@ export function AppLayout() {
   const location = useLocation()
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
   const [commandOpen, setCommandOpen] = useState(false)
-  const { tree, items, loading } = useMenus()
+  const { tree, items, loading } = useBootstrap()
 
   // 登录态守卫：无 token 且当前非登录页，则跳转登录
   if (!getAccessToken() && location.pathname !== '/login') {
