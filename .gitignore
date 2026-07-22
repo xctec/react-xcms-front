@@ -1,1 +1,5 @@
 node_modules
+debug_results.txt
+*.log
+dist/
+openapi.json

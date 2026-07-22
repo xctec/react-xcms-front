@@ -1,7 +1,7 @@
 import { http, HttpResponse } from 'msw'
 import endpoints from './endpoints.json'
 import { genResultVo, makeRng, hash } from './mockGen'
-import { API_BASE } from '../lib/api/client'
+import { API_BASE } from '@/utils/request'
 
 const toMswPath = (p: string) => API_BASE + p.replace(/\{(\w+)\}/g, ':$1')
 
@@ -106,7 +106,51 @@ const platformUsers: any[] = Array.from({ length: 23 }, (_, i) => {
   }
 })
 
+/* 后端菜单接口：返回前端动态渲染路由所需的菜单树（M=目录，D=页面） */
+const menuTree: any[] = [
+  {
+    id: 1, menuType: 'M', name: '工作区', orderNum: 1,
+    children: [{ id: 11, menuType: 'D', name: '工作台', routePath: '/dashboard', component: 'dashboard', icon: 'dashboard', orderNum: 1 }],
+  },
+  {
+    id: 2, menuType: 'M', name: '系统管理', orderNum: 2,
+    children: [
+      { id: 21, menuType: 'D', name: '租户账户/成员', routePath: '/tenant-user', component: 'tenant-user', icon: 'users', orderNum: 1 },
+      { id: 22, menuType: 'D', name: '角色管理', routePath: '/role', component: 'role', icon: 'shield', orderNum: 2 },
+      { id: 23, menuType: 'D', name: '组织机构', routePath: '/org-unit', component: 'org-unit', icon: 'network', orderNum: 3 },
+      { id: 24, menuType: 'D', name: '菜单管理', routePath: '/menu', component: 'menu', icon: 'menu', orderNum: 4 },
+      { id: 25, menuType: 'D', name: '字典类型', routePath: '/dict-type', component: 'dict-type', icon: 'book', orderNum: 5 },
+      { id: 26, menuType: 'D', name: '角色分组', routePath: '/role-group', component: 'role-group', icon: 'group', orderNum: 6 },
+      { id: 27, menuType: 'D', name: '登录日志', routePath: '/login-log', component: 'login-log', icon: 'login', orderNum: 7 },
+      { id: 28, menuType: 'D', name: '操作日志', routePath: '/sys-log', component: 'sys-log', icon: 'file', orderNum: 8 },
+    ],
+  },
+  {
+    id: 3, menuType: 'M', name: '平台管理', orderNum: 3,
+    children: [
+      { id: 31, menuType: 'D', name: '租户管理', routePath: '/tenant', component: 'tenant', icon: 'building', orderNum: 1 },
+      { id: 32, menuType: 'D', name: '角色模板', routePath: '/role-template', component: 'role-template', icon: 'key', orderNum: 2 },
+      { id: 33, menuType: 'D', name: '菜单模板', routePath: '/menu-template', component: 'menu-template', icon: 'layers', orderNum: 3 },
+      { id: 34, menuType: 'D', name: '字典模板', routePath: '/dict-template', component: 'dict-template', icon: 'database', orderNum: 4 },
+      { id: 35, menuType: 'D', name: 'Token 管理', routePath: '/token-admin', component: 'token-admin', icon: 'fingerprint', orderNum: 5 },
+      { id: 36, menuType: 'D', name: '用户池', routePath: '/user-pool', component: 'user-pool', icon: 'boxes', orderNum: 6 },
+      { id: 37, menuType: 'D', name: '平台用户', routePath: '/platform-user', component: 'platform-user', icon: 'user-cog', orderNum: 7 },
+    ],
+  },
+  {
+    id: 4, menuType: 'M', name: '个人中心', orderNum: 9,
+    children: [
+      { id: 41, menuType: 'D', name: '个人设置', routePath: '/profile', component: 'profile', icon: 'user', orderNum: 1 },
+      { id: 42, menuType: 'D', name: '账号设置', routePath: '/account', component: 'account', icon: 'settings', orderNum: 2 },
+      { id: 43, menuType: 'D', name: '通知中心', routePath: '/notifications', icon: 'bell', orderNum: 3 },
+    ],
+  },
+]
+
 const customHandlers = [
+  http.get(API_BASE + '/api/frame/menu', () =>
+    HttpResponse.json({ errorNo: '0', errorMsg: 'success', data: menuTree }),
+  ),
   http.get(API_BASE + '/api/org-unit/tree', () =>
     HttpResponse.json({ errorNo: '0', errorMsg: 'success', data: orgTree }),
   ),

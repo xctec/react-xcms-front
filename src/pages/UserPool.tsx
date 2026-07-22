@@ -13,7 +13,7 @@ import {
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { cn } from '@/lib/utils'
 import { Plus, RefreshCw, MoreHorizontal, Pencil, Trash2, Users, Building2, Globe, MessageSquare, Send } from 'lucide-react'
-import { apiClient } from '@/lib/api/client'
+import { apiClient } from '@/utils/request'
 import { usePaged } from '@/lib/api/hooks'
 import type { components } from '@/lib/api/schema'
 

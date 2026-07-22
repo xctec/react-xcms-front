@@ -12,7 +12,7 @@ import {
   DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import { RefreshCw, MoreHorizontal, Monitor, MapPin, Clock } from 'lucide-react'
-import { apiClient } from '@/lib/api/client'
+import { apiClient } from '@/utils/request'
 import { usePaged } from '@/lib/api/hooks'
 import type { components } from '@/lib/api/schema'
 

@@ -11,4 +11,13 @@ export default defineConfig({
       "@": path.resolve(__dirname, "./src"),
     },
   },
+  server: {
+    proxy: {
+      // 开发期将 /api 转发到真实后端，避免浏览器跨域
+      "/api": {
+        target: "http://localhost:12000",
+        changeOrigin: true,
+      },
+    },
+  },
 });

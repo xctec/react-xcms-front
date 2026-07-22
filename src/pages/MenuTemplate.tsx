@@ -9,7 +9,7 @@ import { Plus, RefreshCw, Pencil, Trash2, Grid2x2, ChevronRight, ChevronDown, Fo
 import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from '@/components/ui/select'
-import { apiClient } from '@/lib/api/client'
+import { apiClient } from '@/utils/request'
 import { usePaged } from '@/lib/api/hooks'
 import type { components } from '@/lib/api/schema'
 

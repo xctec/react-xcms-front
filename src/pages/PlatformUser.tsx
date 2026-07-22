@@ -12,7 +12,7 @@ import {
 } from '@/components/ui/dropdown-menu'
 import { cn } from '@/lib/utils'
 import { Plus, RefreshCw, MoreHorizontal, Pencil, Trash2, Users, Building2 } from 'lucide-react'
-import { apiClient } from '@/lib/api/client'
+import { apiClient } from '@/utils/request'
 import { usePaged } from '@/lib/api/hooks'
 
 interface PUser {

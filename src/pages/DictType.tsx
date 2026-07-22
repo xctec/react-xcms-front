@@ -14,7 +14,7 @@ import {
   Plus, Search, ChevronRight, ChevronDown, RefreshCw, MoreHorizontal,
   Pencil, Trash2, Lock, BookOpen, PencilLine,
 } from 'lucide-react'
-import { apiClient } from '@/lib/api/client'
+import { apiClient } from '@/utils/request'
 import { usePaged } from '@/lib/api/hooks'
 import type { components } from '@/lib/api/schema'
 

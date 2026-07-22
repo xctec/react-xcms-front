@@ -6,7 +6,7 @@ import {
   Table, TableBody, TableCell, TableHead, TableHeader, TableRow,
 } from '@/components/ui/table'
 import { Building2, Users2, UserSquare2, Plus, RefreshCw, Pencil, Trash2, UserPlus, ChevronRight, ChevronDown } from 'lucide-react'
-import { apiClient } from '@/lib/api/client'
+import { apiClient } from '@/utils/request'
 import { useApi } from '@/lib/api/hooks'
 
 type OrgType = 'company' | 'dept' | 'team'

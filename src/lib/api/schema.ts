@@ -6905,6 +6905,21 @@ export interface components {
              */
             children?: components["schemas"]["MenuTreeVO"][];
         };
+        /** @description 统一 API 响应包装体 */
+        ResultVoListMenuTreeVO: {
+            /**
+             * @description 业务状态码，0 表示成功，非 0 表示业务错误
+             * @example 0
+             */
+            errorNo?: string;
+            /**
+             * @description 提示信息，成功或失败的描述文本
+             * @example success
+             */
+            errorMsg?: string;
+            /** @description 业务数据载体，成功时返回具体对象/集合，失败时通常为 null */
+            data?: components["schemas"]["MenuTreeVO"][];
+        };
         /** @description 当前登录用户基础资料（frame 用，不含密码等敏感字段） */
         FrameUserVO: {
             /**
@@ -6971,32 +6986,7 @@ export interface components {
              */
             perms?: string[];
         };
-        /** @description 应用外壳(frame)引导数据聚合体 */
-        FrameBootstrapVO: {
-            /** @description 当前用户资料（含角色名、权限码） */
-            user?: components["schemas"]["FrameUserVO"];
-            /**
-             * @description 当前租户下当前用户可见的导航菜单树（仅目录/菜单）
-             * @example []
-             */
-            menus?: components["schemas"]["MenuTreeVO"][];
-        };
-        /** @description 统一 API 响应包装体（导航菜单树） */
-        ResultVoListMenuTreeVO: {
-            /**
-             * @description 业务状态码，0 表示成功，非 0 表示业务错误
-             * @example 0
-             */
-            errorNo?: string;
-            /**
-             * @description 提示信息，成功或失败的描述文本
-             * @example success
-             */
-            errorMsg?: string;
-            /** @description 业务数据载体，成功时返回具体对象/集合，失败时通常为 null */
-            data?: components["schemas"]["MenuTreeVO"][];
-        };
-        /** @description 统一 API 响应包装体（当前用户资料） */
+        /** @description 统一 API 响应包装体 */
         ResultVoFrameUserVO: {
             /**
              * @description 业务状态码，0 表示成功，非 0 表示业务错误
@@ -7011,7 +7001,17 @@ export interface components {
             /** @description 业务数据载体，成功时返回具体对象/集合，失败时通常为 null */
             data?: components["schemas"]["FrameUserVO"];
         };
-        /** @description 统一 API 响应包装体（应用引导数据） */
+        /** @description 应用外壳(frame)引导数据聚合体 */
+        FrameBootstrapVO: {
+            /** @description 当前用户资料（含角色名、权限码） */
+            user?: components["schemas"]["FrameUserVO"];
+            /**
+             * @description 当前租户下当前用户可见的导航菜单树（仅目录/菜单）
+             * @example []
+             */
+            menus?: components["schemas"]["MenuTreeVO"][];
+        };
+        /** @description 统一 API 响应包装体 */
         ResultVoFrameBootstrapVO: {
             /**
              * @description 业务状态码，0 表示成功，非 0 表示业务错误
@@ -10523,7 +10523,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["FrameUserVO"];
+                    "*/*": components["schemas"]["ResultVoFrameUserVO"];
                 };
             };
         };

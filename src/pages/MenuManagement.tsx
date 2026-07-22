@@ -9,7 +9,7 @@ import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from '@/components/ui/select'
 import { Folder, SquareMenu, Command, Plus, RefreshCw, Pencil, Trash2, Lock, ChevronRight, ChevronDown } from 'lucide-react'
-import { apiClient } from '@/lib/api/client'
+import { apiClient } from '@/utils/request'
 import { useApi } from '@/lib/api/hooks'
 import type { components } from '@/lib/api/schema'
 

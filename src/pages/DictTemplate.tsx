@@ -6,7 +6,7 @@ import {
   Table, TableBody, TableCell, TableHead, TableHeader, TableRow,
 } from '@/components/ui/table'
 import { Plus, RefreshCw, Pencil, Trash2, Layers, ChevronRight, ChevronDown, Lock } from 'lucide-react'
-import { apiClient } from '@/lib/api/client'
+import { apiClient } from '@/utils/request'
 import { useApi } from '@/lib/api/hooks'
 import type { components } from '@/lib/api/schema'
 

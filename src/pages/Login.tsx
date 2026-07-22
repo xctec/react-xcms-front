@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import {
   Boxes, User, Lock, Eye, EyeOff, ArrowRight, ShieldCheck, Layers,
   Building2, KeyRound, Zap,
@@ -8,20 +9,59 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Checkbox } from '@/components/ui/checkbox'
 import { ThemeSwitcher } from '@/components/ThemeSwitcher'
+import { apiClient, setTokens } from '@/utils/request'
 
-export function Login({ onNavigate }: { onNavigate: (p: string) => void }) {
+export function Login() {
   const [showPwd, setShowPwd] = useState(false)
   const [remember, setRemember] = useState(true)
   const [loading, setLoading] = useState(false)
+  const [error, setError] = useState<string | undefined>(undefined)
+  const [username, setUsername] = useState('admin')
+  const [password, setPassword] = useState('admin123')
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const navigate = useNavigate()
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setLoading(true)
-    // 原型演示：模拟登录请求后进入控制台
-    setTimeout(() => {
+    setError(undefined)
+    try {
+      // axios 封装统一返回 { data, error, response }：HTTP 非 2xx 时响应体在 error 中，
+      // 2xx 时响应体在 data 中（即后端 ResultVo）。
+      const res = await apiClient.POST<{
+        errorNo?: string
+        errorMsg?: string
+        data?: { accessToken?: string; refreshToken?: string }
+      }>('/api/auth/login', {
+        body: { loginId: username, credential: password, type: 'password', tenantId: 1 },
+        silent: true,
+      })
+      // HTTP 层错误（非 2xx）
+      if (res.error) {
+        const errBody = res.error as { errorMsg?: string } | string
+        const msg =
+          typeof errBody === 'string' ? errBody : (errBody?.errorMsg || '登录失败，请检查用户名或密码')
+        setError(msg)
+        setLoading(false)
+        return
+      }
+      // 业务层错误（HTTP 200 但 errorNo 非 '0'）
+      const body = res.data as
+        | { errorNo?: string; errorMsg?: string; data?: { accessToken?: string; refreshToken?: string } }
+        | undefined
+      if (body && body.errorNo != null && body.errorNo !== '0') {
+        setError(body.errorMsg || '登录失败')
+        setLoading(false)
+        return
+      }
+      const d = body?.data
+      if (d?.accessToken) setTokens(d.accessToken, d.refreshToken || '')
       setLoading(false)
-      onNavigate('dashboard')
-    }, 700)
+      navigate('/dashboard')
+    } catch (err) {
+      setError(err instanceof Error ? err.message : '登录失败，请稍后重试')
+      setLoading(false)
+    }
   }
 
   return (
@@ -100,7 +140,14 @@ export function Login({ onNavigate }: { onNavigate: (p: string) => void }) {
                 <Label htmlFor="username">用户名</Label>
                 <div className="relative">
                   <User className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-                  <Input id="username" defaultValue="admin" className="h-10 pl-9" placeholder="请输入用户名" />
+                  <Input
+                    id="username"
+                    value={username}
+                    onChange={(e) => setUsername(e.target.value)}
+                    className="h-10 pl-9"
+                    placeholder="请输入用户名"
+                    autoComplete="username"
+                  />
                 </div>
               </div>
 
@@ -117,9 +164,11 @@ export function Login({ onNavigate }: { onNavigate: (p: string) => void }) {
                   <Input
                     id="password"
                     type={showPwd ? 'text' : 'password'}
-                    defaultValue="xcms@2026"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
                     className="h-10 pl-9 pr-9"
                     placeholder="请输入密码"
+                    autoComplete="current-password"
                   />
                   <button
                     type="button"
@@ -137,6 +186,12 @@ export function Login({ onNavigate }: { onNavigate: (p: string) => void }) {
                 <Checkbox checked={remember} onCheckedChange={(v) => setRemember(!!v)} />
                 记住我
               </label>
+
+              {error && (
+                <div className="rounded-md border border-destructive/40 bg-destructive/10 px-3 py-2 text-sm text-destructive">
+                  {error}
+                </div>
+              )}
 
               <Button type="submit" className="h-10 w-full" disabled={loading}>
                 {loading ? '登录中…' : '登录'}

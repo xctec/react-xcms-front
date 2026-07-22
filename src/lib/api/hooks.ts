@@ -1,11 +1,12 @@
 import { useCallback, useEffect, useState } from 'react'
-import type { ApiResult, PageResult } from './client'
+import type { AxiosResponse } from 'axios'
+import type { ApiResult, PageResult } from '@/utils/request'
 
-type ApiResponse<T> = { data?: T; error?: any; response: Response }
+type ApiResponse<T> = { data?: T; error?: any; response?: AxiosResponse }
 
 /**
  * 通用请求 Hook：自动处理 loading / error / data 生命周期。
- * fn 应返回 openapi-fetch 的调用结果（Promise<{ data, error, response }>）。
+ * fn 应返回 axios 封装的调用结果（Promise<{ data, error, response }>）。
  */
 export function useApi<T>(
   fn: () => Promise<ApiResponse<T>>,
@@ -21,13 +22,22 @@ export function useApi<T>(
     fn()
       .then((r) => {
         if (!alive) return
+        // HTTP 层错误（axios 封装将非 2xx 的响应体放入 r.error）
         if (r.error) {
-          setError(r.error?.errorMsg || '请求失败')
+          const errBody = r.error as ApiResult<unknown> | undefined
+          setError(errBody?.errorMsg || '请求失败')
           setData(undefined)
-        } else {
-          setError(undefined)
-          setData(r.data)
+          return
         }
+        // 业务层错误：HTTP 200 但 errorNo 非 '0'（注意 errorNo 是字符串）
+        const body = r.data as ApiResult<unknown> | undefined
+        if (body && body.errorNo != null && body.errorNo !== '0') {
+          setError(body.errorMsg || '请求失败')
+          setData(undefined)
+          return
+        }
+        setError(undefined)
+        setData(r.data)
       })
       .catch((e: Error) => alive && setError(e.message))
       .finally(() => alive && setLoading(false))

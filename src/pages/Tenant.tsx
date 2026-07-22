@@ -14,7 +14,7 @@ import {
   DropdownMenuSeparator, DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import { Plus, RefreshCw, MoreHorizontal, Pencil, Trash2, Users, Building2, Copy } from 'lucide-react'
-import { apiClient } from '@/lib/api/client'
+import { apiClient } from '@/utils/request'
 import { usePaged } from '@/lib/api/hooks'
 import type { components } from '@/lib/api/schema'
 

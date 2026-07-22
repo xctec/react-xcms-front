@@ -9,7 +9,7 @@ import {
   Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle,
 } from '@/components/ui/dialog'
 import { RefreshCw, Ban, Monitor, KeyRound, ShieldAlert } from 'lucide-react'
-import { apiClient } from '@/lib/api/client'
+import { apiClient } from '@/utils/request'
 import { useApi } from '@/lib/api/hooks'
 import type { components } from '@/lib/api/schema'
 

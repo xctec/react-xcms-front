@@ -1,162 +1,112 @@
-import {
-  CommandDialog,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-  CommandList,
-  CommandSeparator,
-} from '@/components/ui/command'
-import { ALL_NAV_ITEMS } from '@/lib/navigation'
-import { BRAND_PRESETS } from '@/lib/brand'
-import { useTheme } from 'next-themes'
-import { useXcmsTheme } from '@/lib/theme'
-import { Compass, Sun, Moon, Monitor, Zap, CornerDownLeft, LogOut } from 'lucide-react'
+import { useEffect, useMemo, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
+import type { AppMenuItem } from '@/lib/menu'
+import { Dialog, DialogContent } from '@/components/ui/dialog'
+import { Input } from '@/components/ui/input'
+import { LogOut, Search } from 'lucide-react'
+import { cn } from '@/lib/utils'
+import { clearTokens } from '@/utils/request'
 
 interface CommandPaletteProps {
   open: boolean
   onOpenChange: (open: boolean) => void
-  onNavigate: (page: string) => void
+  items: AppMenuItem[]
 }
 
-export function CommandPalette({ open, onOpenChange, onNavigate }: CommandPaletteProps) {
-  const { setTheme } = useTheme()
-  const { brand, setBrand } = useXcmsTheme()
+export function CommandPalette({ open, onOpenChange, items }: CommandPaletteProps) {
+  const navigate = useNavigate()
+  const [query, setQuery] = useState('')
+  const [activeIndex, setActiveIndex] = useState(0)
 
-  const close = () => onOpenChange(false)
+  const results = useMemo(() => {
+    const q = query.trim().toLowerCase()
+    if (!q) return items
+    return items.filter(
+      (it) => it.label.toLowerCase().includes(q) || it.path.toLowerCase().includes(q),
+    )
+  }, [query, items])
 
-  const handleNavigate = (page: string) => {
-    onNavigate(page)
-    close()
+  useEffect(() => {
+    setActiveIndex(0)
+  }, [query])
+
+  useEffect(() => {
+    if (!open) setQuery('')
+  }, [open])
+
+  const run = (item?: AppMenuItem) => {
+    if (item) navigate(item.path)
+    onOpenChange(false)
+  }
+
+  const handleLogout = () => {
+    clearTokens()
+    onOpenChange(false)
+    navigate('/login')
+  }
+
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'ArrowDown') {
+      e.preventDefault()
+      setActiveIndex((i) => Math.min(i + 1, results.length - 1))
+    } else if (e.key === 'ArrowUp') {
+      e.preventDefault()
+      setActiveIndex((i) => Math.max(i - 1, 0))
+    } else if (e.key === 'Enter') {
+      e.preventDefault()
+      run(results[activeIndex])
+    }
   }
 
   return (
-    <CommandDialog open={open} onOpenChange={onOpenChange}>
-      <CommandInput placeholder="搜索菜单、操作或主题..." />
-      <CommandList>
-        <CommandEmpty>未找到匹配项，按 Enter 全局搜索</CommandEmpty>
-
-        {/* 导航 */}
-        <CommandGroup heading="导航">
-          {ALL_NAV_ITEMS.map((item) => {
-            const Icon = item.icon
-            return (
-              <CommandItem
-                key={item.id}
-                value={`${item.label} ${item.id} ${item.page} 导航 跳转 goto navigate`}
-                onSelect={() => handleNavigate(item.page)}
-              >
-                <Icon className="h-4 w-4 text-muted-foreground" />
-                <span>{item.label}</span>
-                {!item.ready && (
-                  <span className="ml-auto text-[10px] text-muted-foreground/50">设计待完成</span>
-                )}
-              </CommandItem>
-            )
-          })}
-        </CommandGroup>
-
-        <CommandSeparator />
-
-        {/* 外观 */}
-        <CommandGroup heading="外观">
-          <CommandItem
-            value="亮色 浅色 light theme 主题 外观 切换"
-            onSelect={() => { setTheme('light'); close() }}
-          >
-            <Sun className="h-4 w-4 text-muted-foreground" />
-            <span>切换到亮色模式</span>
-          </CommandItem>
-          <CommandItem
-            value="暗色 深色 dark theme 主题 外观 切换"
-            onSelect={() => { setTheme('dark'); close() }}
-          >
-            <Moon className="h-4 w-4 text-muted-foreground" />
-            <span>切换到暗色模式</span>
-          </CommandItem>
-          <CommandItem
-            value="跟随系统 system auto theme 主题 外观"
-            onSelect={() => { setTheme('system'); close() }}
-          >
-            <Monitor className="h-4 w-4 text-muted-foreground" />
-            <span>跟随系统主题</span>
-          </CommandItem>
-        </CommandGroup>
-
-        <CommandSeparator />
-
-        {/* 主色 */}
-        <CommandGroup heading="主色调">
-          {BRAND_PRESETS.map((b) => (
-            <CommandItem
-              key={b.id}
-              value={`主色 ${b.label} ${b.id} color 颜色 换色 brand`}
-              onSelect={() => { setBrand(b.id); close() }}
-            >
-              <span
-                className="h-4 w-4 rounded-full shrink-0"
-                style={{ backgroundColor: b.swatch }}
-              />
-              <span>主色：{b.label}</span>
-              {brand === b.id && (
-                <span className="ml-auto text-[10px] text-muted-foreground">当前</span>
-              )}
-            </CommandItem>
-          ))}
-        </CommandGroup>
-
-        <CommandSeparator />
-
-        {/* 操作 */}
-        <CommandGroup heading="操作">
-          <CommandItem
-            value="刷新 refresh reload 刷新页面"
-            onSelect={() => window.location.reload()}
-          >
-            <Zap className="h-4 w-4 text-muted-foreground" />
-            <span>刷新当前页</span>
-          </CommandItem>
-          <CommandItem
-            value="折叠 侧边栏 sidebar toggle 收起"
-            onSelect={() => {
-              window.dispatchEvent(new CustomEvent('xcms:toggle-sidebar'))
-              close()
-            }}
-          >
-            <Compass className="h-4 w-4 text-muted-foreground" />
-            <span>折叠/展开侧边栏</span>
-            <kbd className="ml-auto text-[10px] font-mono px-1.5 py-0.5 rounded bg-muted text-muted-foreground">
-              ⌘B
-            </kbd>
-          </CommandItem>
-          <CommandItem
-            value="退出登录 logout 登出 切换账号"
-            onSelect={() => { onNavigate('login'); close() }}
-          >
-            <LogOut className="h-4 w-4 text-muted-foreground" />
-            <span>退出登录</span>
-          </CommandItem>
-        </CommandGroup>
-      </CommandList>
-
-      {/* 底部提示 */}
-      <div className="flex items-center justify-between px-3 py-2 border-t border-border text-[11px] text-muted-foreground">
-        <div className="flex items-center gap-3">
-          <span className="flex items-center gap-1">
-            <kbd className="font-mono px-1 py-0.5 rounded bg-muted">↑</kbd>
-            <kbd className="font-mono px-1 py-0.5 rounded bg-muted">↓</kbd>
-            选择
-          </span>
-          <span className="flex items-center gap-1">
-            <kbd className="font-mono px-1 py-0.5 rounded bg-muted">↵</kbd>
-            执行
-          </span>
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent className="p-0 gap-0 overflow-hidden max-w-xl top-[20%] translate-y-0">
+        <div className="flex items-center gap-2 px-3 border-b border-border">
+          <Search className="h-4 w-4 text-muted-foreground shrink-0" />
+          <Input
+            autoFocus
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            onKeyDown={handleKeyDown}
+            placeholder="搜索菜单或执行命令..."
+            className="border-0 focus-visible:ring-0 focus-visible:ring-offset-0 h-12 bg-transparent"
+          />
         </div>
-        <span className="flex items-center gap-1">
-          <CornerDownLeft className="h-3 w-3" />
-          XCMS Command
-        </span>
-      </div>
-    </CommandDialog>
+        <div className="max-h-80 overflow-y-auto p-2">
+          {results.length === 0 ? (
+            <div className="py-8 text-center text-sm text-muted-foreground">无匹配结果</div>
+          ) : (
+            results.map((item, idx) => {
+              const Icon = item.icon
+              return (
+                <button
+                  key={item.path}
+                  onMouseEnter={() => setActiveIndex(idx)}
+                  onClick={() => run(item)}
+                  className={cn(
+                    'w-full flex items-center gap-3 px-3 h-10 rounded-md text-sm transition-colors',
+                    idx === activeIndex ? 'bg-accent text-accent-foreground' : 'hover:bg-accent/50'
+                  )}
+                >
+                  <Icon className="h-4 w-4 text-muted-foreground shrink-0" />
+                  <span className="flex-1 text-left truncate">{item.label}</span>
+                  <span className="text-[11px] text-muted-foreground/50">{item.path}</span>
+                </button>
+              )
+            })
+          )}
+        </div>
+        <div className="border-t border-border px-3 py-2 flex items-center justify-between">
+          <span className="text-[11px] text-muted-foreground">↑↓ 选择 · ↵ 打开 · esc 关闭</span>
+          <button
+            onClick={handleLogout}
+            className="flex items-center gap-1.5 text-[11px] text-muted-foreground hover:text-destructive transition-colors"
+          >
+            <LogOut className="h-3.5 w-3.5" />
+            退出登录
+          </button>
+        </div>
+      </DialogContent>
+    </Dialog>
   )
 }

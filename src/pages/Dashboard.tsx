@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { PageHeader } from '@/components/xcms'
 import { Card } from '@/components/ui/card'
 import { Popover, PopoverTrigger, PopoverContent } from '@/components/ui/popover'
@@ -67,30 +68,27 @@ const activities = [
   { user: '刘洋', action: '登录系统', target: '', time: '5 小时前', type: 'login' as const },
 ]
 
-const shortcuts: { label: string; icon: LucideIcon; page: string; desc: string }[] = [
-  { label: '新增成员', icon: Plus, page: 'tenant-user', desc: '添加租户账户' },
-  { label: '菜单管理', icon: MenuIcon, page: 'menu', desc: '配置导航菜单' },
-  { label: '组织机构', icon: Network, page: 'org-unit', desc: '维护组织树' },
-  { label: '字典维护', icon: BookText, page: 'dict-type', desc: '管理数据字典' },
-  { label: '登录日志', icon: LogIn, page: 'login-log', desc: '查看登录记录' },
-  { label: '角色授权', icon: ShieldCheck, page: 'role', desc: '配置角色权限' },
+const shortcuts: { label: string; icon: LucideIcon; path: string; desc: string }[] = [
+  { label: '新增成员', icon: Plus, path: '/tenant-user', desc: '添加租户账户' },
+  { label: '菜单管理', icon: MenuIcon, path: '/menu', desc: '配置导航菜单' },
+  { label: '组织机构', icon: Network, path: '/org-unit', desc: '维护组织树' },
+  { label: '字典维护', icon: BookText, path: '/dict-type', desc: '管理数据字典' },
+  { label: '登录日志', icon: LogIn, path: '/login-log', desc: '查看登录记录' },
+  { label: '角色授权', icon: ShieldCheck, path: '/role', desc: '配置角色权限' },
 ]
 
 // 快速开始：首次配置的引导式入口（与页面下方“快捷入口”区分，这里强调“从零搭建”）
-const quickStart: { label: string; desc: string; icon: LucideIcon; page: string }[] = [
-  { label: '创建租户', desc: '新建租户空间', icon: Building2, page: 'tenant' },
-  { label: '配置组织机构', desc: '维护组织树', icon: Network, page: 'org-unit' },
-  { label: '创建角色并授权', desc: '定义角色与权限', icon: ShieldCheck, page: 'role' },
-  { label: '添加租户成员', desc: '邀请用户加入', icon: Users, page: 'tenant-user' },
-  { label: '配置菜单', desc: '定义导航菜单', icon: MenuIcon, page: 'menu' },
-  { label: '维护数据字典', desc: '管理字典类型', icon: BookText, page: 'dict-type' },
+const quickStart: { label: string; desc: string; icon: LucideIcon; path: string }[] = [
+  { label: '创建租户', desc: '新建租户空间', icon: Building2, path: '/tenant' },
+  { label: '配置组织机构', desc: '维护组织树', icon: Network, path: '/org-unit' },
+  { label: '创建角色并授权', desc: '定义角色与权限', icon: ShieldCheck, path: '/role' },
+  { label: '添加租户成员', desc: '邀请用户加入', icon: Users, path: '/tenant-user' },
+  { label: '配置菜单', desc: '定义导航菜单', icon: MenuIcon, path: '/menu' },
+  { label: '维护数据字典', desc: '管理字典类型', icon: BookText, path: '/dict-type' },
 ]
 
-interface DashboardProps {
-  onNavigate: (page: string) => void
-}
-
-export function Dashboard({ onNavigate }: DashboardProps) {
+export function Dashboard() {
+  const navigate = useNavigate()
   const [quickOpen, setQuickOpen] = useState(false)
   return (
     <div className="flex flex-col h-full">
@@ -115,11 +113,11 @@ export function Dashboard({ onNavigate }: DashboardProps) {
                   const Icon = s.icon
                   return (
                     <button
-                      key={s.page}
+                      key={s.path}
                       type="button"
                       onClick={() => {
                         setQuickOpen(false)
-                        onNavigate(s.page)
+                        navigate(s.path)
                       }}
                       className="flex flex-col items-start gap-1.5 rounded-lg border border-border p-2.5 text-left transition-colors hover:border-brand-500/30 hover:bg-brand-500/5"
                     >
@@ -234,7 +232,7 @@ export function Dashboard({ onNavigate }: DashboardProps) {
                 return (
                   <button
                     key={s.label}
-                    onClick={() => onNavigate(s.page)}
+                    onClick={() => navigate(s.path)}
                     className="group flex flex-col items-start gap-2 p-3 rounded-lg border border-border hover:border-brand-500/30 hover:bg-brand-500/5 transition-colors text-left"
                   >
                     <div className="flex h-8 w-8 items-center justify-center rounded-md bg-muted text-muted-foreground group-hover:bg-brand-500/10 group-hover:text-brand-600 dark:group-hover:text-brand-400 transition-colors">

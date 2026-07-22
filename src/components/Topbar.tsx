@@ -1,4 +1,5 @@
-import { findNavItem, NAV_GROUPS } from '@/lib/navigation'
+import { useNavigate } from 'react-router-dom'
+import type { AppMenuGroup, AppMenuItem } from '@/lib/menu'
 import { ThemeSwitcher } from './ThemeSwitcher'
 import { NotificationBell } from './NotificationBell'
 import { Menu, Search, ChevronRight } from 'lucide-react'
@@ -8,17 +9,39 @@ import {
   DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel,
   DropdownMenuSeparator, DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
+import { apiClient, clearTokens, getAccessToken } from '@/utils/request'
 
 interface TopbarProps {
-  currentPage: string
+  groups: AppMenuGroup[]
+  currentPath: string
   onToggleSidebar: () => void
   onOpenCommand: () => void
-  onNavigate: (p: string) => void
 }
 
-export function Topbar({ currentPage, onToggleSidebar, onOpenCommand, onNavigate }: TopbarProps) {
-  const item = findNavItem(currentPage)
-  const group = NAV_GROUPS.find((g) => g.items.some((i) => i.page === currentPage))
+export function Topbar({ groups, currentPath, onToggleSidebar, onOpenCommand }: TopbarProps) {
+  const navigate = useNavigate()
+
+  // 由当前路径反查所属分组与菜单项，用于面包屑
+  let currentItem: AppMenuItem | undefined
+  let currentGroup: AppMenuGroup | undefined
+  for (const g of groups) {
+    const found = g.items.find((i) => i.path === currentPath)
+    if (found) {
+      currentItem = found
+      currentGroup = g
+      break
+    }
+  }
+
+  const handleLogout = () => {
+    const token = getAccessToken()
+    if (token) {
+      // 通知后端吊销当前访问令牌（best-effort）
+      apiClient.POST('/api/auth/logout', { body: { accessToken: token } }).catch(() => {})
+    }
+    clearTokens()
+    navigate('/login')
+  }
 
   return (
     <header className="flex items-center h-14 px-4 bg-background border-b border-border gap-3 shrink-0">
@@ -29,9 +52,9 @@ export function Topbar({ currentPage, onToggleSidebar, onOpenCommand, onNavigate
 
       {/* 面包屑 */}
       <nav className="flex items-center gap-1.5 text-sm min-w-0">
-        <span className="text-muted-foreground hidden sm:inline">{group?.label}</span>
+        <span className="text-muted-foreground hidden sm:inline">{currentGroup?.label}</span>
         <ChevronRight className="h-3.5 w-3.5 text-muted-foreground/40 hidden sm:inline" />
-        <span className="font-medium text-foreground truncate">{item?.label ?? '页面'}</span>
+        <span className="font-medium text-foreground truncate">{currentItem?.label ?? '页面'}</span>
       </nav>
 
       {/* 命令入口 */}
@@ -49,7 +72,7 @@ export function Topbar({ currentPage, onToggleSidebar, onOpenCommand, onNavigate
       {/* 右侧操作区 */}
       <div className="flex items-center gap-1 shrink-0">
         <ThemeSwitcher />
-        <NotificationBell onViewAll={() => onNavigate('notifications')} />
+        <NotificationBell onViewAll={() => navigate('/notifications')} />
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <button className="flex items-center gap-2 rounded-md px-1 py-1 transition-colors hover:bg-muted">
@@ -63,12 +86,12 @@ export function Topbar({ currentPage, onToggleSidebar, onOpenCommand, onNavigate
           <DropdownMenuContent align="end" className="w-48">
             <DropdownMenuLabel>Admin · 超级管理员</DropdownMenuLabel>
             <DropdownMenuSeparator />
-            <DropdownMenuItem onSelect={() => onNavigate('profile')}>个人设置</DropdownMenuItem>
-            <DropdownMenuItem onSelect={() => onNavigate('account')}>账号设置</DropdownMenuItem>
+            <DropdownMenuItem onSelect={() => navigate('/profile')}>个人设置</DropdownMenuItem>
+            <DropdownMenuItem onSelect={() => navigate('/account')}>账号设置</DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem
               className="text-destructive focus:text-destructive"
-              onSelect={() => onNavigate('login')}
+              onSelect={handleLogout}
             >
               退出登录
             </DropdownMenuItem>

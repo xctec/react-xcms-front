@@ -22,7 +22,7 @@ import {
   Plus, RefreshCw, MoreHorizontal, Pencil, Trash2, ShieldCheck,
   KeyRound, ChevronRight, ChevronDown, Search, Expand, FoldVertical, Power,
 } from 'lucide-react'
-import { apiClient } from '@/lib/api/client'
+import { apiClient } from '@/utils/request'
 import { usePaged } from '@/lib/api/hooks'
 import type { components } from '@/lib/api/schema'
 

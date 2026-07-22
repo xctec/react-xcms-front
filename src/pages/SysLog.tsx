@@ -13,7 +13,7 @@ import {
   Search, RefreshCw, History, Monitor, Server, AlertTriangle,
   ChevronRight, Download,
 } from 'lucide-react'
-import { apiClient } from '@/lib/api/client'
+import { apiClient } from '@/utils/request'
 import { usePaged } from '@/lib/api/hooks'
 import type { components } from '@/lib/api/schema'
 
