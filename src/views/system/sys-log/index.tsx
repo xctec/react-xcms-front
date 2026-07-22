@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { PageHeader, StatusBadge, TableToolbar, Tag } from '@/components/xcms'
+import { PageHeader, StatusBadge, SearchToolbar, TableToolbar, Tag } from '@/components/xcms'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import {
@@ -58,23 +58,28 @@ function toRow(d: SysLogDto): LogRow {
 export function SysLog() {
   const [keyword, setKeyword] = useState('')
   const [type, setType] = useState('all')
+  const [module, setModule] = useState('all')
   const [page, setPage] = useState(1)
   const [pageSize, setPageSize] = useState(10)
+  const [reloadKey, setReloadKey] = useState(0)
 
   const { list, total, loading } = usePaged<SysLogDto>(
     () =>
       apiClient.POST('/api/sys/log/page', {
         body: { pageNo: page, pageSize, keyword: keyword || undefined },
-      }),
-    [page, pageSize, keyword],
+      } as any),
+    [page, pageSize, keyword, reloadKey],
   )
 
   const fetched = list.map(toRow)
-  const rows = type === 'all' ? fetched : fetched.filter((r) => r.type === type)
-  const shownTotal = type === 'all' ? total : rows.length
+  const rows = fetched.filter(
+    (r) => (type === 'all' || r.type === type) && (module === 'all' || r.module === module),
+  )
+  const shownTotal = type === 'all' && module === 'all' ? total : rows.length
   const [detail, setDetail] = useState<LogRow | null>(null)
   const [showDetail, setShowDetail] = useState(false)
   const openDetail = (r: LogRow) => { setDetail(r); setShowDetail(true) }
+  const resetFilters = () => { setKeyword(''); setType('all'); setModule('all'); setPage(1) }
 
   return (
     <div className="flex flex-col h-full">
@@ -89,39 +94,34 @@ export function SysLog() {
         }
       />
 
-      <TableToolbar
-        left={
-          <div className="flex items-center gap-2">
-            <div className="relative">
-              <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground" />
-              <Input
-                placeholder="搜索操作内容"
-                className="h-8 pl-8 w-60 text-sm"
-                value={keyword}
-                onChange={(e) => { setKeyword(e.target.value); setPage(1) }}
-              />
-            </div>
-            <Select value={type} onValueChange={(v) => { setType(v); setPage(1) }}>
-              <SelectTrigger className="h-8 w-28 text-sm"><SelectValue placeholder="类型" /></SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">全部类型</SelectItem>
-                <SelectItem value="AUTHORIZE">授权</SelectItem>
-                <SelectItem value="ACCESS">访问</SelectItem>
-                <SelectItem value="OPERATE">操作</SelectItem>
-                <SelectItem value="ERROR">异常</SelectItem>
-              </SelectContent>
-            </Select>
-            <Select defaultValue="all">
-              <SelectTrigger className="h-8 w-28 text-sm"><SelectValue placeholder="模块" /></SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">全部模块</SelectItem>
-                {MODULES.map((m) => <SelectItem key={m} value={m}>{m}</SelectItem>)}
-              </SelectContent>
-            </Select>
-          </div>
-        }
-        right={<Button variant="ghost" size="sm" className="h-8 text-muted-foreground"><RefreshCw className="h-4 w-4" /></Button>}
-      />
+      <SearchToolbar onSearch={() => setPage(1)} onReset={resetFilters}>
+        <div className="relative">
+          <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground" />
+          <Input
+            placeholder="搜索操作内容"
+            className="h-9 pl-8 w-60 text-sm"
+            value={keyword}
+            onChange={(e) => { setKeyword(e.target.value); setPage(1) }}
+          />
+        </div>
+        <Select value={type} onValueChange={(v) => { setType(v); setPage(1) }}>
+          <SelectTrigger className="h-9 w-28 text-sm"><SelectValue placeholder="类型" /></SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">全部类型</SelectItem>
+            <SelectItem value="AUTHORIZE">授权</SelectItem>
+            <SelectItem value="ACCESS">访问</SelectItem>
+            <SelectItem value="OPERATE">操作</SelectItem>
+            <SelectItem value="ERROR">异常</SelectItem>
+          </SelectContent>
+        </Select>
+        <Select value={module} onValueChange={(v) => { setModule(v); setPage(1) }}>
+          <SelectTrigger className="h-9 w-28 text-sm"><SelectValue placeholder="模块" /></SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">全部模块</SelectItem>
+            {MODULES.map((m) => <SelectItem key={m} value={m}>{m}</SelectItem>)}
+          </SelectContent>
+        </Select>
+      </SearchToolbar>
 
       <div className="flex-1 overflow-auto">
         <Table>
@@ -182,6 +182,9 @@ export function SysLog() {
         left={<span className="text-sm text-muted-foreground">共 {shownTotal} 条记录</span>}
         right={
           <div className="flex items-center gap-1">
+            <Button variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground" onClick={() => setReloadKey((k) => k + 1)}>
+              <RefreshCw className="h-4 w-4" />
+            </Button>
             <Button variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground" disabled={page <= 1} onClick={() => setPage((p) => Math.max(1, p - 1))}>
               <ChevronRight className="h-4 w-4 rotate-180" />
             </Button>

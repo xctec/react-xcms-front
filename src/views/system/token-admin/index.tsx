@@ -1,15 +1,13 @@
 import { useState } from 'react'
-import { PageHeader, SearchToolbar, TableToolbar, Pagination, StatusBadge, Tag } from '@/components/xcms'
+import { PageHeader, SearchToolbar, TableToolbar, Pagination, StatusBadge, Tag, ConfirmDialog } from '@/components/xcms'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import {
   Table, TableBody, TableCell, TableHead, TableHeader, TableRow,
 } from '@/components/ui/table'
-import {
-  Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle,
-} from '@/components/ui/dialog'
 import { RefreshCw, Ban, Monitor, KeyRound, ShieldAlert } from 'lucide-react'
-import { apiClient } from '@/utils/request'
+import { toast } from 'sonner'
+import { apiClient, call } from '@/utils/request'
 import { useApi } from '@/lib/api/hooks'
 import type { components } from '@/lib/api/schema'
 
@@ -58,11 +56,13 @@ export function TokenAdmin() {
   const [keyword, setKeyword] = useState('')
   const [page, setPage] = useState(1)
   const [pageSize, setPageSize] = useState(10)
+  const [reloadKey, setReloadKey] = useState(0)
   const [revoke, setRevoke] = useState<TokenRow | null>(null)
+  const [revoking, setRevoking] = useState(false)
 
   const { data, loading } = useApi<components['schemas']['ResultVoListTokenSummary']>(
-    () => apiClient.POST('/api/auth/token/list-by-tenant', { body: {} }),
-    [],
+    () => apiClient.POST('/api/auth/token/list-by-tenant', { body: {} } as any),
+    [reloadKey],
   )
   const all = (data?.data || []).map(toRow)
   const filtered = keyword
@@ -72,17 +72,33 @@ export function TokenAdmin() {
   const rows = filtered.slice(start, start + pageSize)
   const shownTotal = filtered.length
 
+  const resetFilters = () => { setKeyword(''); setPage(1) }
+
+  const handleRevoke = async () => {
+    if (!revoke) return
+    setRevoking(true)
+    try {
+      const res = await call(apiClient.POST('/api/auth/token/revoke', { body: { sessionId: revoke.id } } as any))
+      if (res.error) { toast.error(res.error.errorMsg || '吊销失败'); return }
+      toast.success('已吊销该令牌，用户将被强制下线')
+      setRevoke(null)
+      setReloadKey((k) => k + 1)
+    } finally {
+      setRevoking(false)
+    }
+  }
+
   return (
     <div className="flex flex-col h-full">
       <PageHeader
         title="Token 管理"
         description="查看当前租户下的活动令牌与会话，必要时远程吊销（L3 安全审计）"
         actions={
-          <Button variant="outline"><ShieldAlert className="h-4 w-4" />安全策略</Button>
+          <Button variant="outline" onClick={() => toast.info('演示环境，安全策略暂未开放')}><ShieldAlert className="h-4 w-4" />安全策略</Button>
         }
       />
 
-      <SearchToolbar>
+      <SearchToolbar onSearch={() => setPage(1)} onReset={resetFilters}>
         <Input
           placeholder="搜索账号 / IP"
           className="w-56 h-9"
@@ -93,7 +109,7 @@ export function TokenAdmin() {
 
       <TableToolbar
         left={<span className="text-sm text-muted-foreground">共 {shownTotal} 个活动令牌</span>}
-        right={<Button variant="ghost" size="sm" className="h-8 text-muted-foreground"><RefreshCw className="h-4 w-4" /></Button>}
+        right={<Button variant="ghost" size="sm" className="h-8 text-muted-foreground" onClick={() => setReloadKey((k) => k + 1)}><RefreshCw className="h-4 w-4" /></Button>}
       />
 
       <div className="flex-1 overflow-auto">
@@ -144,6 +160,7 @@ export function TokenAdmin() {
                         variant="ghost"
                         size="sm"
                         className="h-7 text-xs text-destructive hover:bg-destructive/10"
+                        disabled={row.status === 'expired'}
                         onClick={() => setRevoke(row)}
                       >
                         <Ban className="h-3.5 w-3.5" />吊销
@@ -159,20 +176,16 @@ export function TokenAdmin() {
 
       <Pagination total={shownTotal} current={page} pageSize={pageSize} onPageChange={setPage} onPageSizeChange={setPageSize} />
 
-      <Dialog open={!!revoke} onOpenChange={(o) => !o && setRevoke(null)}>
-        <DialogContent className="max-w-md">
-          <DialogHeader>
-            <DialogTitle>吊销令牌</DialogTitle>
-            <DialogDescription>
-              确认吊销用户 <span className="font-medium text-foreground">{revoke?.user}</span> 的令牌？该用户将被强制下线，需重新登录。
-            </DialogDescription>
-          </DialogHeader>
-          <DialogFooter>
-            <Button variant="outline" onClick={() => setRevoke(null)}>取消</Button>
-            <Button variant="destructive" onClick={() => setRevoke(null)}><Ban className="h-4 w-4" />确认吊销</Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+      <ConfirmDialog
+        open={!!revoke}
+        title="吊销令牌"
+        description={`确认吊销用户「${revoke?.user}」的令牌？该用户将被强制下线，需重新登录。`}
+        confirmText="确认吊销"
+        danger
+        loading={revoking}
+        onOpenChange={(o) => !o && setRevoke(null)}
+        onConfirm={handleRevoke}
+      />
     </div>
   )
 }

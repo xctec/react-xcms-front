@@ -11,7 +11,7 @@ import {
 import {
   DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
-import { RefreshCw, MoreHorizontal, Monitor, MapPin, Clock } from 'lucide-react'
+import { RefreshCw, MoreHorizontal, Monitor, MapPin, Clock, User, History, Activity } from 'lucide-react'
 import { apiClient } from '@/utils/request'
 import { usePaged } from '@/lib/api/hooks'
 import type { components } from '@/lib/api/schema'
@@ -52,18 +52,22 @@ export function LoginLog() {
   const [pageSize, setPageSize] = useState(10)
   const [keyword, setKeyword] = useState('')
   const [status, setStatus] = useState('all')
+  const [reloadKey, setReloadKey] = useState(0)
+  const [detail, setDetail] = useState<LogRow | null>(null)
 
   const { list, total, loading } = usePaged<LoginLogDto>(
     () =>
       apiClient.POST('/api/login/log/page', {
         body: { pageNo: page, pageSize, keyword: keyword || undefined },
-      }),
-    [page, pageSize, keyword],
+      } as any),
+    [page, pageSize, keyword, reloadKey],
   )
 
   const fetched = list.map(toRow)
   const rows = status === 'all' ? fetched : fetched.filter((r) => r.status === status)
   const shownTotal = status === 'all' ? total : rows.length
+
+  const resetFilters = () => { setKeyword(''); setStatus('all'); setPage(1) }
 
   return (
     <div className="flex flex-col h-full">
@@ -72,7 +76,7 @@ export function LoginLog() {
         description="记录用户登录行为，识别异常登录与安全风险（L3 审计）"
       />
 
-      <SearchToolbar>
+      <SearchToolbar onSearch={() => setPage(1)} onReset={resetFilters}>
         <Input
           placeholder="搜索账号 / IP"
           className="w-56 h-9"
@@ -91,7 +95,7 @@ export function LoginLog() {
 
       <TableToolbar
         left={<span className="text-sm text-muted-foreground">共 {shownTotal} 条记录</span>}
-        right={<Button variant="ghost" size="sm" className="h-8 text-muted-foreground"><RefreshCw className="h-4 w-4" /></Button>}
+        right={<Button variant="ghost" size="sm" className="h-8 text-muted-foreground" onClick={() => setReloadKey((k) => k + 1)}><RefreshCw className="h-4 w-4" /></Button>}
       />
 
       <div className="flex-1 overflow-auto">
@@ -137,7 +141,7 @@ export function LoginLog() {
                         <Button variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground"><MoreHorizontal className="h-4 w-4" /></Button>
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end" className="w-36">
-                        <DropdownMenuItem><Clock className="h-4 w-4" />查看详情</DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => setDetail(row)}><Clock className="h-4 w-4" />查看详情</DropdownMenuItem>
                       </DropdownMenuContent>
                     </DropdownMenu>
                   </TableCell>
@@ -149,6 +153,49 @@ export function LoginLog() {
       </div>
 
       <Pagination total={shownTotal} current={page} pageSize={pageSize} onPageChange={setPage} onPageSizeChange={setPageSize} />
+
+      {detail && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40" onClick={() => setDetail(null)}>
+          <div className="w-[420px] rounded-xl border border-border bg-card shadow-lg" onClick={(e) => e.stopPropagation()}>
+            <div className="flex items-center gap-2 border-b border-border px-4 py-3">
+              <History className="h-4 w-4 text-brand-600" />
+              <span className="font-medium text-foreground">登录详情</span>
+            </div>
+            <div className="space-y-2.5 p-4">
+              <DetailItem icon={User} label="账号" value={detail.user} />
+              <DetailItem icon={Clock} label="登录时间" value={detail.time.replace('T', ' ').slice(0, 19)} />
+              <DetailItem icon={Monitor} label="IP 地址" value={detail.ip} />
+              <DetailItem icon={MapPin} label="归属地" value={detail.location} />
+              <DetailItem icon={Activity} label="耗时" value={`${detail.duration} ms`} />
+              <div className="flex items-center justify-between pt-0.5">
+                <span className="flex items-center gap-2 text-xs text-muted-foreground"><Monitor className="h-3.5 w-3.5" />设备</span>
+                <span className="text-sm text-foreground font-medium">{detail.device}</span>
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="flex items-center gap-2 text-xs text-muted-foreground"><Activity className="h-3.5 w-3.5" />结果</span>
+                {detail.status === 'success'
+                  ? <StatusBadge status="active">成功</StatusBadge>
+                  : <StatusBadge status="error">失败</StatusBadge>}
+              </div>
+            </div>
+            <div className="flex justify-end border-t border-border px-4 py-3">
+              <Button variant="outline" onClick={() => setDetail(null)}>关闭</Button>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  )
+}
+
+function DetailItem({ icon: Icon, label, value }: { icon: typeof History; label: string; value: string }) {
+  return (
+    <div className="flex items-center justify-between">
+      <span className="flex items-center gap-2 text-xs text-muted-foreground">
+        <Icon className="h-3.5 w-3.5" />
+        {label}
+      </span>
+      <span className="text-sm text-foreground font-medium">{value}</span>
     </div>
   )
 }

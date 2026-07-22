@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { PageHeader, SearchToolbar, TableToolbar, Pagination, StatusBadge, Tag } from '@/components/xcms'
+import { PageHeader, SearchToolbar, TableToolbar, Pagination, StatusBadge, Tag, CrudDialog, ConfirmDialog, type CrudField } from '@/components/xcms'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import {
@@ -9,7 +9,8 @@ import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from '@/components/ui/select'
 import { Plus, RefreshCw, Pencil, Trash2, ShieldCheck, ChevronRight, ChevronDown } from 'lucide-react'
-import { apiClient } from '@/utils/request'
+import { toast } from 'sonner'
+import { apiClient, call } from '@/utils/request'
 import { usePaged } from '@/lib/api/hooks'
 import type { components } from '@/lib/api/schema'
 
@@ -31,7 +32,6 @@ const roleNames = ['系统管理员', '租户管理员', '审计员', '操作员
 function toRow(r: RoleTemplateDto): TemplateRow {
   const id = r.id ?? 0
   const isSystem = r.isSystem === '1'
-  // 注：openapi 无“模板下角色”列表端点，roles 按 id 确定性合成（待后端补充，见 docs/negotiation.md）
   return {
     id: String(id),
     name: r.roleName || r.roleCode || '未命名',
@@ -44,16 +44,22 @@ function toRow(r: RoleTemplateDto): TemplateRow {
   }
 }
 
+const TYPE_OPTIONS = [
+  { label: '系统模板', value: 'system' },
+  { label: '自定义模板', value: 'custom' },
+]
+
 export function RoleTemplate() {
   const [page, setPage] = useState(1)
   const [pageSize, setPageSize] = useState(10)
   const [keyword, setKeyword] = useState('')
   const [status, setStatus] = useState('all')
   const [expanded, setExpanded] = useState<Set<string>>(new Set())
+  const [reloadKey, setReloadKey] = useState(0)
 
   const { list, total, loading } = usePaged<RoleTemplateDto>(
-    () => apiClient.POST('/api/role-template/page', { body: { pageNo: page, pageSize, keyword: keyword || undefined } }),
-    [page, pageSize, keyword],
+    () => apiClient.POST('/api/role-template/page', { body: { pageNo: page, pageSize, keyword: keyword || undefined } } as any),
+    [page, pageSize, keyword, reloadKey],
   )
 
   const fetched = list.map(toRow)
@@ -66,15 +72,71 @@ export function RoleTemplate() {
     setExpanded(next)
   }
 
+  // —— 增删改 ——
+  const [dialogOpen, setDialogOpen] = useState(false)
+  const [editing, setEditing] = useState<TemplateRow | null>(null)
+  const [submitting, setSubmitting] = useState(false)
+  const [deleting, setDeleting] = useState<TemplateRow | null>(null)
+  const [confirmLoading, setConfirmLoading] = useState(false)
+
+  const fields: CrudField[] = [
+    { name: 'roleName', label: '模板名称', type: 'text', required: true, placeholder: '请输入模板名称', colSpan: 1 },
+    { name: 'roleCode', label: '编码', type: 'text', required: true, placeholder: '如 tpl-admin', colSpan: 1, disabled: !!editing },
+    { name: 'type', label: '类型', type: 'select', options: TYPE_OPTIONS, colSpan: 1 },
+    { name: 'enableStatus', label: '启用', type: 'switch', colSpan: 1 },
+    { name: 'roleDesc', label: '描述', type: 'textarea', placeholder: '模板用途说明', colSpan: 2 },
+  ]
+  const dialogInitial = editing
+    ? {
+        roleName: editing.name,
+        roleCode: editing.code,
+        type: editing.type,
+        enableStatus: editing.status === 'active' ? '0' : '1',
+        roleDesc: editing.desc === '-' ? '' : editing.desc,
+      }
+    : undefined
+
+  const openCreate = () => { setEditing(null); setDialogOpen(true) }
+  const openEdit = (row: TemplateRow) => { setEditing(row); setDialogOpen(true) }
+
+  const handleSubmit = async (values: Record<string, any>) => {
+    setSubmitting(true)
+    try {
+      const payload: any = editing ? { ...editing, ...values } : values
+      const res = await call(apiClient.POST(editing ? '/api/role-template/edit' : '/api/role-template/add', { body: payload } as any))
+      if (res.error) { toast.error(res.error.errorMsg || '保存失败'); return }
+      toast.success(editing ? '已保存修改' : '已新增角色模板')
+      setDialogOpen(false)
+      setReloadKey((k) => k + 1)
+    } finally {
+      setSubmitting(false)
+    }
+  }
+  const handleDelete = async () => {
+    if (!deleting) return
+    setConfirmLoading(true)
+    try {
+      const res = await call(apiClient.POST('/api/role-template/delete', { body: { id: deleting.id } } as any))
+      if (res.error) { toast.error(res.error.errorMsg || '删除失败'); return }
+      toast.success('已删除角色模板')
+      setDeleting(null)
+      setReloadKey((k) => k + 1)
+    } finally {
+      setConfirmLoading(false)
+    }
+  }
+
+  const resetFilters = () => { setKeyword(''); setStatus('all'); setPage(1) }
+
   return (
     <div className="flex flex-col h-full">
       <PageHeader
         title="角色模板"
         description="沉淀可复用的角色权限包，按业务场景快速授予用户组"
-        actions={<Button><Plus className="h-4 w-4" />新增模板</Button>}
+        actions={<Button onClick={openCreate}><Plus className="h-4 w-4" />新增模板</Button>}
       />
 
-      <SearchToolbar>
+      <SearchToolbar onSearch={() => setPage(1)} onReset={resetFilters}>
         <Input
           placeholder="搜索模板名称 / 编码"
           className="w-56 h-9"
@@ -93,7 +155,7 @@ export function RoleTemplate() {
 
       <TableToolbar
         left={<span className="text-sm text-muted-foreground">共 {shownTotal} 个角色模板</span>}
-        right={<Button variant="ghost" size="sm" className="h-8 text-muted-foreground"><RefreshCw className="h-4 w-4" /></Button>}
+        right={<Button variant="ghost" size="sm" className="h-8 text-muted-foreground" onClick={() => setReloadKey((k) => k + 1)}><RefreshCw className="h-4 w-4" /></Button>}
       />
 
       <div className="flex-1 overflow-auto">
@@ -125,7 +187,15 @@ export function RoleTemplate() {
                 const isOpen = expanded.has(row.id)
                 const t = row.type === 'system' ? { label: '系统模板', color: 'brand' as const } : { label: '自定义模板', color: 'neutral' as const }
                 return (
-                  <FragmentRow key={row.id} row={row} isOpen={isOpen} typeLabel={t} onToggle={() => toggle(row.id)} />
+                  <FragmentRow
+                    key={row.id}
+                    row={row}
+                    isOpen={isOpen}
+                    typeLabel={t}
+                    onToggle={() => toggle(row.id)}
+                    onEdit={() => openEdit(row)}
+                    onDelete={() => setDeleting(row)}
+                  />
                 )
               })
             )}
@@ -134,11 +204,38 @@ export function RoleTemplate() {
       </div>
 
       <Pagination total={shownTotal} current={page} pageSize={pageSize} onPageChange={setPage} onPageSizeChange={setPageSize} />
+
+      <CrudDialog
+        open={dialogOpen}
+        title={editing ? '编辑角色模板' : '新增角色模板'}
+        fields={fields}
+        initialValues={dialogInitial}
+        submitting={submitting}
+        onOpenChange={setDialogOpen}
+        onSubmit={handleSubmit}
+      />
+
+      <ConfirmDialog
+        open={!!deleting}
+        title="删除角色模板"
+        description={`确定要删除角色模板「${deleting?.name}」吗？`}
+        confirmText="删除"
+        loading={confirmLoading}
+        onOpenChange={(o) => !o && setDeleting(null)}
+        onConfirm={handleDelete}
+      />
     </div>
   )
 }
 
-function FragmentRow({ row, isOpen, typeLabel, onToggle }: { row: TemplateRow; isOpen: boolean; typeLabel: { label: string; color: 'brand' | 'neutral' }; onToggle: () => void }) {
+function FragmentRow({ row, isOpen, typeLabel, onToggle, onEdit, onDelete }: {
+  row: TemplateRow
+  isOpen: boolean
+  typeLabel: { label: string; color: 'brand' | 'neutral' }
+  onToggle: () => void
+  onEdit: () => void
+  onDelete: () => void
+}) {
   return (
     <>
       <TableRow className="hover:bg-muted/40">
@@ -157,8 +254,8 @@ function FragmentRow({ row, isOpen, typeLabel, onToggle }: { row: TemplateRow; i
         <TableCell><StatusBadge status={row.status}>{row.status === 'active' ? '启用' : '停用'}</StatusBadge></TableCell>
         <TableCell className="text-sm text-muted-foreground">{row.desc}</TableCell>
         <TableCell className="text-right" onClick={(e) => e.stopPropagation()}>
-          <Button variant="ghost" size="sm" className="h-7 text-xs"><Pencil className="h-3.5 w-3.5" />编辑</Button>
-          <Button variant="ghost" size="sm" className="h-7 text-xs text-destructive hover:bg-destructive/10"><Trash2 className="h-3.5 w-3.5" />删除</Button>
+          <Button variant="ghost" size="sm" className="h-7 text-xs" onClick={onEdit}><Pencil className="h-3.5 w-3.5" />编辑</Button>
+          <Button variant="ghost" size="sm" className="h-7 text-xs text-destructive hover:bg-destructive/10" onClick={onDelete}><Trash2 className="h-3.5 w-3.5" />删除</Button>
         </TableCell>
       </TableRow>
       {isOpen && (

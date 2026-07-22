@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { PageHeader, SearchToolbar, BatchToolbar, Pagination, StatusBadge, TableToolbar, Tag } from '@/components/xcms'
+import { PageHeader, SearchToolbar, BatchToolbar, Pagination, StatusBadge, TableToolbar, Tag, CrudDialog, ConfirmDialog, type CrudField } from '@/components/xcms'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Checkbox } from '@/components/ui/checkbox'
@@ -22,7 +22,8 @@ import {
   Plus, RefreshCw, MoreHorizontal, Pencil, Trash2, ShieldCheck,
   KeyRound, ChevronRight, ChevronDown, Search, Expand, FoldVertical, Power,
 } from 'lucide-react'
-import { apiClient } from '@/utils/request'
+import { toast } from 'sonner'
+import { apiClient, call } from '@/utils/request'
 import { usePaged } from '@/lib/api/hooks'
 import type { components } from '@/lib/api/schema'
 
@@ -64,6 +65,17 @@ const scopeMap: Record<RoleRow['dataScope'], string> = {
   all: '全部数据', dept: '本部门及下属', self: '仅本人', custom: '自定义范围',
 }
 
+const TYPE_OPTIONS = [
+  { label: '租户角色', value: '1' },
+  { label: '部门角色', value: '2' },
+]
+const SCOPE_OPTIONS = [
+  { label: '全部数据', value: 'all' },
+  { label: '本部门及下属', value: 'dept' },
+  { label: '仅本人', value: 'self' },
+  { label: '自定义范围', value: 'custom' },
+]
+
 /* ============ 菜单授权弹窗（树勾选 + 半选） ============ */
 interface AuthNode {
   id: string
@@ -97,19 +109,17 @@ const authTree: AuthNode[] = [
   },
 ]
 
-function buildMaps(nodes: AuthNode[], parent: string | null = null) {
-  const childOf: Record<string, string | null> = {}
+function buildMaps(nodes: AuthNode[]) {
   const descendants: Record<string, string[]> = {}
-  const walk = (list: AuthNode[], par: string | null) => {
+  const walk = (list: AuthNode[]) => {
     for (const n of list) {
-      childOf[n.id] = par
       const kids = n.children ? n.children.map((c) => c.id) : []
       descendants[n.id] = kids
-      if (n.children) walk(n.children, n.id)
+      if (n.children) walk(n.children)
     }
   }
-  walk(nodes, parent)
-  return { childOf, descendants }
+  walk(nodes)
+  return { descendants }
 }
 const { descendants: authDescendants } = buildMaps(authTree)
 
@@ -124,7 +134,7 @@ function getAllDescendants(id: string): string[] {
   return out
 }
 
-function RoleAuthDialog({ roleName, open, onOpenChange }: { roleName: string; open: boolean; onOpenChange: (o: boolean) => void }) {
+function RoleAuthDialog({ roleName, open, onOpenChange, onSave }: { roleName: string; open: boolean; onOpenChange: (o: boolean) => void; onSave: (ids: string[]) => void }) {
   const [checked, setChecked] = useState<Set<string>>(new Set(['dashboard', 'system', 'tenant-user', 'org-unit', 'menu']))
   const [expanded, setExpanded] = useState<Set<string>>(new Set(['system', 'platform']))
   const [keyword, setKeyword] = useState('')
@@ -144,9 +154,8 @@ function RoleAuthDialog({ roleName, open, onOpenChange }: { roleName: string; op
   const renderNode = (node: AuthNode, level: number) => {
     const hasChildren = !!node.children?.length
     const isExpanded = expanded.has(node.id)
-    const hit = keyword && !node.name.includes(keyword)
     if (keyword && hasChildren && !node.children!.some((c) => c.name.includes(keyword))) return null
-    if (keyword && !hasChildren && hit) return null
+    if (keyword && !hasChildren && !node.name.includes(keyword)) return null
     return (
       <div key={node.id}>
         <div
@@ -187,12 +196,7 @@ function RoleAuthDialog({ roleName, open, onOpenChange }: { roleName: string; op
         <div className="flex items-center gap-2 py-1">
           <div className="relative flex-1">
             <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground" />
-            <Input
-              value={keyword}
-              onChange={(e) => setKeyword(e.target.value)}
-              placeholder="搜索菜单"
-              className="h-8 pl-8 text-sm"
-            />
+            <Input value={keyword} onChange={(e) => setKeyword(e.target.value)} placeholder="搜索菜单" className="h-8 pl-8 text-sm" />
           </div>
           <Button variant="ghost" size="sm" className="h-8 text-xs text-muted-foreground" onClick={() => setExpanded(new Set(['system', 'platform', 'dashboard']))}>
             <Expand className="h-3.5 w-3.5" /> 展开全部
@@ -213,7 +217,7 @@ function RoleAuthDialog({ roleName, open, onOpenChange }: { roleName: string; op
 
         <DialogFooter>
           <Button variant="outline" onClick={() => onOpenChange(false)}>取消</Button>
-          <Button onClick={() => onOpenChange(false)}>保存授权</Button>
+          <Button onClick={() => onSave([...checked])}>保存授权</Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>
@@ -225,24 +229,33 @@ export function Role() {
   const [page, setPage] = useState(1)
   const [pageSize, setPageSize] = useState(10)
   const [keyword, setKeyword] = useState('')
+  const [type, setType] = useState('all')
   const [status, setStatus] = useState('all')
+  const [reloadKey, setReloadKey] = useState(0)
+
   const [authOpen, setAuthOpen] = useState(false)
-  const [authRole, setAuthRole] = useState('')
+  const [authRole, setAuthRole] = useState<RoleRow | null>(null)
+
+  // —— 增删改 ——
+  const [dialogOpen, setDialogOpen] = useState(false)
+  const [editing, setEditing] = useState<RoleRow | null>(null)
+  const [submitting, setSubmitting] = useState(false)
+  const [deleting, setDeleting] = useState<RoleRow | null>(null)
+  const [batchOpen, setBatchOpen] = useState(false)
+  const [confirmLoading, setConfirmLoading] = useState(false)
 
   const { list, total, loading } = usePaged<RoleDto>(
-    () =>
-      apiClient.POST('/api/role/page', {
-        body: { pageNo: page, pageSize, keyword: keyword || undefined },
-      }),
-    [page, pageSize, keyword],
+    () => apiClient.POST('/api/role/page', { body: { pageNo: page, pageSize, keyword: keyword || undefined } } as any),
+    [page, pageSize, keyword, reloadKey],
   )
 
   const fetched = list.map(toRow)
-  const rows =
-    status === 'all'
-      ? fetched
-      : fetched.filter((r) => r.status === (status === '0' ? 'active' : 'inactive'))
-  const shownTotal = status === 'all' ? total : rows.length
+  const rows = fetched.filter(
+    (r) =>
+      (type === 'all' || r.type === type) &&
+      (status === 'all' || r.status === (status === '0' ? 'active' : 'inactive')),
+  )
+  const shownTotal = status === 'all' && type === 'all' ? total : rows.length
   const allSelected = rows.length > 0 && selected.size === rows.length
   const someSelected = selected.size > 0 && !allSelected
   const toggleAll = () => setSelected(allSelected ? new Set() : new Set(rows.map((r) => r.id)))
@@ -251,29 +264,102 @@ export function Role() {
     next.has(id) ? next.delete(id) : next.add(id)
     setSelected(next)
   }
+  const clearSelection = () => setSelected(new Set())
 
-  const openAuth = (name: string) => { setAuthRole(name); setAuthOpen(true) }
+  const fields: CrudField[] = [
+    { name: 'roleName', label: '角色名称', type: 'text', required: true, placeholder: '请输入角色名称', colSpan: 1 },
+    { name: 'roleCode', label: '编码', type: 'text', required: true, placeholder: '如 role-admin', colSpan: 1, disabled: !!editing },
+    { name: 'roleType', label: '类型', type: 'select', options: TYPE_OPTIONS, colSpan: 1 },
+    { name: 'dataScope', label: '数据范围', type: 'select', options: SCOPE_OPTIONS, colSpan: 1 },
+    { name: 'enableStatus', label: '启用', type: 'switch', colSpan: 1 },
+    { name: 'roleDesc', label: '备注', type: 'textarea', placeholder: '角色用途说明', colSpan: 2 },
+  ]
+  const dialogInitial = editing
+    ? {
+        roleName: editing.name,
+        roleCode: editing.code,
+        roleType: editing.type === 'dept' ? '2' : '1',
+        dataScope: editing.dataScope,
+        enableStatus: editing.status === 'active' ? '0' : '1',
+        roleDesc: editing.remark === '-' ? '' : editing.remark,
+      }
+    : undefined
+
+  const openCreate = () => { setEditing(null); setDialogOpen(true) }
+  const openEdit = (row: RoleRow) => { setEditing(row); setDialogOpen(true) }
+  const openAuth = (row: RoleRow) => { setAuthRole(row); setAuthOpen(true) }
+
+  const handleSubmit = async (values: Record<string, any>) => {
+    setSubmitting(true)
+    try {
+      const payload: any = editing ? { id: editing.id, ...values } : values
+      const res = await call(apiClient.POST(editing ? '/api/role/edit' : '/api/role/add', { body: payload } as any))
+      if (res.error) { toast.error(res.error.errorMsg || '保存失败'); return }
+      toast.success(editing ? '已保存修改' : '已新增角色')
+      setDialogOpen(false)
+      setReloadKey((k) => k + 1)
+    } finally {
+      setSubmitting(false)
+    }
+  }
+  const handleDelete = async () => {
+    if (!deleting) return
+    setConfirmLoading(true)
+    try {
+      const res = await call(apiClient.POST('/api/role/delete', { body: { id: deleting.id } } as any))
+      if (res.error) { toast.error(res.error.errorMsg || '删除失败'); return }
+      toast.success('已删除角色')
+      setDeleting(null)
+      setReloadKey((k) => k + 1)
+    } finally {
+      setConfirmLoading(false)
+    }
+  }
+  const handleBatchDelete = async () => {
+    setConfirmLoading(true)
+    try {
+      const res = await call(apiClient.POST('/api/role/deleteAll', { body: { ids: Array.from(selected) } } as any))
+      if (res.error) { toast.error(res.error.errorMsg || '删除失败'); return }
+      toast.success(`已删除 ${selected.size} 个角色`)
+      setSelected(new Set())
+      setBatchOpen(false)
+      setReloadKey((k) => k + 1)
+    } finally {
+      setConfirmLoading(false)
+    }
+  }
+  const handleAuthSave = async (ids: string[]) => {
+    if (!authRole) return
+    try {
+      const res = await call(apiClient.POST('/api/role/grant', { body: { roleId: authRole.id, menuIds: ids } } as any))
+      if (res.error) { toast.error(res.error.errorMsg || '授权失败'); return }
+      toast.success('已更新菜单授权')
+      setAuthOpen(false)
+    } finally {
+    }
+  }
+
+  const resetFilters = () => { setKeyword(''); setType('all'); setStatus('all'); setPage(1) }
 
   return (
     <div className="flex flex-col h-full">
       <PageHeader
         title="角色管理"
         description="管理系统角色，配置菜单授权与数据范围（L3 数据权限）"
-        actions={<Button><Plus className="h-4 w-4" />新增角色</Button>}
+        actions={<Button onClick={openCreate}><Plus className="h-4 w-4" />新增角色</Button>}
       />
 
-      <SearchToolbar>
+      <SearchToolbar onSearch={() => setPage(1)} onReset={resetFilters}>
         <Input
           placeholder="搜索角色名称 / 编码"
           className="w-56 h-9"
           value={keyword}
           onChange={(e) => { setKeyword(e.target.value); setPage(1) }}
         />
-        <Select defaultValue="all">
+        <Select value={type} onValueChange={(v) => { setType(v); setPage(1) }}>
           <SelectTrigger className="w-28 h-9"><SelectValue placeholder="类型" /></SelectTrigger>
           <SelectContent>
             <SelectItem value="all">全部类型</SelectItem>
-            <SelectItem value="system">系统角色</SelectItem>
             <SelectItem value="tenant">租户角色</SelectItem>
             <SelectItem value="dept">部门角色</SelectItem>
           </SelectContent>
@@ -288,15 +374,15 @@ export function Role() {
         </Select>
       </SearchToolbar>
 
-      <BatchToolbar selectedCount={selected.size} onClear={() => setSelected(new Set())}>
-        <Button size="sm" variant="outline"><ShieldCheck className="h-3.5 w-3.5" />批量授权</Button>
-        <Button size="sm" variant="outline"><Power className="h-3.5 w-3.5" />批量启用</Button>
-        <Button size="sm" variant="outline" className="text-destructive hover:bg-destructive/10"><Trash2 className="h-3.5 w-3.5" />批量删除</Button>
+      <BatchToolbar selectedCount={selected.size} onClear={clearSelection}>
+        <Button size="sm" variant="outline" onClick={() => toast.info('演示环境，批量授权暂未开放')}><ShieldCheck className="h-3.5 w-3.5" />批量授权</Button>
+        <Button size="sm" variant="outline" onClick={() => toast.info('演示环境，批量启用暂未开放')}><Power className="h-3.5 w-3.5" />批量启用</Button>
+        <Button size="sm" variant="outline" className="text-destructive hover:bg-destructive/10" onClick={() => setBatchOpen(true)}><Trash2 className="h-3.5 w-3.5" />批量删除</Button>
       </BatchToolbar>
 
       <TableToolbar
         left={<span className="text-sm text-muted-foreground">共 {shownTotal} 个角色</span>}
-        right={<Button variant="ghost" size="sm" className="h-8 text-muted-foreground"><RefreshCw className="h-4 w-4" /></Button>}
+        right={<Button variant="ghost" size="sm" className="h-8 text-muted-foreground" onClick={() => setReloadKey((k) => k + 1)}><RefreshCw className="h-4 w-4" /></Button>}
       />
 
       <div className="flex-1 overflow-auto">
@@ -349,11 +435,11 @@ export function Role() {
                           <Button variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground"><MoreHorizontal className="h-4 w-4" /></Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end" className="w-40">
-                          <DropdownMenuItem onClick={() => openAuth(row.name)}><ShieldCheck className="h-4 w-4" />菜单授权</DropdownMenuItem>
-                          <DropdownMenuItem><Pencil className="h-4 w-4" />编辑</DropdownMenuItem>
-                          <DropdownMenuItem><KeyRound className="h-4 w-4" />分配数据范围</DropdownMenuItem>
+                          <DropdownMenuItem onClick={() => openAuth(row)}><ShieldCheck className="h-4 w-4" />菜单授权</DropdownMenuItem>
+                          <DropdownMenuItem onClick={() => openEdit(row)}><Pencil className="h-4 w-4" />编辑</DropdownMenuItem>
+                          <DropdownMenuItem onClick={() => toast.info('演示环境，数据范围分配暂未开放')}><KeyRound className="h-4 w-4" />分配数据范围</DropdownMenuItem>
                           <DropdownMenuSeparator />
-                          <DropdownMenuItem className="text-destructive focus:text-destructive"><Trash2 className="h-4 w-4" />删除</DropdownMenuItem>
+                          <DropdownMenuItem className="text-destructive focus:text-destructive" onClick={() => setDeleting(row)}><Trash2 className="h-4 w-4" />删除</DropdownMenuItem>
                         </DropdownMenuContent>
                       </DropdownMenu>
                     </TableCell>
@@ -367,7 +453,37 @@ export function Role() {
 
       <Pagination total={shownTotal} current={page} pageSize={pageSize} onPageChange={setPage} onPageSizeChange={setPageSize} />
 
-      <RoleAuthDialog roleName={authRole} open={authOpen} onOpenChange={setAuthOpen} />
+      <CrudDialog
+        open={dialogOpen}
+        title={editing ? '编辑角色' : '新增角色'}
+        fields={fields}
+        initialValues={dialogInitial}
+        submitting={submitting}
+        onOpenChange={setDialogOpen}
+        onSubmit={handleSubmit}
+      />
+
+      <ConfirmDialog
+        open={!!deleting}
+        title="删除角色"
+        description={`确定要删除角色「${deleting?.name}」吗？`}
+        confirmText="删除"
+        loading={confirmLoading}
+        onOpenChange={(o) => !o && setDeleting(null)}
+        onConfirm={handleDelete}
+      />
+
+      <ConfirmDialog
+        open={batchOpen}
+        title="批量删除角色"
+        description={`确定要删除选中的 ${selected.size} 个角色吗？`}
+        confirmText="删除"
+        loading={confirmLoading}
+        onOpenChange={setBatchOpen}
+        onConfirm={handleBatchDelete}
+      />
+
+      <RoleAuthDialog roleName={authRole?.name || ''} open={authOpen} onOpenChange={setAuthOpen} onSave={handleAuthSave} />
     </div>
   )
 }

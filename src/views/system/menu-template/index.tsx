@@ -1,15 +1,16 @@
 import { useState } from 'react'
-import { PageHeader, SearchToolbar, TableToolbar, Pagination, StatusBadge, Tag } from '@/components/xcms'
+import { PageHeader, SearchToolbar, TableToolbar, Pagination, StatusBadge, Tag, CrudDialog, ConfirmDialog, type CrudField } from '@/components/xcms'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import {
   Table, TableBody, TableCell, TableHead, TableHeader, TableRow,
 } from '@/components/ui/table'
-import { Plus, RefreshCw, Pencil, Trash2, Grid2x2, ChevronRight, ChevronDown, Folder, SquareMenu, Command } from 'lucide-react'
 import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from '@/components/ui/select'
-import { apiClient } from '@/utils/request'
+import { Plus, RefreshCw, Pencil, Trash2, Grid2x2, ChevronRight, ChevronDown, Folder, SquareMenu, Command } from 'lucide-react'
+import { toast } from 'sonner'
+import { apiClient, call } from '@/utils/request'
 import { usePaged } from '@/lib/api/hooks'
 import type { components } from '@/lib/api/schema'
 
@@ -34,7 +35,6 @@ interface TemplateRow {
 
 function toRow(t: MenuTemplateDto): TemplateRow {
   const id = t.id ?? 0
-  // 注：MenuTemplateDto 无 status 字段，按 id 确定性合成（待后端补充，见 docs/negotiation.md）
   return {
     id: String(id),
     name: t.templateName || t.templateCode || '未命名模板',
@@ -57,13 +57,14 @@ export function MenuTemplate() {
   const [keyword, setKeyword] = useState('')
   const [status, setStatus] = useState('all')
   const [expanded, setExpanded] = useState<Set<string>>(new Set())
+  const [reloadKey, setReloadKey] = useState(0)
 
   const [itemsCache, setItemsCache] = useState<Record<string, ItemRow[]>>({})
   const [loadingItems, setLoadingItems] = useState<string | null>(null)
 
   const { list, total, loading } = usePaged<MenuTemplateDto>(
-    () => apiClient.POST('/api/menu-template/page', { body: { pageNo: page, pageSize, keyword: keyword || undefined } }),
-    [page, pageSize, keyword],
+    () => apiClient.POST('/api/menu-template/page', { body: { pageNo: page, pageSize, keyword: keyword || undefined } } as any),
+    [page, pageSize, keyword, reloadKey],
   )
 
   const fetched = list.map(toRow)
@@ -76,7 +77,7 @@ export function MenuTemplate() {
     try {
       const res = await apiClient.POST('/api/menu-template-item/page', {
         body: { templateId: Number(templateId), pageNo: 1, pageSize: 200 },
-      })
+      } as any)
       const data = res.data?.data as MenuTemplateItemDto[] | undefined
       const items: ItemRow[] = (data || []).map((it) => {
         const mt = it.menuType
@@ -102,15 +103,63 @@ export function MenuTemplate() {
     setExpanded(next)
   }
 
+  // —— 增删改 ——
+  const [dialogOpen, setDialogOpen] = useState(false)
+  const [editing, setEditing] = useState<TemplateRow | null>(null)
+  const [submitting, setSubmitting] = useState(false)
+  const [deleting, setDeleting] = useState<TemplateRow | null>(null)
+  const [confirmLoading, setConfirmLoading] = useState(false)
+
+  const fields: CrudField[] = [
+    { name: 'templateName', label: '模板名称', type: 'text', required: true, placeholder: '请输入模板名称', colSpan: 1 },
+    { name: 'templateCode', label: '编码', type: 'text', required: true, placeholder: '如 tpl-workbench', colSpan: 1, disabled: !!editing },
+    { name: 'enableStatus', label: '启用', type: 'switch', colSpan: 2 },
+  ]
+  const dialogInitial = editing
+    ? { templateName: editing.name, templateCode: editing.code, enableStatus: editing.status === 'active' ? '0' : '1' }
+    : undefined
+
+  const openCreate = () => { setEditing(null); setDialogOpen(true) }
+  const openEdit = (row: TemplateRow) => { setEditing(row); setDialogOpen(true) }
+
+  const handleSubmit = async (values: Record<string, any>) => {
+    setSubmitting(true)
+    try {
+      const payload: any = editing ? { ...editing, ...values } : values
+      const res = await call(apiClient.POST(editing ? '/api/menu-template/edit' : '/api/menu-template/add', { body: payload } as any))
+      if (res.error) { toast.error(res.error.errorMsg || '保存失败'); return }
+      toast.success(editing ? '已保存修改' : '已新增菜单模板')
+      setDialogOpen(false)
+      setReloadKey((k) => k + 1)
+    } finally {
+      setSubmitting(false)
+    }
+  }
+  const handleDelete = async () => {
+    if (!deleting) return
+    setConfirmLoading(true)
+    try {
+      const res = await call(apiClient.POST('/api/menu-template/delete', { body: { id: deleting.id } } as any))
+      if (res.error) { toast.error(res.error.errorMsg || '删除失败'); return }
+      toast.success('已删除菜单模板')
+      setDeleting(null)
+      setReloadKey((k) => k + 1)
+    } finally {
+      setConfirmLoading(false)
+    }
+  }
+
+  const resetFilters = () => { setKeyword(''); setStatus('all'); setPage(1) }
+
   return (
     <div className="flex flex-col h-full">
       <PageHeader
         title="菜单模板"
         description="预置菜单与权限方案，快速复制给新租户，统一功能布局"
-        actions={<Button><Plus className="h-4 w-4" />新增模板</Button>}
+        actions={<Button onClick={openCreate}><Plus className="h-4 w-4" />新增模板</Button>}
       />
 
-      <SearchToolbar>
+      <SearchToolbar onSearch={() => setPage(1)} onReset={resetFilters}>
         <Input
           placeholder="搜索模板名称 / 编码"
           className="w-56 h-9"
@@ -129,7 +178,7 @@ export function MenuTemplate() {
 
       <TableToolbar
         left={<span className="text-sm text-muted-foreground">共 {shownTotal} 个菜单模板</span>}
-        right={<Button variant="ghost" size="sm" className="h-8 text-muted-foreground"><RefreshCw className="h-4 w-4" /></Button>}
+        right={<Button variant="ghost" size="sm" className="h-8 text-muted-foreground" onClick={() => setReloadKey((k) => k + 1)}><RefreshCw className="h-4 w-4" /></Button>}
       />
 
       <div className="flex-1 overflow-auto">
@@ -157,7 +206,7 @@ export function MenuTemplate() {
             ) : (
               rows.map((row) => {
                 const isOpen = expanded.has(row.id)
-                return <RowFragment key={row.id} row={row} isOpen={isOpen} items={itemsCache[row.id] || []} loadingItems={loadingItems === row.id} onToggle={() => toggle(row.id)} />
+                return <RowFragment key={row.id} row={row} isOpen={isOpen} items={itemsCache[row.id] || []} loadingItems={loadingItems === row.id} onToggle={() => toggle(row.id)} onEdit={() => openEdit(row)} onDelete={() => setDeleting(row)} />
               })
             )}
           </TableBody>
@@ -165,11 +214,33 @@ export function MenuTemplate() {
       </div>
 
       <Pagination total={shownTotal} current={page} pageSize={pageSize} onPageChange={setPage} onPageSizeChange={setPageSize} />
+
+      <CrudDialog
+        open={dialogOpen}
+        title={editing ? '编辑菜单模板' : '新增菜单模板'}
+        fields={fields}
+        initialValues={dialogInitial}
+        submitting={submitting}
+        onOpenChange={setDialogOpen}
+        onSubmit={handleSubmit}
+      />
+
+      <ConfirmDialog
+        open={!!deleting}
+        title="删除菜单模板"
+        description={`确定要删除菜单模板「${deleting?.name}」吗？`}
+        confirmText="删除"
+        loading={confirmLoading}
+        onOpenChange={(o) => !o && setDeleting(null)}
+        onConfirm={handleDelete}
+      />
     </div>
   )
 }
 
-function RowFragment({ row, isOpen, items, loadingItems, onToggle }: { row: TemplateRow; isOpen: boolean; items: ItemRow[]; loadingItems: boolean; onToggle: () => void }) {
+function RowFragment({ row, isOpen, items, loadingItems, onToggle, onEdit, onDelete }: {
+  row: TemplateRow; isOpen: boolean; items: ItemRow[]; loadingItems: boolean; onToggle: () => void; onEdit: () => void; onDelete: () => void
+}) {
   return (
     <>
       <TableRow className="hover:bg-muted/40">
@@ -186,8 +257,8 @@ function RowFragment({ row, isOpen, items, loadingItems, onToggle }: { row: Temp
         <TableCell><StatusBadge status={row.status}>{row.status === 'active' ? '启用' : '停用'}</StatusBadge></TableCell>
         <TableCell className="text-right tabular-nums text-sm text-muted-foreground">{row.menuCount}</TableCell>
         <TableCell className="text-right" onClick={(e) => e.stopPropagation()}>
-          <Button variant="ghost" size="sm" className="h-7 text-xs"><Pencil className="h-3.5 w-3.5" />编辑</Button>
-          <Button variant="ghost" size="sm" className="h-7 text-xs text-destructive hover:bg-destructive/10"><Trash2 className="h-3.5 w-3.5" />删除</Button>
+          <Button variant="ghost" size="sm" className="h-7 text-xs" onClick={onEdit}><Pencil className="h-3.5 w-3.5" />编辑</Button>
+          <Button variant="ghost" size="sm" className="h-7 text-xs text-destructive hover:bg-destructive/10" onClick={onDelete}><Trash2 className="h-3.5 w-3.5" />删除</Button>
         </TableCell>
       </TableRow>
       {isOpen && (

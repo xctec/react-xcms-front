@@ -1,12 +1,13 @@
 import { useState } from 'react'
-import { PageHeader, SearchToolbar, TableToolbar, StatusBadge, Tag } from '@/components/xcms'
+import { PageHeader, SearchToolbar, TableToolbar, StatusBadge, Tag, CrudDialog, ConfirmDialog, type CrudField } from '@/components/xcms'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import {
   Table, TableBody, TableCell, TableHead, TableHeader, TableRow,
 } from '@/components/ui/table'
 import { Building2, Users2, UserSquare2, Plus, RefreshCw, Pencil, Trash2, UserPlus, ChevronRight, ChevronDown } from 'lucide-react'
-import { apiClient } from '@/utils/request'
+import { toast } from 'sonner'
+import { apiClient, call } from '@/utils/request'
 import { useApi } from '@/lib/api/hooks'
 
 type OrgType = 'company' | 'dept' | 'team'
@@ -61,10 +62,11 @@ const typeMeta: Record<OrgType, { label: string; color: 'brand' | 'info' | 'neut
 export function OrgUnit() {
   const [keyword, setKeyword] = useState('')
   const [expanded, setExpanded] = useState<Set<string>>(new Set(['1', '2', '3']))
+  const [reloadKey, setReloadKey] = useState(0)
 
   const { data, loading } = useApi<OrgUnitTreeResp>(
     () => (apiClient.GET as any)('/api/org/unit/tree', {}),
-    [],
+    [reloadKey],
   )
   const tree = (data?.data || []).map(toRow)
 
@@ -87,6 +89,71 @@ export function OrgUnit() {
     setExpanded(next)
   }
 
+  // —— 新增 / 编辑 / 删除 ——
+  const [dialogOpen, setDialogOpen] = useState(false)
+  const [editing, setEditing] = useState<OrgRow | null>(null)
+  const [createParentId, setCreateParentId] = useState<string | null>(null)
+  const [submitting, setSubmitting] = useState(false)
+  const [deleting, setDeleting] = useState<OrgRow | null>(null)
+  const [confirmLoading, setConfirmLoading] = useState(false)
+
+  const fields: CrudField[] = [
+    { name: 'name', label: '机构名称', type: 'text', required: true, placeholder: '请输入机构名称', colSpan: 1 },
+    { name: 'code', label: '机构编码', type: 'text', required: true, placeholder: '如 TECH-01', colSpan: 1 },
+    { name: 'leader', label: '负责人', type: 'text', placeholder: '请输入负责人', colSpan: 1 },
+    { name: 'memberCount', label: '成员数', type: 'number', placeholder: '整数', colSpan: 1 },
+    { name: 'orgUnitStatus', label: '启用', type: 'switch', colSpan: 1 },
+    { name: 'nodeDesc', label: '备注', type: 'textarea', placeholder: '机构说明', colSpan: 2 },
+  ]
+
+  const openCreate = () => { setEditing(null); setCreateParentId(null); setDialogOpen(true) }
+  const openCreateChild = (id: string) => { setEditing(null); setCreateParentId(id); setDialogOpen(true) }
+  const openEdit = (node: OrgRow) => { setEditing(node); setCreateParentId(null); setDialogOpen(true) }
+
+  const dialogInitial = editing
+    ? {
+        name: editing.name,
+        code: editing.code,
+        leader: editing.leader,
+        memberCount: editing.memberCount,
+        orgUnitStatus: editing.status === 'active' ? '0' : '1',
+        nodeDesc: '',
+      }
+    : undefined
+  const dialogTitle = editing ? '编辑机构' : createParentId ? '新增子机构' : '新增机构'
+
+  const handleSubmit = async (values: Record<string, any>) => {
+    setSubmitting(true)
+    try {
+      const payload: any = editing
+        ? { id: editing.id, ...values }
+        : { parentId: createParentId ?? null, ...values }
+      const res = await call(
+        apiClient.POST(editing ? '/api/org/unit/edit' : '/api/org/unit/add', { body: payload } as any),
+      )
+      if (res.error) { toast.error(res.error.errorMsg || '保存失败'); return }
+      toast.success(editing ? '已保存修改' : '已新增机构')
+      setDialogOpen(false)
+      setReloadKey((k) => k + 1)
+    } finally {
+      setSubmitting(false)
+    }
+  }
+  const handleDelete = async () => {
+    if (!deleting) return
+    setConfirmLoading(true)
+    try {
+      const res = await call(apiClient.POST('/api/org/unit/delete', { body: { id: deleting.id } } as any))
+      if (res.error) { toast.error(res.error.errorMsg || '删除失败'); return }
+      toast.success('已删除机构')
+      setDeleting(null)
+      setReloadKey((k) => k + 1)
+    } finally {
+      setConfirmLoading(false)
+    }
+  }
+
+  const resetFilters = () => setKeyword('')
   const renderNode = (node: OrgRow, level: number) => {
     const hasChildren = node.children.length > 0
     const isOpen = expanded.has(node.id)
@@ -112,9 +179,9 @@ export function OrgUnit() {
           <TableCell className="text-right tabular-nums text-sm text-muted-foreground">{node.memberCount}</TableCell>
           <TableCell><StatusBadge status={node.status}>{node.status === 'active' ? '启用' : '停用'}</StatusBadge></TableCell>
           <TableCell className="text-right">
-            <Button variant="ghost" size="sm" className="h-7 text-xs"><UserPlus className="h-3.5 w-3.5" />新增子级</Button>
-            <Button variant="ghost" size="sm" className="h-7 text-xs"><Pencil className="h-3.5 w-3.5" />编辑</Button>
-            <Button variant="ghost" size="sm" className="h-7 text-xs text-destructive hover:bg-destructive/10"><Trash2 className="h-3.5 w-3.5" />删除</Button>
+            <Button variant="ghost" size="sm" className="h-7 text-xs" onClick={() => openCreateChild(node.id)}><UserPlus className="h-3.5 w-3.5" />新增子级</Button>
+            <Button variant="ghost" size="sm" className="h-7 text-xs" onClick={() => openEdit(node)}><Pencil className="h-3.5 w-3.5" />编辑</Button>
+            <Button variant="ghost" size="sm" className="h-7 text-xs text-destructive hover:bg-destructive/10" onClick={() => setDeleting(node)}><Trash2 className="h-3.5 w-3.5" />删除</Button>
           </TableCell>
         </TableRow>
         {hasChildren && isOpen && node.children.map((c) => renderNode(c, level + 1))}
@@ -127,10 +194,10 @@ export function OrgUnit() {
       <PageHeader
         title="组织机构"
         description="维护集团 / 工厂 / 部门层级，支撑按组织的数据权限与人员归属"
-        actions={<Button><Plus className="h-4 w-4" />新增机构</Button>}
+        actions={<Button onClick={openCreate}><Plus className="h-4 w-4" />新增机构</Button>}
       />
 
-      <SearchToolbar>
+      <SearchToolbar onSearch={() => setReloadKey((k) => k + 1)} onReset={resetFilters}>
         <Input
           placeholder="搜索机构名称 / 编码"
           className="w-56 h-9"
@@ -141,7 +208,7 @@ export function OrgUnit() {
 
       <TableToolbar
         left={<span className="text-sm text-muted-foreground">共 {shownTotal} 个机构</span>}
-        right={<Button variant="ghost" size="sm" className="h-8 text-muted-foreground"><RefreshCw className="h-4 w-4" /></Button>}
+        right={<Button variant="ghost" size="sm" className="h-8 text-muted-foreground" onClick={() => setReloadKey((k) => k + 1)}><RefreshCw className="h-4 w-4" /></Button>}
       />
 
       <div className="flex-1 overflow-auto">
@@ -173,6 +240,26 @@ export function OrgUnit() {
           </TableBody>
         </Table>
       </div>
+
+      <CrudDialog
+        open={dialogOpen}
+        title={dialogTitle}
+        fields={fields}
+        initialValues={dialogInitial}
+        submitting={submitting}
+        onOpenChange={setDialogOpen}
+        onSubmit={handleSubmit}
+      />
+
+      <ConfirmDialog
+        open={!!deleting}
+        title="删除机构"
+        description={`确定要删除机构「${deleting?.name}」吗？若存在下级将被一并移除。`}
+        confirmText="删除"
+        loading={confirmLoading}
+        onOpenChange={(o) => !o && setDeleting(null)}
+        onConfirm={handleDelete}
+      />
     </div>
   )
 }

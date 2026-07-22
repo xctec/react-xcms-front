@@ -273,3 +273,15 @@ export function Tag({
     </span>
   )
 }
+
+/* ============================================================
+   CrudDialog - 字段配置驱动的通用新增/编辑弹窗
+   ============================================================ */
+export { CrudDialog } from './xcms/crud-dialog'
+export type { CrudField, CrudFieldType, CrudDialogProps } from './xcms/crud-dialog'
+
+/* ============================================================
+   ConfirmDialog - 通用删除/危险操作确认弹窗
+   ============================================================ */
+export { ConfirmDialog } from './xcms/confirm-dialog'
+export type { ConfirmDialogProps } from './xcms/confirm-dialog'

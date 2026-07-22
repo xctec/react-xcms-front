@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { PageHeader, SearchToolbar, TableToolbar, Pagination, StatusBadge, Tag } from '@/components/xcms'
+import { PageHeader, SearchToolbar, BatchToolbar, TableToolbar, Pagination, StatusBadge, Tag, CrudDialog, ConfirmDialog, type CrudField } from '@/components/xcms'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Checkbox } from '@/components/ui/checkbox'
@@ -8,17 +8,19 @@ import {
 } from '@/components/ui/table'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import {
-  DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger,
+  DropdownMenu, DropdownMenuContent, DropdownMenuItem,
+  DropdownMenuSeparator, DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import { cn } from '@/lib/utils'
 import { Plus, RefreshCw, MoreHorizontal, Pencil, Trash2, Users, Building2 } from 'lucide-react'
-import { apiClient } from '@/utils/request'
+import { toast } from 'sonner'
+import { apiClient, call } from '@/utils/request'
 import { usePaged } from '@/lib/api/hooks'
 import type { components } from '@/lib/api/schema'
 type UserDto = components['schemas']['UserDto']
 
 interface PUser {
-  id: number
+  id: string
   loginId: string
   name: string
   tenant: string
@@ -26,14 +28,13 @@ interface PUser {
   status: 'active' | 'inactive'
 }
 
-// 后端 /api/user/page 返回 UserDto：含 loginId/nickName/userStatus，tenant/roles 当前未返回，待后端补充
 const toPUser = (u: UserDto): PUser => ({
-  id: u.id ?? 0,
+  id: String(u.id ?? ''),
   loginId: u.loginId ?? '',
   name: u.nickName || u.loginId || '',
   tenant: (u as any).tenant ?? '',
   roles: (u as any).roles ?? [],
-  status: u.userStatus === '1' ? 'active' : 'inactive',
+  status: (u.userStatus === '0' ? 'active' : 'inactive') as 'active' | 'inactive',
 })
 
 const tenantName: Record<string, string> = {
@@ -49,16 +50,16 @@ export function PlatformUser() {
   const [pageSize, setPageSize] = useState(10)
   const [keyword, setKeyword] = useState('')
   const [tenant, setTenant] = useState('all')
+  const [reloadKey, setReloadKey] = useState(0)
 
   const { list: rawUsers, total, loading } = usePaged<UserDto>(
     () => apiClient.POST('/api/user/page', {
       body: { pageNo: page, pageSize, keyword: keyword || undefined },
-    }),
-    [page, pageSize, keyword],
+    } as any),
+    [page, pageSize, keyword, reloadKey],
   )
 
   const list = rawUsers.map(toPUser)
-
   const fetched = list.filter((u) => tenant === 'all' || u.tenant === tenant)
   const shownTotal = tenant === 'all' ? total : fetched.length
   const allSelected = fetched.length > 0 && selected.size === fetched.length
@@ -69,14 +70,84 @@ export function PlatformUser() {
     next.has(id) ? next.delete(id) : next.add(id)
     setSelected(next)
   }
-  const tenantOptions = ['all', ...Array.from(new Set(list.map((u) => u.tenant).filter(Boolean)))]
+  const clearSelection = () => setSelected(new Set())
+  const tenantOptions = Array.from(new Set(list.map((u) => u.tenant).filter(Boolean)))
+  const TENANT_OPTIONS = tenantOptions.map((t) => ({ label: tenantName[t] || t, value: t }))
+
+  // —— 增删改 ——
+  const [dialogOpen, setDialogOpen] = useState(false)
+  const [editing, setEditing] = useState<PUser | null>(null)
+  const [submitting, setSubmitting] = useState(false)
+  const [deleting, setDeleting] = useState<PUser | null>(null)
+  const [batchOpen, setBatchOpen] = useState(false)
+  const [confirmLoading, setConfirmLoading] = useState(false)
+
+  const fields: CrudField[] = [
+    { name: 'loginId', label: '登录账号', type: 'text', required: true, placeholder: '请输入登录账号', colSpan: 1, disabled: !!editing },
+    { name: 'nickName', label: '姓名', type: 'text', placeholder: '请输入姓名', colSpan: 1 },
+    { name: 'tenant', label: '所属租户', type: 'select', options: TENANT_OPTIONS, colSpan: 1 },
+    { name: 'userStatus', label: '启用', type: 'switch', colSpan: 1 },
+  ]
+  const dialogInitial = editing
+    ? {
+        loginId: editing.loginId,
+        nickName: editing.name,
+        tenant: editing.tenant,
+        userStatus: editing.status === 'active' ? '0' : '1',
+      }
+    : undefined
+
+  const openCreate = () => { setEditing(null); setDialogOpen(true) }
+  const openEdit = (row: PUser) => { setEditing(row); setDialogOpen(true) }
+
+  const handleSubmit = async (values: Record<string, any>) => {
+    setSubmitting(true)
+    try {
+      const payload: any = editing ? { ...editing, ...values } : values
+      const res = await call(apiClient.POST(editing ? '/api/user/edit' : '/api/user/add', { body: payload } as any))
+      if (res.error) { toast.error(res.error.errorMsg || '保存失败'); return }
+      toast.success(editing ? '已保存修改' : '已新增平台用户')
+      setDialogOpen(false)
+      setReloadKey((k) => k + 1)
+    } finally {
+      setSubmitting(false)
+    }
+  }
+  const handleDelete = async () => {
+    if (!deleting) return
+    setConfirmLoading(true)
+    try {
+      const res = await call(apiClient.POST('/api/user/delete', { body: { id: deleting.id } } as any))
+      if (res.error) { toast.error(res.error.errorMsg || '删除失败'); return }
+      toast.success('已删除平台用户')
+      setDeleting(null)
+      setReloadKey((k) => k + 1)
+    } finally {
+      setConfirmLoading(false)
+    }
+  }
+  const handleBatchDelete = async () => {
+    setConfirmLoading(true)
+    try {
+      const res = await call(apiClient.POST('/api/user/deleteAll', { body: { ids: Array.from(selected) } } as any))
+      if (res.error) { toast.error(res.error.errorMsg || '删除失败'); return }
+      toast.success(`已删除 ${selected.size} 名平台用户`)
+      setSelected(new Set())
+      setBatchOpen(false)
+      setReloadKey((k) => k + 1)
+    } finally {
+      setConfirmLoading(false)
+    }
+  }
+
+  const resetFilters = () => { setKeyword(''); setTenant('all'); setPage(1) }
 
   return (
     <div className="flex flex-col h-full">
       <PageHeader
         title="平台用户"
         description="跨租户的超级管理员与平台级账号，统一纳管（L3 管控）"
-        actions={<Button><Plus className="h-4 w-4" />新增平台用户</Button>}
+        actions={<Button onClick={openCreate}><Plus className="h-4 w-4" />新增平台用户</Button>}
       />
 
       <div className="flex gap-4 flex-1 overflow-hidden">
@@ -93,7 +164,7 @@ export function PlatformUser() {
               >
                 <Users className="h-4 w-4" />全部租户
               </button>
-              {tenantOptions.filter((t) => t !== 'all').map((t) => (
+              {tenantOptions.map((t) => (
                 <button
                   key={t}
                   onClick={() => setTenant(t)}
@@ -110,7 +181,7 @@ export function PlatformUser() {
         </aside>
 
         <div className="flex-1 flex flex-col overflow-hidden">
-          <SearchToolbar>
+          <SearchToolbar onSearch={() => setPage(1)} onReset={resetFilters}>
             <Input
               placeholder="搜索登录账号 / 姓名"
               className="w-56 h-9"
@@ -119,9 +190,13 @@ export function PlatformUser() {
             />
           </SearchToolbar>
 
+          <BatchToolbar selectedCount={selected.size} onClear={clearSelection}>
+            <Button size="sm" variant="outline" className="text-destructive hover:bg-destructive/10" onClick={() => setBatchOpen(true)}><Trash2 className="h-3.5 w-3.5" />批量删除</Button>
+          </BatchToolbar>
+
           <TableToolbar
             left={<span className="text-sm text-muted-foreground">共 {shownTotal} 个平台用户</span>}
-            right={<Button variant="ghost" size="sm" className="h-8 text-muted-foreground"><RefreshCw className="h-4 w-4" /></Button>}
+            right={<Button variant="ghost" size="sm" className="h-8 text-muted-foreground" onClick={() => setReloadKey((k) => k + 1)}><RefreshCw className="h-4 w-4" /></Button>}
           />
 
           <div className="flex-1 overflow-auto">
@@ -173,9 +248,9 @@ export function PlatformUser() {
                               <Button variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground"><MoreHorizontal className="h-4 w-4" /></Button>
                             </DropdownMenuTrigger>
                             <DropdownMenuContent align="end" className="w-40">
-                              <DropdownMenuItem><Pencil className="h-4 w-4" />编辑</DropdownMenuItem>
+                              <DropdownMenuItem onClick={() => openEdit(row)}><Pencil className="h-4 w-4" />编辑</DropdownMenuItem>
                               <DropdownMenuSeparator />
-                              <DropdownMenuItem className="text-destructive focus:text-destructive"><Trash2 className="h-4 w-4" />删除</DropdownMenuItem>
+                              <DropdownMenuItem className="text-destructive focus:text-destructive" onClick={() => setDeleting(row)}><Trash2 className="h-4 w-4" />删除</DropdownMenuItem>
                             </DropdownMenuContent>
                           </DropdownMenu>
                         </TableCell>
@@ -190,6 +265,36 @@ export function PlatformUser() {
           <Pagination total={shownTotal} current={page} pageSize={pageSize} onPageChange={setPage} onPageSizeChange={setPageSize} />
         </div>
       </div>
+
+      <CrudDialog
+        open={dialogOpen}
+        title={editing ? '编辑平台用户' : '新增平台用户'}
+        fields={fields}
+        initialValues={dialogInitial}
+        submitting={submitting}
+        onOpenChange={setDialogOpen}
+        onSubmit={handleSubmit}
+      />
+
+      <ConfirmDialog
+        open={!!deleting}
+        title="删除平台用户"
+        description={`确定要删除「${deleting?.loginId}」吗？`}
+        confirmText="删除"
+        loading={confirmLoading}
+        onOpenChange={(o) => !o && setDeleting(null)}
+        onConfirm={handleDelete}
+      />
+
+      <ConfirmDialog
+        open={batchOpen}
+        title="批量删除平台用户"
+        description={`确定要删除选中的 ${selected.size} 名平台用户吗？`}
+        confirmText="删除"
+        loading={confirmLoading}
+        onOpenChange={setBatchOpen}
+        onConfirm={handleBatchDelete}
+      />
     </div>
   )
 }

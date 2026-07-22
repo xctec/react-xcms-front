@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { PageHeader, SearchToolbar, BatchToolbar, TableToolbar, Pagination, StatusBadge, Tag } from '@/components/xcms'
+import { PageHeader, SearchToolbar, BatchToolbar, TableToolbar, Pagination, StatusBadge, Tag, CrudDialog, ConfirmDialog, type CrudField } from '@/components/xcms'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Checkbox } from '@/components/ui/checkbox'
@@ -14,7 +14,8 @@ import {
   DropdownMenuSeparator, DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import { Plus, RefreshCw, MoreHorizontal, Pencil, Trash2, Users, Building2, Copy } from 'lucide-react'
-import { apiClient } from '@/utils/request'
+import { toast } from 'sonner'
+import { apiClient, call } from '@/utils/request'
 import { usePaged } from '@/lib/api/hooks'
 import type { components } from '@/lib/api/schema'
 
@@ -43,6 +44,11 @@ function toRow(t: TenantDto): TenantRow {
   }
 }
 
+const KIND_OPTIONS = [
+  { label: '平台租户', value: 'PLATFORM' },
+  { label: '普通租户', value: 'NORMAL' },
+]
+
 export function Tenant() {
   const [selected, setSelected] = useState<Set<string>>(new Set())
   const [page, setPage] = useState(1)
@@ -50,13 +56,14 @@ export function Tenant() {
   const [keyword, setKeyword] = useState('')
   const [kind, setKind] = useState('all')
   const [status, setStatus] = useState('all')
+  const [reloadKey, setReloadKey] = useState(0)
 
   const { list, loading } = usePaged<TenantDto>(
     () =>
       apiClient.POST('/api/tenant/page', {
         body: { pageNo: page, pageSize, keyword: keyword || undefined },
-      }),
-    [page, pageSize, keyword],
+      } as any),
+    [page, pageSize, keyword, reloadKey],
   )
 
   const fetched = list.map(toRow)
@@ -74,6 +81,77 @@ export function Tenant() {
     next.has(id) ? next.delete(id) : next.add(id)
     setSelected(next)
   }
+  const clearSelection = () => setSelected(new Set())
+
+  // —— 增删改 ——
+  const [dialogOpen, setDialogOpen] = useState(false)
+  const [editing, setEditing] = useState<TenantRow | null>(null)
+  const [submitting, setSubmitting] = useState(false)
+  const [deleting, setDeleting] = useState<TenantRow | null>(null)
+  const [batchOpen, setBatchOpen] = useState(false)
+  const [confirmLoading, setConfirmLoading] = useState(false)
+
+  const fields: CrudField[] = [
+    { name: 'name', label: '租户名称', type: 'text', required: true, placeholder: '请输入租户名称', colSpan: 1 },
+    { name: 'code', label: '租户编码', type: 'text', required: true, placeholder: '如 acme', colSpan: 1 },
+    { name: 'tenantType', label: '类型', type: 'select', options: KIND_OPTIONS, colSpan: 1 },
+    { name: 'tenantStatus', label: '启用', type: 'switch', colSpan: 1 },
+    { name: 'nodeDesc', label: '备注', type: 'textarea', placeholder: '租户说明', colSpan: 2 },
+  ]
+  const dialogInitial = editing
+    ? {
+        name: editing.name,
+        code: editing.code,
+        tenantType: editing.kind === 'platform' ? 'PLATFORM' : 'NORMAL',
+        tenantStatus: editing.status === 'active' ? '0' : '1',
+        nodeDesc: '',
+      }
+    : undefined
+
+  const openCreate = () => { setEditing(null); setDialogOpen(true) }
+  const openEdit = (row: TenantRow) => { setEditing(row); setDialogOpen(true) }
+
+  const handleSubmit = async (values: Record<string, any>) => {
+    setSubmitting(true)
+    try {
+      const payload: any = editing ? { ...editing, ...values } : values
+      const res = await call(apiClient.POST(editing ? '/api/tenant/edit' : '/api/tenant/add', { body: payload } as any))
+      if (res.error) { toast.error(res.error.errorMsg || '保存失败'); return }
+      toast.success(editing ? '已保存修改' : '已新建租户')
+      setDialogOpen(false)
+      setReloadKey((k) => k + 1)
+    } finally {
+      setSubmitting(false)
+    }
+  }
+  const handleDelete = async () => {
+    if (!deleting) return
+    setConfirmLoading(true)
+    try {
+      const res = await call(apiClient.POST('/api/tenant/delete', { body: { id: deleting.id } } as any))
+      if (res.error) { toast.error(res.error.errorMsg || '删除失败'); return }
+      toast.success('已删除租户')
+      setDeleting(null)
+      setReloadKey((k) => k + 1)
+    } finally {
+      setConfirmLoading(false)
+    }
+  }
+  const handleBatchDelete = async () => {
+    setConfirmLoading(true)
+    try {
+      const res = await call(apiClient.POST('/api/tenant/deleteAll', { body: { ids: Array.from(selected) } } as any))
+      if (res.error) { toast.error(res.error.errorMsg || '删除失败'); return }
+      toast.success(`已删除 ${selected.size} 个租户`)
+      setSelected(new Set())
+      setBatchOpen(false)
+      setReloadKey((k) => k + 1)
+    } finally {
+      setConfirmLoading(false)
+    }
+  }
+
+  const resetFilters = () => { setKeyword(''); setKind('all'); setStatus('all'); setPage(1) }
 
   return (
     <div className="flex flex-col h-full">
@@ -82,13 +160,13 @@ export function Tenant() {
         description="管理平台级租户及其独立数据空间，支持模板复制创建"
         actions={
           <>
-            <Button variant="outline"><Copy className="h-4 w-4" />从模板复制</Button>
-            <Button><Plus className="h-4 w-4" />新建租户</Button>
+            <Button variant="outline" onClick={() => toast.info('演示环境，从模板复制暂未开放')}><Copy className="h-4 w-4" />从模板复制</Button>
+            <Button onClick={openCreate}><Plus className="h-4 w-4" />新建租户</Button>
           </>
         }
       />
 
-      <SearchToolbar>
+      <SearchToolbar onSearch={() => setPage(1)} onReset={resetFilters}>
         <Input
           placeholder="搜索租户名称 / 编码"
           className="w-56 h-9"
@@ -113,14 +191,14 @@ export function Tenant() {
         </Select>
       </SearchToolbar>
 
-      <BatchToolbar selectedCount={selected.size} onClear={() => setSelected(new Set())}>
-        <Button size="sm" variant="outline">批量启用</Button>
-        <Button size="sm" variant="outline" className="text-destructive hover:bg-destructive/10"><Trash2 className="h-3.5 w-3.5" />批量删除</Button>
+      <BatchToolbar selectedCount={selected.size} onClear={clearSelection}>
+        <Button size="sm" variant="outline" onClick={() => toast.info('演示环境，批量启用暂未开放')}>批量启用</Button>
+        <Button size="sm" variant="outline" className="text-destructive hover:bg-destructive/10" onClick={() => setBatchOpen(true)}><Trash2 className="h-3.5 w-3.5" />批量删除</Button>
       </BatchToolbar>
 
       <TableToolbar
         left={<span className="text-sm text-muted-foreground">共 {shownTotal} 个租户</span>}
-        right={<Button variant="ghost" size="sm" className="h-8 text-muted-foreground"><RefreshCw className="h-4 w-4" /></Button>}
+        right={<Button variant="ghost" size="sm" className="h-8 text-muted-foreground" onClick={() => setReloadKey((k) => k + 1)}><RefreshCw className="h-4 w-4" /></Button>}
       />
 
       <div className="flex-1 overflow-auto">
@@ -175,11 +253,11 @@ export function Tenant() {
                           <Button variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground"><MoreHorizontal className="h-4 w-4" /></Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end" className="w-40">
-                          <DropdownMenuItem><Users className="h-4 w-4" />成员管理</DropdownMenuItem>
-                          <DropdownMenuItem><Pencil className="h-4 w-4" />编辑</DropdownMenuItem>
-                          <DropdownMenuItem><Copy className="h-4 w-4" />复制为新租户</DropdownMenuItem>
+                          <DropdownMenuItem onClick={() => toast.info('演示环境，成员管理暂未开放')}><Users className="h-4 w-4" />成员管理</DropdownMenuItem>
+                          <DropdownMenuItem onClick={() => openEdit(row)}><Pencil className="h-4 w-4" />编辑</DropdownMenuItem>
+                          <DropdownMenuItem onClick={() => toast.info('演示环境，复制暂未开放')}><Copy className="h-4 w-4" />复制为新租户</DropdownMenuItem>
                           <DropdownMenuSeparator />
-                          <DropdownMenuItem className="text-destructive focus:text-destructive"><Trash2 className="h-4 w-4" />删除</DropdownMenuItem>
+                          <DropdownMenuItem className="text-destructive focus:text-destructive" onClick={() => setDeleting(row)}><Trash2 className="h-4 w-4" />删除</DropdownMenuItem>
                         </DropdownMenuContent>
                       </DropdownMenu>
                     </TableCell>
@@ -192,6 +270,36 @@ export function Tenant() {
       </div>
 
       <Pagination total={shownTotal} current={page} pageSize={pageSize} onPageChange={setPage} onPageSizeChange={setPageSize} />
+
+      <CrudDialog
+        open={dialogOpen}
+        title={editing ? '编辑租户' : '新建租户'}
+        fields={fields}
+        initialValues={dialogInitial}
+        submitting={submitting}
+        onOpenChange={setDialogOpen}
+        onSubmit={handleSubmit}
+      />
+
+      <ConfirmDialog
+        open={!!deleting}
+        title="删除租户"
+        description={`确定要删除租户「${deleting?.name}」吗？其下数据空间将一并移除。`}
+        confirmText="删除"
+        loading={confirmLoading}
+        onOpenChange={(o) => !o && setDeleting(null)}
+        onConfirm={handleDelete}
+      />
+
+      <ConfirmDialog
+        open={batchOpen}
+        title="批量删除租户"
+        description={`确定要删除选中的 ${selected.size} 个租户吗？`}
+        confirmText="删除"
+        loading={confirmLoading}
+        onOpenChange={setBatchOpen}
+        onConfirm={handleBatchDelete}
+      />
     </div>
   )
 }
