@@ -56,8 +56,10 @@ export function Sidebar({ tree, currentPath, collapsed, onToggleCollapse }: Side
   }
 
   const renderNodes = (nodes: AppMenuNode[]): ReactNode =>
-    nodes.map((node) => {
-      const Icon = node.icon
+    nodes
+      .filter((node) => !node.hidden)
+      .map((node) => {
+        const Icon = node.icon
       const isCatalog = !!node.children?.length
       const active = !isCatalog && currentPath === node.path
       const isOpen = expanded[node.key]

@@ -324,3 +324,5 @@ export function TenantUser() {
     </div>
   )
 }
+
+export default TenantUser

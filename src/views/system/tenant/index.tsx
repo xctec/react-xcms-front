@@ -195,3 +195,5 @@ export function Tenant() {
     </div>
   )
 }
+
+export default Tenant

@@ -180,3 +180,5 @@ function FragmentRow({ row, isOpen, typeLabel, onToggle }: { row: TemplateRow; i
     </>
   )
 }
+
+export default RoleTemplate

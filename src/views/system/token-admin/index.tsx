@@ -176,3 +176,5 @@ export function TokenAdmin() {
     </div>
   )
 }
+
+export default TokenAdmin

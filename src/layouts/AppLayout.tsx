@@ -1,11 +1,11 @@
-import { useEffect, useState, Suspense } from 'react'
-import { Routes, Navigate, useNavigate, useLocation } from 'react-router-dom'
+import { Suspense, useEffect, useMemo, useState } from 'react'
+import { Navigate, useNavigate, useLocation, useRoutes } from 'react-router-dom'
 import { Loader2 } from 'lucide-react'
 import { Sidebar } from '@/components/Sidebar'
 import { Topbar } from '@/components/Topbar'
 import { CommandPalette } from '@/components/CommandPalette'
 import { useMenus } from '@/lib/menu'
-import { buildMenuRoutes } from '@/router/menuRoutes'
+import { buildMenuRouteObjects } from '@/router/menuRoutes'
 import { Toaster } from '@/components/ui/sonner'
 import { getAccessToken, onUnauthorized } from '@/utils/request'
 
@@ -33,6 +33,26 @@ export function AppLayout() {
   }
 
   const currentPath = location.pathname
+  const firstPath = items[0]?.path || '/dashboard'
+
+  // 由动态菜单构建内容路由配置（独立路由上下文，绝对路径直接匹配）
+  // 菜单未加载完成前，未匹配路径不急于重定向到首个菜单页——否则直接深链
+  // （如 /role）会在菜单到达前被 '*' 兜底重定向到 /dashboard，导致永远访问不到。
+  const contentRoutes = useMemo(
+    () => [
+      { index: true, element: <Navigate to={firstPath} replace /> },
+      ...buildMenuRouteObjects(tree),
+      // 菜单就绪后才用兜底重定向；加载中/为空时渲染加载占位，避免误跳转
+      {
+        path: '*',
+        element: loading || items.length === 0
+          ? <PageLoading />
+          : <Navigate to={firstPath} replace />,
+      },
+    ],
+    [tree, items, firstPath, loading],
+  )
+  const content = useRoutes(contentRoutes)
 
   // 全局快捷键
   useEffect(() => {
@@ -62,17 +82,6 @@ export function AppLayout() {
     onUnauthorized(() => navigate('/login'))
   }, [navigate])
 
-  const firstPath = items[0]?.path || '/dashboard'
-
-  if (loading) {
-    return (
-      <div className="flex h-screen flex-col items-center justify-center gap-3 bg-background text-muted-foreground">
-        <Loader2 className="h-8 w-8 animate-spin text-primary" />
-        <span className="text-sm">加载菜单中…</span>
-      </div>
-    )
-  }
-
   return (
     <div className="flex h-screen overflow-hidden bg-background text-foreground">
       <Sidebar
@@ -90,9 +99,7 @@ export function AppLayout() {
         />
         <main className="flex-1 overflow-hidden bg-background">
           {/* 菜单路由按需懒加载，Suspense 仅覆盖内容区，侧栏/顶栏不闪烁 */}
-          <Suspense fallback={<PageLoading />}>
-            <Routes>{buildMenuRoutes(items, firstPath)}</Routes>
-          </Suspense>
+          <Suspense fallback={<PageLoading />}>{content}</Suspense>
         </main>
       </div>
       <CommandPalette open={commandOpen} onOpenChange={setCommandOpen} items={items} />

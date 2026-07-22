@@ -234,3 +234,5 @@ function RowFragment({ row, isOpen, items, loadingItems, onToggle }: { row: Temp
     </>
   )
 }
+
+export default MenuTemplate

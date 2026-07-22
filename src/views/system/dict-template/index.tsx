@@ -190,3 +190,5 @@ function TableRowFragment({ row, isOpen, onToggle }: { row: TemplateRow; isOpen:
     </>
   )
 }
+
+export default DictTemplate

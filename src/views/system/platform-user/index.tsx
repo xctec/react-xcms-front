@@ -179,3 +179,5 @@ export function PlatformUser() {
     </div>
   )
 }
+
+export default PlatformUser

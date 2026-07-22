@@ -192,3 +192,5 @@ export function RoleGroup() {
     </div>
   )
 }
+
+export default RoleGroup

@@ -371,3 +371,5 @@ export function Role() {
     </div>
   )
 }
+
+export default Role

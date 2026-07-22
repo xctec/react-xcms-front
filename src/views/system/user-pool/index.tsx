@@ -207,3 +207,5 @@ export function UserPool() {
     </div>
   )
 }
+
+export default UserPool

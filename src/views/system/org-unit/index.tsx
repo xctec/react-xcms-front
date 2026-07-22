@@ -176,3 +176,5 @@ export function OrgUnit() {
     </div>
   )
 }
+
+export default OrgUnit

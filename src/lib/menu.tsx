@@ -1,4 +1,21 @@
 import { useEffect, useState, lazy, type ComponentType, type LazyExoticComponent } from 'react'
+
+/* ============================ 视图动态打包声明 ============================ */
+// 用 import.meta.glob 在编译期静态声明打包 src/views 下所有页面，
+// 这样运行时即可按后端返回的 component 值（如 "system/tenant-user/index"）
+// 动态 import(`@/views/${component}`) 并懒加载对应页面，实现后端菜单驱动前端路由。
+// 注意：glob 模式相对本文件（src/lib），指向 src/views。映射 key 形如
+//   ../views/system/tenant-user/index.tsx
+// 各页面文件末尾已追加 `export default Xxx`，可直接被 React.lazy 消费。
+const viewModules = import.meta.glob<Record<string, ComponentType>>('../views/**/*.tsx')
+
+/** 按后端 component 值解析出懒加载页面组件（命中则返回，未命中返回 undefined） */
+export function lazyView(component?: string): LazyExoticComponent<ComponentType> | undefined {
+  if (!component) return undefined
+  const importer = viewModules[`../views/${component}.tsx`]
+  if (!importer) return undefined
+  return lazy(() => importer().then((m) => ({ default: (m as any).default as ComponentType })))
+}
 import type { LucideIcon } from 'lucide-react'
 import * as LucideIcons from 'lucide-react'
 import { apiClient } from '@/utils/request'
@@ -21,6 +38,8 @@ interface MenuTreeVO {
   jumpTarget?: string
   orderNum?: number
   showStatus?: '0' | '1'
+  /** 前端私有标记：为 true 时仅生成路由、不渲染到侧边栏菜单 */
+  hidden?: boolean
   children?: MenuTreeVO[]
 }
 
@@ -30,8 +49,10 @@ export interface AppMenuItem {
   path: string
   label: string
   icon: LucideIcon
-  /** 页面对应的组件标识（componentRegistry 的键） */
+  /** 页面对应的组件路径（后端下发的 component 值，如 system/tenant-user/index） */
   component?: string
+  /** 后端菜单编码，用作路由与高亮的唯一键 */
+  code?: string
   /** 跳转类型与外链目标 */
   jumpType?: '1' | '2' | '3'
   jumpTarget?: string
@@ -51,9 +72,13 @@ export interface AppMenuNode {
   /** 站内路由路径（目录节点可能为空） */
   path?: string
   component?: string
+  /** 后端菜单编码，用作路由与高亮的唯一键 */
+  code?: string
   jumpType?: '1' | '2' | '3'
   jumpTarget?: string
   ready: boolean
+  /** 为 true 时仅生成路由、不渲染到侧边栏菜单 */
+  hidden?: boolean
   /** 包含子节点即为目录 */
   children?: AppMenuNode[]
 }
@@ -85,43 +110,15 @@ function resolveIcon(name?: string): LucideIcon {
   return lucideIconMap[name] ?? lucideIconMap[name.toLowerCase()] ?? lucideIconMap['CircleHelp']
 }
 
-/* ============================ 组件注册表 ============================ */
-// 视图绑定必须由前端写死（无法从后端字符串任意加载组件）。键为「页面标识」，
-// 与各菜单的 component 字段对应；值为对应的页面组件。
-// 视图绑定必须由前端写死（无法从后端字符串任意加载组件）。键为「页面标识」，
-// 与各菜单的 component 字段对应；值为对应页面组件的懒加载版本，实现按需 code-split。
-const componentRegistry: Record<string, LazyExoticComponent<ComponentType>> = {
-  dashboard: lazy(() => import('@/pages/Dashboard').then((m) => ({ default: m.Dashboard }))),
-  'login-log': lazy(() => import('@/pages/LoginLog').then((m) => ({ default: m.LoginLog }))),
-  'tenant-user': lazy(() => import('@/pages/TenantUser').then((m) => ({ default: m.TenantUser }))),
-  menu: lazy(() => import('@/pages/MenuManagement').then((m) => ({ default: m.MenuManagement }))),
-  'org-unit': lazy(() => import('@/pages/OrgUnit').then((m) => ({ default: m.OrgUnit }))),
-  'dict-type': lazy(() => import('@/pages/DictType').then((m) => ({ default: m.DictType }))),
-  role: lazy(() => import('@/pages/Role').then((m) => ({ default: m.Role }))),
-  'sys-log': lazy(() => import('@/pages/SysLog').then((m) => ({ default: m.SysLog }))),
-  'role-group': lazy(() => import('@/pages/RoleGroup').then((m) => ({ default: m.RoleGroup }))),
-  tenant: lazy(() => import('@/pages/Tenant').then((m) => ({ default: m.Tenant }))),
-  'token-admin': lazy(() => import('@/pages/TokenAdmin').then((m) => ({ default: m.TokenAdmin }))),
-  'role-template': lazy(() => import('@/pages/RoleTemplate').then((m) => ({ default: m.RoleTemplate }))),
-  'menu-template': lazy(() => import('@/pages/MenuTemplate').then((m) => ({ default: m.MenuTemplate }))),
-  'dict-template': lazy(() => import('@/pages/DictTemplate').then((m) => ({ default: m.DictTemplate }))),
-  'user-pool': lazy(() => import('@/pages/UserPool').then((m) => ({ default: m.UserPool }))),
-  'platform-user': lazy(() => import('@/pages/PlatformUser').then((m) => ({ default: m.PlatformUser }))),
-  profile: lazy(() => import('@/pages/Profile').then((m) => ({ default: m.Profile }))),
-  account: lazy(() => import('@/pages/Account').then((m) => ({ default: m.Account }))),
-}
-
-export function resolveComponent(key?: string): LazyExoticComponent<ComponentType> | undefined {
-  return key ? componentRegistry[key] : undefined
-}
-
 /* ============================ 菜单树 -> 递归节点树 ============================ */
 
 function toNode(node: MenuTreeVO, parentKey: string, index: number): AppMenuNode {
   const children = (node.children || []).filter(
     (c) => c.menuType !== 'B' && c.showStatus !== '0',
   )
-  const key = `${parentKey}${parentKey ? '-' : ''}${node.id ?? node.code ?? node.name ?? index}`
+  // 路由 / 高亮唯一键：优先使用后端菜单编码 code，回退 id / name 保证不丢 key
+  const code = node.code
+  const key = `${parentKey}${parentKey ? '-' : ''}${code ?? node.id ?? node.name ?? index}`
   const hasChildren = children.length > 0
   return {
     key,
@@ -129,28 +126,32 @@ function toNode(node: MenuTreeVO, parentKey: string, index: number): AppMenuNode
     icon: resolveIcon(node.icon),
     path: node.routePath,
     component: node.component,
+    code,
+    hidden: node.hidden,
     jumpType: node.jumpType,
     jumpTarget: node.jumpTarget,
-    ready: Boolean(node.component && componentRegistry[node.component]),
+    // 已实现：后端返回了 component 且该 component 对应的视图文件已被打包（glob 命中）
+    ready: Boolean(node.component && viewModules[`../views/${node.component}.tsx`]),
     // 只要含可见子节点即为目录（M 嵌套 M 任意层均支持）
     children: hasChildren ? children.map((c, i) => toNode(c, key, i)) : undefined,
   }
 }
 
 /** 把后端菜单树递归转换为前端节点树（支持任意层级嵌套） */
-export function toMenuTree(tree: MenuTreeVO[]): AppMenuNode[] {
+export function toMenuTree(tree: MenuTreeVO[], keyPrefix = ''): AppMenuNode[] {
   return tree
     .filter((n) => n.menuType !== 'B' && n.showStatus !== '0')
-    .map((n, i) => toNode(n, '', i))
+    .map((n, i) => toNode(n, keyPrefix, i))
 }
 
-/** 扁平化所有可导航叶子菜单项，供命令面板 / 路由使用 */
+/** 扁平化所有可导航叶子菜单项，供命令面板 / 路由使用（跳过 hidden 节点） */
 export function flattenMenuItems(nodes: AppMenuNode[]): AppMenuItem[] {
   const out: AppMenuItem[] = []
   const walk = (ns: AppMenuNode[]) => {
     for (const n of ns) {
+      if (n.hidden) continue
       if (n.children?.length) walk(n.children)
-      else out.push({ path: n.path || '', label: n.label, icon: n.icon, component: n.component, jumpType: n.jumpType, jumpTarget: n.jumpTarget, ready: n.ready })
+      else out.push({ path: n.path || '', label: n.label, icon: n.icon, component: n.component, code: n.code, jumpType: n.jumpType, jumpTarget: n.jumpTarget, ready: n.ready })
     }
   }
   walk(nodes)
@@ -170,17 +171,18 @@ export function findMenuChain(tree: AppMenuNode[], path: string): AppMenuNode[] 
 }
 
 /* ============================ 静态菜单（内置，不请求服务端） ============================ */
-// 工作区、个人中心及其子页面是前端固定路由，不依赖后端菜单接口，始终展示。
+// 工作区是前端固定路由，始终展示；个人中心及其子页面也是固定路由，但 hidden: true
+// 仅生成路由（可由链接/代码跳转访问），不渲染到侧边栏菜单。
 const STATIC_MENU: MenuTreeVO[] = [
   {
     id: 1, menuType: 'M', name: '工作区', orderNum: 1,
-    children: [{ id: 11, menuType: 'D', name: '工作台', routePath: '/dashboard', component: 'dashboard', icon: 'LayoutDashboard', orderNum: 1 }],
+    children: [{ id: 11, menuType: 'D', name: '工作台', routePath: '/dashboard', component: 'dashboard/index', icon: 'LayoutDashboard', orderNum: 1 }],
   },
   {
-    id: 4, menuType: 'M', name: '个人中心', orderNum: 9,
+    id: 4, menuType: 'M', name: '个人中心', orderNum: 9, hidden: true,
     children: [
-      { id: 41, menuType: 'D', name: '个人设置', routePath: '/profile', component: 'profile', icon: 'user', orderNum: 1 },
-      { id: 42, menuType: 'D', name: '账号设置', routePath: '/account', component: 'account', icon: 'settings', orderNum: 2 },
+      { id: 41, menuType: 'D', name: '个人设置', routePath: '/profile', component: 'account/profile/index', icon: 'user', orderNum: 1 },
+      { id: 42, menuType: 'D', name: '账号设置', routePath: '/account', component: 'account/settings/index', icon: 'settings', orderNum: 2 },
       { id: 43, menuType: 'D', name: '通知中心', routePath: '/notifications', component: undefined, icon: 'bell', orderNum: 3 },
     ],
   },
@@ -198,8 +200,8 @@ interface MenuState {
  * 顺序：工作区置顶，动态菜单居中，个人中心置底。
  */
 function buildMenuTree(dynamic: MenuTreeVO[]): AppMenuNode[] {
-  const staticNodes = toMenuTree(STATIC_MENU) // [工作区, 个人中心]
-  const dynamicNodes = toMenuTree(dynamic)
+  const staticNodes = toMenuTree(STATIC_MENU, 's') // [工作区, 个人中心]，前缀 s 避免与动态菜单 key 冲突
+  const dynamicNodes = toMenuTree(dynamic, 'd')
   return [staticNodes[0], ...dynamicNodes, staticNodes[1]]
 }
 

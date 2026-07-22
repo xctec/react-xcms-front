@@ -240,3 +240,5 @@ function DetailItem({ icon: Icon, label, value }: { icon: typeof History; label:
     </div>
   )
 }
+
+export default SysLog

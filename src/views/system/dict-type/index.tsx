@@ -305,3 +305,5 @@ function DictTypeRowItem({
     </>
   )
 }
+
+export default DictType

@@ -152,3 +152,5 @@ export function LoginLog() {
     </div>
   )
 }
+
+export default LoginLog
