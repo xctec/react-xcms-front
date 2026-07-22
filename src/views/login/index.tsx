@@ -9,7 +9,7 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Checkbox } from '@/components/ui/checkbox'
 import { ThemeSwitcher } from '@/components/ThemeSwitcher'
-import { apiClient, setTokens } from '@/utils/request'
+import { useUserStore } from '@/store/userStore'
 
 export function Login() {
   const [showPwd, setShowPwd] = useState(false)
@@ -26,36 +26,17 @@ export function Login() {
     setLoading(true)
     setError(undefined)
     try {
-      // axios 封装统一返回 { data, error, response }：HTTP 非 2xx 时响应体在 error 中，
-      // 2xx 时响应体在 data 中（即后端 ResultVo）。
-      const res = await apiClient.POST<{
-        errorNo?: string
-        errorMsg?: string
-        data?: { accessToken?: string; refreshToken?: string }
-      }>('/api/auth/login', {
-        body: { loginId: username, credential: password, type: 'password', tenantId: 1 },
-        silent: true,
+      const result = await useUserStore.getState().login({
+        loginId: username,
+        credential: password,
+        type: 'password',
+        tenantId: 1,
       })
-      // HTTP 层错误（非 2xx）
-      if (res.error) {
-        const errBody = res.error as { errorMsg?: string } | string
-        const msg =
-          typeof errBody === 'string' ? errBody : (errBody?.errorMsg || '登录失败，请检查用户名或密码')
-        setError(msg)
+      if (!result.ok) {
+        setError(result.message)
         setLoading(false)
         return
       }
-      // 业务层错误（HTTP 200 但 errorNo 非 '0'）
-      const body = res.data as
-        | { errorNo?: string; errorMsg?: string; data?: { accessToken?: string; refreshToken?: string } }
-        | undefined
-      if (body && body.errorNo != null && body.errorNo !== '0') {
-        setError(body.errorMsg || '登录失败')
-        setLoading(false)
-        return
-      }
-      const d = body?.data
-      if (d?.accessToken) setTokens(d.accessToken, d.refreshToken || '')
       setLoading(false)
       navigate('/dashboard')
     } catch (err) {

@@ -12,7 +12,6 @@ import {
   DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel,
   DropdownMenuSeparator, DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
-import { apiClient, clearTokens, getAccessToken } from '@/utils/request'
 import { useUserStore } from '@/store/userStore'
 
 interface TopbarProps {
@@ -25,7 +24,6 @@ interface TopbarProps {
 export function Topbar({ tree, currentPath, onToggleSidebar, onOpenCommand }: TopbarProps) {
   const navigate = useNavigate()
   const user = useUserStore((s) => s.user)
-  const resetUser = useUserStore((s) => s.reset)
 
   // 由当前路径反查从根到该节点的链路，用于多级面包屑
   const chain = findMenuChain(tree, currentPath)
@@ -33,14 +31,8 @@ export function Topbar({ tree, currentPath, onToggleSidebar, onOpenCommand }: To
   const displayName = user?.nickName || user?.loginId || '未登录'
   const initial = (user?.nickName?.[0] || user?.loginId?.[0] || '?').toUpperCase()
 
-  const handleLogout = () => {
-    const token = getAccessToken()
-    if (token) {
-      // 通知后端吊销当前访问令牌（best-effort）
-      apiClient.POST('/api/auth/logout', { body: { accessToken: token } }).catch(() => {})
-    }
-    clearTokens()
-    resetUser()
+  const handleLogout = async () => {
+    await useUserStore.getState().logout()
     navigate('/login')
   }
 
