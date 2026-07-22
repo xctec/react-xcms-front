@@ -1,11 +1,6 @@
 import { useEffect, useState, lazy, type ComponentType, type LazyExoticComponent } from 'react'
 import type { LucideIcon } from 'lucide-react'
-import {
-  LayoutDashboard, Users, ShieldCheck, Network, Menu as MenuIcon,
-  BookText, Group, LogIn, FileText, Building2, KeyRound, Layers3,
-  Database, Fingerprint, Boxes, UserCog, User, Settings,
-  Bell, CircleHelp,
-} from 'lucide-react'
+import * as LucideIcons from 'lucide-react'
 import { apiClient } from '@/utils/request'
 
 /* ============================ 类型 ============================ */
@@ -44,75 +39,50 @@ export interface AppMenuItem {
   ready: boolean
 }
 
-export interface AppMenuGroup {
-  id: string
+/**
+ * 递归菜单节点：目录（含 children）与页面（叶子）统一为同一结构。
+ * 支持任意层级嵌套——后端 MenuTreeVO 的 children 有多深，前端就渲染多深。
+ */
+export interface AppMenuNode {
+  /** 唯一键（含父路径，用于展开状态与 React key） */
+  key: string
   label: string
-  items: AppMenuItem[]
+  icon: LucideIcon
+  /** 站内路由路径（目录节点可能为空） */
+  path?: string
+  component?: string
+  jumpType?: '1' | '2' | '3'
+  jumpTarget?: string
+  ready: boolean
+  /** 包含子节点即为目录 */
+  children?: AppMenuNode[]
 }
 
-/* ============================ 图标注册表 ============================ */
-// 后端 icon 字段通常为字符串（如 element 图标名或 lucide 图标名），这里做一层
-// 字符串 -> LucideIcon 的映射，未命中时回退到 CircleHelp。
-const iconRegistry: Record<string, LucideIcon> = {
-  dashboard: LayoutDashboard,
-  LayoutDashboard,
-  users: Users,
-  Users,
-  'tenant-user': Users,
-  shield: ShieldCheck,
-  ShieldCheck,
-  role: ShieldCheck,
-  network: Network,
-  Network,
-  'org-unit': Network,
-  menu: MenuIcon,
-  MenuIcon,
-  book: BookText,
-  BookText,
-  'dict-type': BookText,
-  group: Group,
-  Group,
-  'role-group': Group,
-  login: LogIn,
-  LogIn,
-  'login-log': LogIn,
-  file: FileText,
-  FileText,
-  'sys-log': FileText,
-  building: Building2,
-  Building2,
-  tenant: Building2,
-  key: KeyRound,
-  KeyRound,
-  'role-template': KeyRound,
-  layers: Layers3,
-  Layers3,
-  'menu-template': Layers3,
-  database: Database,
-  Database,
-  'dict-template': Database,
-  fingerprint: Fingerprint,
-  Fingerprint,
-  'token-admin': Fingerprint,
-  boxes: Boxes,
-  Boxes,
-  'user-pool': Boxes,
-  'user-cog': UserCog,
-  UserCog,
-  'platform-user': UserCog,
-  user: User,
-  User,
-  profile: User,
-  settings: Settings,
-  Settings,
-  account: Settings,
-  bell: Bell,
-  Bell,
-  notifications: Bell,
+/* ============================ 图标动态解析 ============================ */
+// 后端 icon 字段直接返回 lucide 图标名，前端按名自动解析，无需手写映射：
+//   - PascalCase：如 "LayoutDashboard"
+//   - kebab-case：如 "layout-dashboard"
+// 未命中（名字不存在）时回退到 CircleHelp。
+/** 仅把 lucide 真正的图标组件挑出来（排除 createLucideIcon 等函数/类型导出） */
+function isIconComponent(value: unknown): value is LucideIcon {
+  return typeof value === 'object' && value !== null && '$$typeof' in value
 }
+
+// 一次性构建「名字 -> 图标」查找表：PascalCase 与 kebab-case 两种写法都能命中。
+const lucideIconMap: Record<string, LucideIcon> = (() => {
+  const map: Record<string, LucideIcon> = {}
+  for (const [name, comp] of Object.entries(LucideIcons)) {
+    if (!isIconComponent(comp)) continue
+    map[name] = comp // PascalCase，如 LayoutDashboard
+    const kebab = name.replace(/([a-z0-9])([A-Z])/g, '$1-$2').toLowerCase()
+    map[kebab] = comp // kebab-case，如 layout-dashboard
+  }
+  return map
+})()
 
 function resolveIcon(name?: string): LucideIcon {
-  return (name && iconRegistry[name]) || CircleHelp
+  if (!name) return lucideIconMap['CircleHelp']
+  return lucideIconMap[name] ?? lucideIconMap[name.toLowerCase()] ?? lucideIconMap['CircleHelp']
 }
 
 /* ============================ 组件注册表 ============================ */
@@ -145,82 +115,66 @@ export function resolveComponent(key?: string): LazyExoticComponent<ComponentTyp
   return key ? componentRegistry[key] : undefined
 }
 
-/* ============================ 菜单树 -> 分组结构 ============================ */
+/* ============================ 菜单树 -> 递归节点树 ============================ */
 
-function toItem(node: MenuTreeVO): AppMenuItem {
+function toNode(node: MenuTreeVO, parentKey: string, index: number): AppMenuNode {
+  const children = (node.children || []).filter(
+    (c) => c.menuType !== 'B' && c.showStatus !== '0',
+  )
+  const key = `${parentKey}${parentKey ? '-' : ''}${node.id ?? node.code ?? node.name ?? index}`
+  const hasChildren = children.length > 0
   return {
-    path: node.routePath || '',
+    key,
     label: node.name || '',
     icon: resolveIcon(node.icon),
+    path: node.routePath,
     component: node.component,
     jumpType: node.jumpType,
     jumpTarget: node.jumpTarget,
     ready: Boolean(node.component && componentRegistry[node.component]),
+    // 只要含可见子节点即为目录（M 嵌套 M 任意层均支持）
+    children: hasChildren ? children.map((c, i) => toNode(c, key, i)) : undefined,
   }
 }
 
-/** 把后端菜单树转换为侧栏分组结构（M=分组，D=页面项） */
-export function toMenuGroups(tree: MenuTreeVO[]): AppMenuGroup[] {
-  const groups: AppMenuGroup[] = []
-  for (const node of tree) {
-    if (node.menuType === 'B' || node.showStatus === '0') continue
-    if (node.menuType === 'M') {
-      const children = (node.children || []).filter(
-        (c) => c.menuType !== 'B' && c.showStatus !== '0',
-      )
-      groups.push({
-        id: String(node.id ?? node.code ?? node.name),
-        label: node.name || '',
-        items: children.map(toItem),
-      })
-    } else {
-      // 独立叶子（无父目录），归入「其他」
-      groups.push({
-        id: String(node.id ?? node.code ?? node.name),
-        label: node.name || '',
-        items: [toItem(node)],
-      })
+/** 把后端菜单树递归转换为前端节点树（支持任意层级嵌套） */
+export function toMenuTree(tree: MenuTreeVO[]): AppMenuNode[] {
+  return tree
+    .filter((n) => n.menuType !== 'B' && n.showStatus !== '0')
+    .map((n, i) => toNode(n, '', i))
+}
+
+/** 扁平化所有可导航叶子菜单项，供命令面板 / 路由使用 */
+export function flattenMenuItems(nodes: AppMenuNode[]): AppMenuItem[] {
+  const out: AppMenuItem[] = []
+  const walk = (ns: AppMenuNode[]) => {
+    for (const n of ns) {
+      if (n.children?.length) walk(n.children)
+      else out.push({ path: n.path || '', label: n.label, icon: n.icon, component: n.component, jumpType: n.jumpType, jumpTarget: n.jumpTarget, ready: n.ready })
     }
   }
-  return groups
+  walk(nodes)
+  return out
 }
 
-/** 扁平化所有可导航菜单项，供命令面板 / 查找使用 */
-export function flattenMenuItems(groups: AppMenuGroup[]): AppMenuItem[] {
-  return groups.flatMap((g) => g.items)
+/** 由当前路径反查从根到该节点的链路，用于面包屑 */
+export function findMenuChain(tree: AppMenuNode[], path: string): AppMenuNode[] {
+  for (const n of tree) {
+    if (!n.children?.length && n.path === path) return [n]
+    if (n.children?.length) {
+      const sub = findMenuChain(n.children, path)
+      if (sub.length) return [n, ...sub]
+    }
+  }
+  return []
 }
 
-/* ============================ 菜单获取 Hook ============================ */
-
-const DEFAULT_MENU: MenuTreeVO[] = [
+/* ============================ 静态菜单（内置，不请求服务端） ============================ */
+// 工作区、个人中心及其子页面是前端固定路由，不依赖后端菜单接口，始终展示。
+const STATIC_MENU: MenuTreeVO[] = [
   {
     id: 1, menuType: 'M', name: '工作区', orderNum: 1,
-    children: [{ id: 11, menuType: 'D', name: '工作台', routePath: '/dashboard', component: 'dashboard', icon: 'dashboard', orderNum: 1 }],
-  },
-  {
-    id: 2, menuType: 'M', name: '系统管理', orderNum: 2,
-    children: [
-      { id: 21, menuType: 'D', name: '租户账户/成员', routePath: '/tenant-user', component: 'tenant-user', icon: 'users', orderNum: 1 },
-      { id: 22, menuType: 'D', name: '角色管理', routePath: '/role', component: 'role', icon: 'shield', orderNum: 2 },
-      { id: 23, menuType: 'D', name: '组织机构', routePath: '/org-unit', component: 'org-unit', icon: 'network', orderNum: 3 },
-      { id: 24, menuType: 'D', name: '菜单管理', routePath: '/menu', component: 'menu', icon: 'menu', orderNum: 4 },
-      { id: 25, menuType: 'D', name: '字典类型', routePath: '/dict-type', component: 'dict-type', icon: 'book', orderNum: 5 },
-      { id: 26, menuType: 'D', name: '角色分组', routePath: '/role-group', component: 'role-group', icon: 'group', orderNum: 6 },
-      { id: 27, menuType: 'D', name: '登录日志', routePath: '/login-log', component: 'login-log', icon: 'login', orderNum: 7 },
-      { id: 28, menuType: 'D', name: '操作日志', routePath: '/sys-log', component: 'sys-log', icon: 'file', orderNum: 8 },
-    ],
-  },
-  {
-    id: 3, menuType: 'M', name: '平台管理', orderNum: 3,
-    children: [
-      { id: 31, menuType: 'D', name: '租户管理', routePath: '/tenant', component: 'tenant', icon: 'building', orderNum: 1 },
-      { id: 32, menuType: 'D', name: '角色模板', routePath: '/role-template', component: 'role-template', icon: 'key', orderNum: 2 },
-      { id: 33, menuType: 'D', name: '菜单模板', routePath: '/menu-template', component: 'menu-template', icon: 'layers', orderNum: 3 },
-      { id: 34, menuType: 'D', name: '字典模板', routePath: '/dict-template', component: 'dict-template', icon: 'database', orderNum: 4 },
-      { id: 35, menuType: 'D', name: 'Token 管理', routePath: '/token-admin', component: 'token-admin', icon: 'fingerprint', orderNum: 5 },
-      { id: 36, menuType: 'D', name: '用户池', routePath: '/user-pool', component: 'user-pool', icon: 'boxes', orderNum: 6 },
-      { id: 37, menuType: 'D', name: '平台用户', routePath: '/platform-user', component: 'platform-user', icon: 'user-cog', orderNum: 7 },
-    ],
+    children: [{ id: 11, menuType: 'D', name: '工作台', routePath: '/dashboard', component: 'dashboard', icon: 'LayoutDashboard', orderNum: 1 }],
   },
   {
     id: 4, menuType: 'M', name: '个人中心', orderNum: 9,
@@ -233,14 +187,25 @@ const DEFAULT_MENU: MenuTreeVO[] = [
 ]
 
 interface MenuState {
-  groups: AppMenuGroup[]
+  tree: AppMenuNode[]
   items: AppMenuItem[]
   loading: boolean
 }
 
-/** 拉取 /api/frame/menu 并把菜单树转换为前端分组结构；失败时回退到默认菜单 */
+/**
+ * 组装最终展示菜单：静态菜单（工作区 / 个人中心，始终前端内置）
+ *             + 动态菜单（远端 /api/frame/menu 返回）。
+ * 顺序：工作区置顶，动态菜单居中，个人中心置底。
+ */
+function buildMenuTree(dynamic: MenuTreeVO[]): AppMenuNode[] {
+  const staticNodes = toMenuTree(STATIC_MENU) // [工作区, 个人中心]
+  const dynamicNodes = toMenuTree(dynamic)
+  return [staticNodes[0], ...dynamicNodes, staticNodes[1]]
+}
+
+/** 拉取动态菜单并叠加静态菜单；远端返回为空 / 拉取失败时仅展示静态菜单 */
 export function useMenus(): MenuState {
-  const [groups, setGroups] = useState<AppMenuGroup[]>([])
+  const [tree, setTree] = useState<AppMenuNode[]>([])
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
@@ -249,15 +214,12 @@ export function useMenus(): MenuState {
       .GET<{ data?: MenuTreeVO[] }>('/api/frame/menu')
       .then((res) => {
         if (!alive) return
-        const tree = res.data?.data
-        if (Array.isArray(tree) && tree.length > 0) {
-          setGroups(toMenuGroups(tree))
-        } else {
-          setGroups(toMenuGroups(DEFAULT_MENU))
-        }
+        const t = res.data?.data
+        const dynamic = Array.isArray(t) ? t : []
+        setTree(buildMenuTree(dynamic))
       })
       .catch(() => {
-        if (alive) setGroups(toMenuGroups(DEFAULT_MENU))
+        if (alive) setTree(buildMenuTree([]))
       })
       .finally(() => {
         if (alive) setLoading(false)
@@ -267,5 +229,5 @@ export function useMenus(): MenuState {
     }
   }, [])
 
-  return { groups, items: flattenMenuItems(groups), loading }
+  return { tree, items: flattenMenuItems(tree), loading }
 }

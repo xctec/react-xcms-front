@@ -25,7 +25,7 @@ export function AppLayout() {
   const location = useLocation()
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
   const [commandOpen, setCommandOpen] = useState(false)
-  const { groups, items, loading } = useMenus()
+  const { tree, items, loading } = useMenus()
 
   // 登录态守卫：无 token 且当前非登录页，则跳转登录
   if (!getAccessToken() && location.pathname !== '/login') {
@@ -76,14 +76,14 @@ export function AppLayout() {
   return (
     <div className="flex h-screen overflow-hidden bg-background text-foreground">
       <Sidebar
-        groups={groups}
+        tree={tree}
         currentPath={currentPath}
         collapsed={sidebarCollapsed}
         onToggleCollapse={() => setSidebarCollapsed((c) => !c)}
       />
       <div className="flex flex-col flex-1 min-w-0">
         <Topbar
-          groups={groups}
+          tree={tree}
           currentPath={currentPath}
           onToggleSidebar={() => setSidebarCollapsed((c) => !c)}
           onOpenCommand={() => setCommandOpen(true)}

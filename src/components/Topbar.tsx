@@ -1,5 +1,8 @@
+import { Fragment } from 'react'
 import { useNavigate } from 'react-router-dom'
-import type { AppMenuGroup, AppMenuItem } from '@/lib/menu'
+import type { AppMenuNode } from '@/lib/menu'
+import { findMenuChain } from '@/lib/menu'
+import { cn } from '@/lib/utils'
 import { ThemeSwitcher } from './ThemeSwitcher'
 import { NotificationBell } from './NotificationBell'
 import { Menu, Search, ChevronRight } from 'lucide-react'
@@ -12,26 +15,17 @@ import {
 import { apiClient, clearTokens, getAccessToken } from '@/utils/request'
 
 interface TopbarProps {
-  groups: AppMenuGroup[]
+  tree: AppMenuNode[]
   currentPath: string
   onToggleSidebar: () => void
   onOpenCommand: () => void
 }
 
-export function Topbar({ groups, currentPath, onToggleSidebar, onOpenCommand }: TopbarProps) {
+export function Topbar({ tree, currentPath, onToggleSidebar, onOpenCommand }: TopbarProps) {
   const navigate = useNavigate()
 
-  // 由当前路径反查所属分组与菜单项，用于面包屑
-  let currentItem: AppMenuItem | undefined
-  let currentGroup: AppMenuGroup | undefined
-  for (const g of groups) {
-    const found = g.items.find((i) => i.path === currentPath)
-    if (found) {
-      currentItem = found
-      currentGroup = g
-      break
-    }
-  }
+  // 由当前路径反查从根到该节点的链路，用于多级面包屑
+  const chain = findMenuChain(tree, currentPath)
 
   const handleLogout = () => {
     const token = getAccessToken()
@@ -50,11 +44,25 @@ export function Topbar({ groups, currentPath, onToggleSidebar, onOpenCommand }: 
         <Menu className="h-4 w-4" />
       </Button>
 
-      {/* 面包屑 */}
+      {/* 面包屑（支持任意层级） */}
       <nav className="flex items-center gap-1.5 text-sm min-w-0">
-        <span className="text-muted-foreground hidden sm:inline">{currentGroup?.label}</span>
-        <ChevronRight className="h-3.5 w-3.5 text-muted-foreground/40 hidden sm:inline" />
-        <span className="font-medium text-foreground truncate">{currentItem?.label ?? '页面'}</span>
+        {chain.length === 0 ? (
+          <span className="font-medium text-foreground truncate">页面</span>
+        ) : (
+          chain.map((n, i) => (
+            <Fragment key={n.key}>
+              {i > 0 && <ChevronRight className="h-3.5 w-3.5 text-muted-foreground/40 hidden sm:inline" />}
+              <span
+                className={cn(
+                  'truncate',
+                  i === chain.length - 1 ? 'font-medium text-foreground' : 'text-muted-foreground hidden sm:inline',
+                )}
+              >
+                {n.label}
+              </span>
+            </Fragment>
+          ))
+        )}
       </nav>
 
       {/* 命令入口 */}
