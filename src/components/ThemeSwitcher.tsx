@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useTheme } from 'next-themes'
-import { useXcmsTheme } from '@/theme'
+import { useThemeStore } from '@/theme'
 import { BRAND_PRESETS } from '@/theme'
 import { Palette, Sun, Moon, Monitor, Check } from 'lucide-react'
 import { Button } from '@/components/ui/button'
@@ -15,7 +15,8 @@ const THEME_OPTIONS = [
 
 export function ThemeSwitcher() {
   const { theme, setTheme } = useTheme()
-  const { brand, setBrand } = useXcmsTheme()
+  const brand = useThemeStore((s) => s.brand)
+  const setBrand = useThemeStore((s) => s.setBrand)
   const [mounted, setMounted] = useState(false)
 
   useEffect(() => setMounted(true), [])
