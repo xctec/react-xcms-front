@@ -1,5 +1,6 @@
 import { useEffect, useRef, useCallback } from 'react'
 import { getAccessToken } from '@/utils/request'
+import { useUserStore } from '@/store/userStore'
 import { useNoticeStore } from '@/store/noticeStore'
 import type { NoticePayload } from '@/types/message'
 
@@ -21,7 +22,8 @@ export function useMessageStream() {
 
   const connect = useCallback(() => {
     const token = getAccessToken()
-    if (!token) return
+    // 未登录（无 token 或会话失效）时不发起 SSE 连接
+    if (!token || !useUserStore.getState().isLoggedIn) return
 
     // 清理上次连接
     if (abortRef.current) {

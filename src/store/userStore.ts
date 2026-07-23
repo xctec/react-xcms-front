@@ -14,6 +14,8 @@ interface UserState {
   loading: boolean
   /** 是否已成功加载过（用于区分「未登录」与「加载中」） */
   loaded: boolean
+  /** 是否已登录（持有有效令牌且登录流程成功）。用于 SSE 等按登录态决策的入口判断 */
+  isLoggedIn: boolean
 
   /** 拉取当前用户资料（/api/frame/me） */
   fetchMe: () => Promise<FrameUser | null>
@@ -23,6 +25,8 @@ interface UserState {
   setUser: (user: FrameUser | null) => void
   /** 仅清空本地用户状态（不调后端，token 也一并清除） */
   reset: () => void
+  /** 清空登录态：用户、登录标志、加载态全部归零（用于收到 401 等会话失效时，不调后端） */
+  clearSession: () => void
 
   /**
    * 登录：调用 /api/auth/login，成功后写入 token（用户资料由后续 bootstrap 加载）。
@@ -42,6 +46,7 @@ export const useUserStore = create<UserState>((set) => ({
   user: null,
   loading: false,
   loaded: false,
+  isLoggedIn: false,
 
   fetchMe: async () => {
     set({ loading: true })
@@ -64,15 +69,19 @@ export const useUserStore = create<UserState>((set) => ({
         .catch(() => null)) as BootstrapData | null
       const user = data?.user ?? null
       const menus = Array.isArray(data?.menus) ? data.menus : []
-      set({ user, loaded: true })
+      // 引导成功即视为已登录态（持有有效令牌且能取到用户）
+      set({ user, loaded: true, isLoggedIn: true })
       return { user, menus }
     } finally {
       set({ loading: false })
     }
   },
 
-  setUser: (user) => set({ user, loaded: true }),
-  reset: () => set({ user: null, loading: false, loaded: false }),
+  setUser: (user) => set({ user, loaded: true, isLoggedIn: user != null }),
+  reset: () => set({ user: null, loading: false, loaded: false, isLoggedIn: false }),
+
+  /** 清空登录态：用户/登录标志/加载态全部归零（用于收到 401 等会话失效时，不调后端） */
+  clearSession: () => set({ user: null, loading: false, loaded: false, isLoggedIn: false }),
 
   login: async ({ loginId, credential, type, tenantId }) => {
     const res = await apiClient.POST<{
@@ -90,7 +99,10 @@ export const useUserStore = create<UserState>((set) => ({
       return { ok: false, message: body.errorMsg || '登录失败' }
     }
     const d = body?.data
-    if (d?.accessToken) setTokens(d.accessToken, d.refreshToken || '')
+    if (d?.accessToken) {
+      setTokens(d.accessToken, d.refreshToken || '')
+      set({ isLoggedIn: true })
+    }
     return { ok: true }
   },
 
@@ -101,6 +113,6 @@ export const useUserStore = create<UserState>((set) => ({
       await apiClient.POST('/api/auth/logout', { body: { accessToken: token } }).catch(() => {})
     }
     clearTokens()
-    set({ user: null, loading: false, loaded: false })
+    set({ user: null, loading: false, loaded: false, isLoggedIn: false })
   },
 }))
