@@ -1,11 +1,23 @@
 import { lazy, Suspense } from 'react'
 import { Loader2 } from 'lucide-react'
 import type { RouteObject } from 'react-router-dom'
-import { AppLayout } from '@/layouts/AppLayout'
 import { NotFound } from '@/views/error/NotFound'
 import { Unauthorized } from '@/views/error/Unauthorized'
 
 const LoginLazy = lazy(() => import('@/views/login').then((m) => ({ default: m.Login })))
+// 已登录主框架：按需懒加载，避免把侧栏/顶栏（及其依赖的 Radix UI、cmdk、sonner 等）
+// 打进「登录页首屏」主包。登录后再进入应用才加载此 chunk。
+const AppLayoutLazy = lazy(() => import('@/layouts/AppLayout').then((m) => ({ default: m.AppLayout })))
+
+/** 路由级懒加载占位（登录 / 主框架分片未就绪时） */
+function RouteFallback() {
+  return (
+    <div className="flex h-screen flex-col items-center justify-center gap-3 text-muted-foreground">
+      <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      <span className="text-sm">加载中…</span>
+    </div>
+  )
+}
 
 /**
  * 顶层路由表（编译期静态部分）。
@@ -20,14 +32,7 @@ export const routes: RouteObject[] = [
   {
     path: '/login',
     element: (
-      <Suspense
-        fallback={
-          <div className="flex h-screen flex-col items-center justify-center gap-3 text-muted-foreground">
-            <Loader2 className="h-8 w-8 animate-spin text-primary" />
-            <span className="text-sm">加载中…</span>
-          </div>
-        }
-      >
+      <Suspense fallback={<RouteFallback />}>
         <LoginLazy />
       </Suspense>
     ),
@@ -35,5 +40,6 @@ export const routes: RouteObject[] = [
   // 状态页：全屏渲染，不套用主框架布局
   { path: '/401', element: <Unauthorized /> },
   { path: '/404', element: <NotFound /> },
-  { path: '*', element: <AppLayout /> },
+  // 已登录主框架：懒加载，首屏（登录页）不必下载其依赖
+  { path: '*', element: <Suspense fallback={<RouteFallback />}><AppLayoutLazy /></Suspense> },
 ]

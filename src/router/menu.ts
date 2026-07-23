@@ -1,5 +1,4 @@
 import { lazy, type ComponentType, type LazyExoticComponent } from 'react'
-import * as LucideIcons from 'lucide-react'
 
 /* ============================ 视图动态打包声明 ============================ */
 // 用 import.meta.glob 在编译期静态声明打包 src/views 下所有页面，
@@ -19,6 +18,8 @@ export function lazyView(component?: string): LazyExoticComponent<ComponentType>
 }
 
 import type { LucideIcon } from 'lucide-react'
+import dynamicIconImports from 'lucide-react/dynamicIconImports'
+import { ICON_PRESETS } from '@/components/iconPresets'
 
 /* ============================ 类型 ============================ */
 
@@ -48,7 +49,7 @@ export interface AppMenuItem {
   /** 真正用于导航 / 高亮的绝对路径（如 /system/org-unit），已按路由树拼接父路径 */
   path: string
   label: string
-  icon: LucideIcon
+  icon: LazyExoticComponent<LucideIcon>
   /** 页面对应的组件路径（后端下发的 component 值，如 system/tenant-user/index） */
   component?: string
   /** 后端菜单编码，用作路由与高亮的唯一键 */
@@ -70,7 +71,7 @@ export interface AppMenuNode {
   /** 唯一键（含父路径，用于展开状态与 React key） */
   key: string
   label: string
-  icon: LucideIcon
+  icon: LazyExoticComponent<LucideIcon>
   /** 原始 routePath（可能相对，也可能绝对，仅用于路由生成参考） */
   path?: string
   /** 真正用于导航 / 高亮 / 路由注册的绝对路径（已按路由树拼接父路径） */
@@ -87,31 +88,36 @@ export interface AppMenuNode {
   children?: AppMenuNode[]
 }
 
-/* ============================ 图标动态解析 ============================ */
-// 后端 icon 字段直接返回 lucide 图标名，前端按名自动解析，无需手写映射：
-//   - PascalCase：如 "LayoutDashboard"
-//   - kebab-case：如 "layout-dashboard"
-// 未命中（名字不存在）时回退到 CircleHelp。
-/** 仅把 lucide 真正的图标组件挑出来（排除 createLucideIcon 等函数/类型导出） */
-function isIconComponent(value: unknown): value is LucideIcon {
-  return typeof value === 'object' && value !== null && '$$typeof' in value
-}
+/* ============================ 图标按需懒加载解析 ============================ */
+// 后端 icon 字段直接返回 lucide 图标名（PascalCase 或 kebab-case），前端按名
+// 异步加载对应图标（lucide-react/dynamicIconImports），不把全部图标打进主包。
+// 未命中（名字不存在）时回退到 circle-help。返回的组件是 React.lazy 组件，渲染处需包 <Suspense>。
+const toKebab = (n: string) => n.replace(/([a-z0-9])([A-Z])/g, '$1-$2').toLowerCase()
 
-// 一次性构建「名字 -> 图标」查找表：PascalCase 与 kebab-case 两种写法都能命中。
-const lucideIconMap: Record<string, LucideIcon> = (() => {
-  const map: Record<string, LucideIcon> = {}
-  for (const [name, comp] of Object.entries(LucideIcons)) {
-    if (!isIconComponent(comp)) continue
-    map[name] = comp // PascalCase，如 LayoutDashboard
-    const kebab = name.replace(/([a-z0-9])([A-Z])/g, '$1-$2').toLowerCase()
-    map[kebab] = comp // kebab-case，如 layout-dashboard
+const iconCache = new Map<string, LazyExoticComponent<LucideIcon>>()
+
+// dynamicIconImports 是「已知图标名 -> 动态 import」的闭集，这里放宽成可字符串索引，
+// 以便按后端返回的名字（PascalCase/kebab）查表；查不到时回退 circle-help。
+const iconMap = dynamicIconImports as Record<string, () => Promise<{ default: LucideIcon }>>
+
+function resolveIcon(name?: string): LazyExoticComponent<LucideIcon> {
+  const key = name ? toKebab(name) : 'circle-help'
+  const cached = iconCache.get(key)
+  if (cached) return cached
+
+  // 1) 预设图标：静态导入的同步组件，包成 lazy 后同步解析（零网络请求、无闪烁）
+  const preset = ICON_PRESETS[key]
+  if (preset) {
+    const comp = lazy(() => Promise.resolve({ default: preset }))
+    iconCache.set(key, comp)
+    return comp
   }
-  return map
-})()
 
-function resolveIcon(name?: string): LucideIcon {
-  if (!name) return lucideIconMap['CircleHelp']
-  return lucideIconMap[name] ?? lucideIconMap[name.toLowerCase()] ?? lucideIconMap['CircleHelp']
+  // 2) 兜底：预设之外的图标走 lucide 动态按需加载（仅拉取该图标对应的单个文件）
+  const importer = iconMap[key] ?? iconMap['circle-help']
+  const comp = lazy(importer)
+  iconCache.set(key, comp)
+  return comp
 }
 
 /* ============================ 菜单树 -> 递归节点树 ============================ */

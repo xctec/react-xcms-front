@@ -5,6 +5,7 @@ import { Dialog, DialogContent } from '@/components/ui/dialog'
 import { Input } from '@/components/ui/input'
 import { LogOut, Search } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import { LazyIcon } from '@/components/Icon'
 import { clearTokens } from '@/utils/request'
 
 interface CommandPaletteProps {
@@ -77,7 +78,6 @@ export function CommandPalette({ open, onOpenChange, items }: CommandPaletteProp
             <div className="py-8 text-center text-sm text-muted-foreground">无匹配结果</div>
           ) : (
             results.map((item, idx) => {
-              const Icon = item.icon
               return (
                 <button
                   key={item.fullPath ?? ''}
@@ -88,7 +88,7 @@ export function CommandPalette({ open, onOpenChange, items }: CommandPaletteProp
                     idx === activeIndex ? 'bg-accent text-accent-foreground' : 'hover:bg-accent/50'
                   )}
                 >
-                  <Icon className="h-4 w-4 text-muted-foreground shrink-0" />
+                  <LazyIcon icon={item.icon} className="h-4 w-4 text-muted-foreground shrink-0" />
                   <span className="flex-1 text-left truncate">{item.label}</span>
                   <span className="text-[11px] text-muted-foreground/50">{item.fullPath ?? ''}</span>
                 </button>

@@ -4,6 +4,7 @@ import { ChevronLeft, ChevronRight, Hexagon } from 'lucide-react'
 import type { AppMenuNode } from '@/router/menu'
 import { cn } from '@/lib/utils'
 import { useSystemStore } from '@/store/systemStore'
+import { LazyIcon } from '@/components/Icon'
 
 interface SidebarProps {
   tree: AppMenuNode[]
@@ -61,8 +62,7 @@ export function Sidebar({ tree, currentPath, collapsed, onToggleCollapse }: Side
     nodes
       .filter((node) => !node.hidden)
       .map((node) => {
-        const Icon = node.icon
-      const isCatalog = !!node.children?.length
+        const isCatalog = !!node.children?.length
       const active = !isCatalog && currentPath === node.fullPath
       const isOpen = expanded[node.key]
 
@@ -85,7 +85,7 @@ export function Sidebar({ tree, currentPath, collapsed, onToggleCollapse }: Side
               active ? 'bg-sidebar-accent text-brand-500' : 'text-sidebar-foreground hover:bg-sidebar-accent',
             )}
           >
-            <Icon className="h-5 w-5" />
+            <LazyIcon icon={node.icon} className="h-5 w-5" />
           </button>
         )
       }
@@ -98,7 +98,7 @@ export function Sidebar({ tree, currentPath, collapsed, onToggleCollapse }: Side
               onClick={() => toggle(node.key)}
               className="w-full flex items-center gap-2.5 px-2.5 h-9 rounded-md text-sm text-sidebar-foreground hover:bg-sidebar-accent transition-colors"
             >
-              <Icon className="h-4 w-4 shrink-0" />
+              <LazyIcon icon={node.icon} className="h-4 w-4 shrink-0" />
               <span className="flex-1 text-left truncate">{node.label}</span>
               <ChevronRight className={cn('h-4 w-4 shrink-0 transition-transform', isOpen && 'rotate-90')} />
             </button>
@@ -123,7 +123,7 @@ export function Sidebar({ tree, currentPath, collapsed, onToggleCollapse }: Side
               : 'text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground',
           )}
         >
-          <Icon className={cn('h-4 w-4 shrink-0', active && 'text-brand-500')} />
+          <LazyIcon icon={node.icon} className={cn('h-4 w-4 shrink-0', active && 'text-brand-500')} />
           <span className="flex-1 text-left truncate">{node.label}</span>
           {!node.ready && <span className="text-[10px] text-muted-foreground/40">待办</span>}
         </button>
