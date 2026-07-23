@@ -82,6 +82,13 @@ const menuTree: any[] = [
           { id: 28, menuType: 'D', name: '操作日志', routePath: '/sys-log', component: 'system/sys-log/index', code: 'sys_oper_log', icon: 'file', orderNum: 2 },
         ],
       },
+      {
+        id: 204, menuType: 'M', name: '消息中心', orderNum: 4, code: 'sys_msg',
+        children: [
+          { id: 205, menuType: 'D', name: '通知管理', routePath: '/notice', component: 'system/notice/index', code: 'sys_notice', icon: 'megaphone', orderNum: 1 },
+          { id: 206, menuType: 'D', name: '消息管理', routePath: '/message', component: 'system/message/index', code: 'sys_message', icon: 'message-square', orderNum: 2 },
+        ],
+      },
     ],
   },
   {
@@ -108,10 +115,163 @@ const menuTree: any[] = [
   },
 ]
 
+/* ============================================================================
+ * 消息中心自定义 Mock
+ * OpenAPI 未提供 /api/notice、/api/message 相关接口，自动生成器无法覆盖，
+ * 故手写端点。关键点：通知与消息共用同一段「租户成员ID」(1..30)，
+ * 这样通知管理里 USER 类型通知的「用户消息」按钮总能筛出对应成员的消息。
+ * ========================================================================== */
+
+const TENANT_USER_RANGE = 30
+
+const MESSAGE_TITLES = [
+  '账号安全提醒', '系统升级通知', '待办事项提醒', '密码即将过期', '新功能上线',
+  '资源使用预警', '登录异常提醒', '工单处理进度', '账单已生成', '权限变更通知',
+]
+const MESSAGE_CONTENTS = [
+  '您的账号于异地登录，请确认是否为本人操作。',
+  '系统将于本周日 02:00 进行例行维护升级，期间服务可能短暂不可用。',
+  '您有一条待处理审批，请尽快查看以免延误。',
+  '您的登录密码将在 7 天后过期，请及时修改以保障安全。',
+  '工作台新增批量导出功能，欢迎体验。',
+  '当前租户资源使用率已达 85%，请关注配额。',
+  '检测到非常用设备登录，已临时冻结部分敏感操作。',
+  '您提交的工单已处理完成，请查收结果。',
+  '本月账单已生成，可在费用中心查看明细。',
+  '您所在的角色权限已更新，新增「消息管理」权限。',
+]
+const NOTICE_TITLES = [
+  '系统停机维护公告', '节假日值班安排', '新版本发布说明', '安全合规专项通知',
+  '全员大会通知', '机房迁移预告', '数据备份策略调整', '办公环境优化通知',
+]
+const NOTICE_CONTENTS = [
+  '为提升稳定性，平台将于本周末进行停机维护，请提前保存工作。',
+  '中秋假期值班表已发布，请相关同事留意排班。',
+  'v2.4 版本已发布，重点优化了消息中心与权限体系。',
+  '根据安全合规要求，即日起启用双因素认证。',
+  '定于周五下午召开全员季度总结大会，请准时参加。',
+  '核心机房将于下月迁移至新园区，网络可能短暂抖动。',
+  '数据备份策略由每日改为每小时增量备份，降低丢失风险。',
+  '新办公区已开放，工位调整请到行政前台办理。',
+]
+
+interface MockMessage {
+  id: number
+  title: string
+  content: string
+  type: string
+  tenantUserId: number
+  senderId: number
+  read: string
+  status: string
+  createdTime: string
+}
+interface MockNotice {
+  id: number
+  title: string
+  content: string
+  status: string
+  targetType: string
+  targetValue: string
+  tenantUserId?: number
+  publisherId: number
+  templateCode: string
+  publishTime: string
+  createTime: string
+}
+
+const ALL_MESSAGES: MockMessage[] = Array.from({ length: 137 }, (_, i) => {
+  const r = makeRng(hash('/api/message/page:' + (i + 1)))
+  return {
+    id: i + 1,
+    title: MESSAGE_TITLES[i % MESSAGE_TITLES.length],
+    content: MESSAGE_CONTENTS[i % MESSAGE_CONTENTS.length],
+    type: r() > 0.5 ? 'N' : 'D',
+    tenantUserId: 1 + (i % TENANT_USER_RANGE),
+    senderId: 1 + Math.floor(r() * 5),
+    read: r() > 0.5 ? '1' : '0',
+    status: r() > 0.15 ? '1' : '0',
+    createdTime: new Date(Date.now() - i * 3600_000 * 7).toISOString().slice(0, 19).replace('T', ' '),
+  }
+})
+
+const NOTICE_TARGET_TYPES = ['USER', 'USER', 'ROLE', 'DEPT', 'TENANT']
+const ALL_NOTICES: MockNotice[] = Array.from({ length: 57 }, (_, i) => {
+  const r = makeRng(hash('/api/notice/page:' + (i + 1)))
+  const targetType = NOTICE_TARGET_TYPES[i % NOTICE_TARGET_TYPES.length]
+  const isUser = targetType === 'USER'
+  const tenantUserId = isUser ? 1 + (i % TENANT_USER_RANGE) : undefined
+  const targetValue = isUser ? String(tenantUserId) : `${1 + Math.floor(r() * 8)}`
+  const status = (['0', '1', '2'] as const)[Math.floor(r() * 3)]
+  const created = new Date(Date.now() - i * 3600_000 * 11).toISOString().slice(0, 19).replace('T', ' ')
+  const published = status !== '0' ? created : ''
+  return {
+    id: i + 1,
+    title: NOTICE_TITLES[i % NOTICE_TITLES.length],
+    content: NOTICE_CONTENTS[i % NOTICE_CONTENTS.length],
+    status,
+    targetType,
+    targetValue,
+    tenantUserId,
+    publisherId: 1 + Math.floor(r() * 5),
+    templateCode: r() > 0.7 ? 'NOTICE_TPL_' + (1 + Math.floor(r() * 3)) : '',
+    publishTime: published,
+    createTime: created,
+  }
+})
+
+function readPageBody(body: any) {
+  return {
+    pageNo: Number(body?.pageNo ?? body?.pageNum ?? 1) || 1,
+    pageSize: Number(body?.pageSize ?? body?.size ?? 10) || 10,
+    keyword: (body?.keyword ?? '').toString().toLowerCase(),
+  }
+}
+
+const ok = () => HttpResponse.json({ errorNo: '0', errorMsg: 'success', data: null })
+
 const customHandlers = [
   http.get(API_BASE + '/api/frame/menu', () =>
     HttpResponse.json({ errorNo: '0', errorMsg: 'success', data: menuTree }),
   ),
+
+  // ----------------------------- 通知管理 -----------------------------
+  http.post(API_BASE + '/api/notice/page', async ({ request }) => {
+    const body = (await request.clone().json().catch(() => ({}))) as any
+    const { pageNo, pageSize, keyword } = readPageBody(body)
+    let all = ALL_NOTICES
+    if (keyword) all = all.filter((n) => n.title.toLowerCase().includes(keyword) || n.content.toLowerCase().includes(keyword))
+    const start = (pageNo - 1) * pageSize
+    return HttpResponse.json({
+      errorNo: '0', errorMsg: 'success',
+      data: { total: all.length, data: all.slice(start, start + pageSize) },
+    })
+  }),
+  http.post(API_BASE + '/api/notice/add', ok),
+  http.post(API_BASE + '/api/notice/edit', ok),
+  http.post(API_BASE + '/api/notice/delete', ok),
+  http.post(API_BASE + '/api/notice/deleteAll', ok),
+  http.post(API_BASE + '/api/notice/publish', ok),
+  http.post(API_BASE + '/api/notice/withdraw', ok),
+
+  // ----------------------------- 消息管理 -----------------------------
+  http.post(API_BASE + '/api/message/page', async ({ request }) => {
+    const body = (await request.clone().json().catch(() => ({}))) as any
+    const { pageNo, pageSize, keyword } = readPageBody(body)
+    const tid = body?.tenantUserId != null ? Number(body.tenantUserId) : undefined
+    let all = ALL_MESSAGES
+    if (tid != null) all = all.filter((m) => m.tenantUserId === tid)
+    if (keyword) all = all.filter((m) => m.title.toLowerCase().includes(keyword) || m.content.toLowerCase().includes(keyword))
+    const start = (pageNo - 1) * pageSize
+    return HttpResponse.json({
+      errorNo: '0', errorMsg: 'success',
+      data: { total: all.length, data: all.slice(start, start + pageSize) },
+    })
+  }),
+  http.post(API_BASE + '/api/message/add', ok),
+  http.post(API_BASE + '/api/message/edit', ok),
+  http.post(API_BASE + '/api/message/delete', ok),
+  http.post(API_BASE + '/api/message/deleteAll', ok),
 ]
 
 export const allHandlers = [...handlers, ...customHandlers]
