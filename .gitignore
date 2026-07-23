@@ -3,3 +3,4 @@ debug_results.txt
 *.log
 dist/
 openapi.json
+sse.md

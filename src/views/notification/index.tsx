@@ -1,98 +1,226 @@
-import { useMemo, useState } from 'react'
-import { CheckCheck, Bell } from 'lucide-react'
+import { useEffect, useState, useCallback, useRef } from 'react'
 import { Button } from '@/components/ui/button'
-import { cn } from '@/lib/utils'
+import { Input } from '@/components/ui/input'
 import {
-  INITIAL_NOTIFICATIONS,
-  notificationMeta,
-  type AppNotification,
-} from '@/data/notifications'
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
+import { CheckCheck, Search } from 'lucide-react'
+import { cn } from '@/lib/utils'
+import { useNoticeStore } from '@/store/noticeStore'
+import { notificationMeta, defaultNotificationMeta } from '@/data/notifications'
 
-export default function NotificationCenter() {
-  const [items, setItems] = useState<AppNotification[]>(INITIAL_NOTIFICATIONS)
-  const [filter, setFilter] = useState<'all' | 'unread'>('all')
+const PAGE_SIZE = 20
 
-  const unread = useMemo(() => items.filter((i) => !i.read).length, [items])
-  const list = filter === 'unread' ? items.filter((i) => !i.read) : items
+/** 格式化时间显示文案 */
+function formatTime(iso?: string): string {
+  if (!iso) return ''
+  const d = new Date(iso)
+  if (isNaN(d.getTime())) return iso
+  const now = Date.now()
+  const diff = now - d.getTime()
+  const minutes = Math.floor(diff / 60_000)
+  if (minutes < 1) return '刚刚'
+  if (minutes < 60) return `${minutes} 分钟前`
+  const hours = Math.floor(minutes / 60)
+  if (hours < 24) return `${hours} 小时前`
+  const days = Math.floor(hours / 24)
+  if (days < 7) return `${days} 天前`
+  return d.toLocaleDateString('zh-CN')
+}
 
-  const markRead = (id: string) =>
-    setItems((s) => s.map((i) => (i.id === id ? { ...i, read: true } : i)))
-  const markAllRead = () => setItems((s) => s.map((i) => ({ ...i, read: true })))
+export default function NotificationIndex() {
+  const { messages, loading, loaded, fetchInbox, markRead } = useNoticeStore()
+
+  // 筛选状态
+  const [readFilter, setReadFilter] = useState<'' | '0' | '1'>('')
+  const [keyword, setKeyword] = useState('')
+  const [page, setPage] = useState(1)
+  const keywordRef = useRef(keyword)
+  keywordRef.current = keyword
+
+  // 发起查询（由回车 / 筛选 / 翻页触发）
+  const doSearch = useCallback(() => {
+    setPage(1)
+    void fetchInbox({
+      page: 1,
+      size: PAGE_SIZE,
+      keyword: keywordRef.current.trim() || undefined,
+      ...(readFilter !== '' ? { read: Number(readFilter) as 0 | 1 } : {}),
+    })
+  }, [readFilter, fetchInbox])
+
+  // 首次挂载加载数据
+  useEffect(() => {
+    void fetchInbox({ page: 1, size: PAGE_SIZE })
+  }, [])
+
+  // 筛选 / 翻页时重新拉取（keyword 通过 ref 获取最新值）
+  useEffect(() => {
+    if (!loaded) return
+    void fetchInbox({
+      page,
+      size: PAGE_SIZE,
+      keyword: keywordRef.current.trim() || undefined,
+      ...(readFilter !== '' ? { read: Number(readFilter) as 0 | 1 } : {}),
+    })
+  }, [readFilter, page])
+
+  const handleKeywordKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
+      doSearch()
+    }
+  }
+
+  // 全部标记已读
+  const handleMarkAllRead = useCallback(() => {
+    const unreadIds = messages.filter((i) => !i.read).map((i) => i.id)
+    if (unreadIds.length === 0) return
+    void markRead()
+  }, [messages, markRead])
 
   return (
-    <div className="mx-auto w-full max-w-3xl px-6 py-6">
-      <div className="mb-5 flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <Bell className="h-5 w-5 text-brand-600 dark:text-brand-400" />
-          <h1 className="text-lg font-semibold text-foreground">通知中心</h1>
-          {unread > 0 && (
-            <span className="rounded-full bg-destructive/10 px-2 py-0.5 text-xs font-medium text-destructive">
-              {unread} 条未读
-            </span>
-          )}
+    <div className="flex h-full flex-col gap-4 p-4 sm:p-6">
+      {/* 标题栏 */}
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <div>
+          <h1 className="text-xl font-bold text-foreground">通知消息</h1>
+          <p className="mt-0.5 text-sm text-muted-foreground">
+            查看系统通知与消息
+          </p>
         </div>
         <Button
           variant="outline"
           size="sm"
-          onClick={markAllRead}
-          disabled={unread === 0}
-          className="gap-1.5"
+          onClick={handleMarkAllRead}
+          disabled={messages.every((i) => i.read)}
         >
-          <CheckCheck className="h-4 w-4" />
+          <CheckCheck className="mr-1.5 h-3.5 w-3.5" />
           全部已读
         </Button>
       </div>
 
-      <div className="mb-4 flex items-center gap-1">
-        {(['all', 'unread'] as const).map((f) => (
-          <button
-            key={f}
-            onClick={() => setFilter(f)}
-            className={cn(
-              'rounded-md px-3 py-1.5 text-sm transition-colors',
-              filter === f
-                ? 'bg-muted font-medium text-foreground'
-                : 'text-muted-foreground hover:text-foreground'
-            )}
-          >
-            {f === 'all' ? '全部' : `未读${unread ? ` (${unread})` : ''}`}
-          </button>
-        ))}
+      {/* 筛选栏 */}
+      <div className="flex flex-wrap items-center gap-3 rounded-lg border border-border bg-card p-3">
+        <div className="relative w-full sm:w-64">
+          <Search className="absolute left-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground" />
+          <Input
+            placeholder="搜索通知内容..."
+            className="pl-8 text-sm"
+            value={keyword}
+            onChange={(e) => setKeyword(e.target.value)}
+            onKeyDown={handleKeywordKeyDown}
+          />
+        </div>
+        <Select value={readFilter} onValueChange={(v) => { setReadFilter(v as '' | '0' | '1'); setPage(1) }}>
+          <SelectTrigger className="w-[120px] text-sm">
+            <SelectValue placeholder="全部状态" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="">全部</SelectItem>
+            <SelectItem value="0">未读</SelectItem>
+            <SelectItem value="1">已读</SelectItem>
+          </SelectContent>
+        </Select>
       </div>
 
-      <div className="overflow-hidden rounded-xl border border-border bg-card">
-        {list.length === 0 ? (
-          <div className="px-4 py-16 text-center text-sm text-muted-foreground">没有未读通知</div>
+      {/* 列表区 */}
+      <div className="min-h-0 flex-1 rounded-lg border border-border bg-card">
+        {loading && !loaded ? (
+          <div className="flex items-center justify-center py-20 text-sm text-muted-foreground">
+            加载中...
+          </div>
+        ) : messages.length === 0 ? (
+          <div className="flex flex-col items-center justify-center py-20 text-sm text-muted-foreground">
+            <p className="text-base">暂无通知</p>
+            <p className="mt-1">暂时没有收到任何消息</p>
+          </div>
         ) : (
-          <ul className="divide-y divide-border">
-            {list.map((n) => {
-              const M = notificationMeta[n.type]
+          <div className="divide-y divide-border">
+            {messages.map((n) => {
+              const M = n.type && notificationMeta[n.type]
+                ? notificationMeta[n.type]
+                : defaultNotificationMeta
               const Icon = M.icon
               return (
-                <li key={n.id}>
-                  <button
-                    onClick={() => markRead(n.id)}
+                <div
+                  key={n.id}
+                  className={cn(
+                    'group flex items-start gap-4 px-4 py-4 transition-colors hover:bg-muted/40',
+                    !n.read && 'bg-brand-500/[0.03]',
+                  )}
+                >
+                  <div
                     className={cn(
-                      'flex w-full items-start gap-3 px-4 py-4 text-left transition-colors hover:bg-muted/50',
-                      !n.read && 'bg-brand-500/[0.04]'
+                      'mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-lg',
+                      M.color,
                     )}
                   >
-                    <div className={cn('mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-lg', M.color)}>
-                      <Icon className="h-4 w-4" />
+                    <Icon className="h-4.5 w-4.5" />
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <div className="flex items-center gap-2">
+                      <h3 className="text-sm font-medium text-foreground">
+                        {n.title}
+                      </h3>
+                      {!n.read && (
+                        <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-brand-500" />
+                      )}
                     </div>
-                    <div className="min-w-0 flex-1">
-                      <div className="flex items-center gap-2">
-                        <span className="truncate text-sm font-medium text-foreground">{n.title}</span>
-                        {!n.read && <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-brand-500" />}
-                      </div>
-                      <p className="mt-1 text-sm leading-relaxed text-muted-foreground">{n.desc}</p>
-                      <span className="mt-1.5 block text-xs text-muted-foreground/70">{n.time}</span>
-                    </div>
-                  </button>
-                </li>
+                    {n.summary && (
+                      <p className="mt-1 text-sm leading-relaxed text-muted-foreground">
+                        {n.summary}
+                      </p>
+                    )}
+                    <span className="mt-1.5 block text-xs text-muted-foreground/70">
+                      {formatTime(n.createTime)}
+                    </span>
+                  </div>
+                  {!n.read && (
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="h-7 shrink-0 text-xs text-muted-foreground opacity-0 transition-opacity group-hover:opacity-100"
+                      onClick={() => markRead([n.id])}
+                    >
+                      标为已读
+                    </Button>
+                  )}
+                </div>
               )
             })}
-          </ul>
+          </div>
+        )}
+
+        {/* 简易分页 */}
+        {messages.length >= PAGE_SIZE && (
+          <div className="flex items-center justify-between border-t border-border px-4 py-3">
+            <span className="text-xs text-muted-foreground">每页 {PAGE_SIZE} 条</span>
+            <div className="flex items-center gap-1">
+              <Button
+                variant="outline"
+                size="sm"
+                className="h-7 text-xs"
+                disabled={page <= 1}
+                onClick={() => setPage((p) => p - 1)}
+              >
+                上一页
+              </Button>
+              <span className="px-2 text-xs text-muted-foreground">第 {page} 页</span>
+              <Button
+                variant="outline"
+                size="sm"
+                className="h-7 text-xs"
+                disabled={messages.length < PAGE_SIZE}
+                onClick={() => setPage((p) => p + 1)}
+              >
+                下一页
+              </Button>
+            </div>
+          </div>
         )}
       </div>
     </div>

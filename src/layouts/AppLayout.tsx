@@ -5,11 +5,13 @@ import { Sidebar } from '@/components/Sidebar'
 import { Topbar } from '@/components/Topbar'
 import { CommandPalette } from '@/components/CommandPalette'
 import { useBootstrap } from '@/hooks/useBootstrap'
+import { useMessageStream } from '@/hooks/useMessageStream'
 import { buildMenuRouteObjects } from '@/router/menuRoutes'
 import { Toaster } from '@/components/ui/sonner'
 import { getAccessToken, onUnauthorized } from '@/utils/request'
 import { NotFound } from '@/views/error/NotFound'
 import { useSystemStore } from '@/store/systemStore'
+import { useNoticeStore } from '@/store/noticeStore'
 
 /** 路由懒加载时的内容区占位 */
 function PageLoading() {
@@ -33,6 +35,15 @@ export function AppLayout() {
   // 主框架挂载后装载系统设置（标题/meta/默认主题等），best-effort
   useEffect(() => {
     void useSystemStore.getState().hydrate()
+  }, [])
+
+  // 建立 SSE 消息流连接，实时接收服务端推送的通知
+  useMessageStream()
+
+  // 登录后首次拉取收件箱消息
+  useEffect(() => {
+    const { fetchInbox, loaded } = useNoticeStore.getState()
+    if (!loaded) void fetchInbox()
   }, [])
 
   // 登录态守卫：无 token 且当前非登录页，则跳转登录

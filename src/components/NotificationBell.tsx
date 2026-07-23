@@ -1,30 +1,42 @@
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import { Popover, PopoverTrigger, PopoverContent } from '@/components/ui/popover'
 import { Button } from '@/components/ui/button'
 import { Bell, CheckCheck } from 'lucide-react'
 import { cn } from '@/lib/utils'
-import {
-  INITIAL_NOTIFICATIONS,
-  notificationMeta,
-  type AppNotification,
-} from '@/data/notifications'
+import { useNoticeStore } from '@/store/noticeStore'
+import { notificationMeta, defaultNotificationMeta } from '@/data/notifications'
+
+/** 格式化时间显示文案 */
+function formatTime(iso?: string): string {
+  if (!iso) return ''
+  const d = new Date(iso)
+  if (isNaN(d.getTime())) return iso
+  const now = Date.now()
+  const diff = now - d.getTime()
+  const minutes = Math.floor(diff / 60_000)
+  if (minutes < 1) return '刚刚'
+  if (minutes < 60) return `${minutes} 分钟前`
+  const hours = Math.floor(minutes / 60)
+  if (hours < 24) return `${hours} 小时前`
+  const days = Math.floor(hours / 24)
+  if (days < 7) return `${days} 天前`
+  return d.toLocaleDateString('zh-CN')
+}
 
 export function NotificationBell({ onViewAll }: { onViewAll: () => void }) {
-  const [items, setItems] = useState<AppNotification[]>(INITIAL_NOTIFICATIONS)
+  const messages = useNoticeStore((s) => s.messages)
+  const markRead = useNoticeStore((s) => s.markRead)
   const [filter, setFilter] = useState<'all' | 'unread'>('all')
   const [open, setOpen] = useState(false)
 
-  const unread = items.filter((i) => !i.read).length
-  const list = filter === 'unread' ? items.filter((i) => !i.read) : items
+  const unread = useMemo(() => messages.filter((i) => !i.read).length, [messages])
+  const list = filter === 'unread' ? messages.filter((i) => !i.read) : messages
 
-  const markRead = (id: string) =>
-    setItems((s) => s.map((i) => (i.id === id ? { ...i, read: true } : i)))
+  const markAllRead = () => markRead()
 
-  const markAllRead = () => setItems((s) => s.map((i) => ({ ...i, read: true })))
-
-  // 点击单条：标记已读并进入通知中心
-  const openItem = (id: string) => {
-    markRead(id)
+  // 点击单条：标记已读并关闭弹窗
+  const openItem = (id: string | number) => {
+    markRead([id])
     setOpen(false)
     onViewAll()
   }
@@ -36,7 +48,7 @@ export function NotificationBell({ onViewAll }: { onViewAll: () => void }) {
           <Bell className="h-4 w-4" />
           {unread > 0 && (
             <span className="absolute right-1.5 top-1.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-destructive px-1 text-[10px] font-semibold leading-none text-white ring-2 ring-background">
-              {unread}
+              {unread > 99 ? '99+' : unread}
             </span>
           )}
         </Button>
@@ -73,7 +85,7 @@ export function NotificationBell({ onViewAll }: { onViewAll: () => void }) {
                 'rounded-md px-2.5 py-1 text-xs transition-colors',
                 filter === f
                   ? 'bg-muted font-medium text-foreground'
-                  : 'text-muted-foreground hover:text-foreground'
+                  : 'text-muted-foreground hover:text-foreground',
               )}
             >
               {f === 'all' ? '全部' : `未读${unread ? ` (${unread})` : ''}`}
@@ -81,14 +93,18 @@ export function NotificationBell({ onViewAll }: { onViewAll: () => void }) {
           ))}
         </div>
 
-        {/* 列表（可滚动区域；max-h + overflow 自包含，超出在内部滚动，不撑高 Popover） */}
+        {/* 列表（可滚动） */}
         <div className="min-h-0 flex-1 max-h-[60vh] overflow-y-auto">
           <div className="py-1">
             {list.length === 0 ? (
-              <div className="px-4 py-10 text-center text-sm text-muted-foreground">没有未读通知</div>
+              <div className="px-4 py-10 text-center text-sm text-muted-foreground">
+                {filter === 'unread' ? '没有未读通知' : '暂无通知'}
+              </div>
             ) : (
               list.map((n) => {
-                const M = notificationMeta[n.type]
+                const M = n.type && notificationMeta[n.type]
+                  ? notificationMeta[n.type]
+                  : defaultNotificationMeta
                 const Icon = M.icon
                 return (
                   <button
@@ -96,19 +112,34 @@ export function NotificationBell({ onViewAll }: { onViewAll: () => void }) {
                     onClick={() => openItem(n.id)}
                     className={cn(
                       'flex w-full items-start gap-3 px-4 py-3 text-left transition-colors hover:bg-muted/60',
-                      !n.read && 'bg-brand-500/[0.04]'
+                      !n.read && 'bg-brand-500/[0.04]',
                     )}
                   >
-                    <div className={cn('mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-lg', M.color)}>
+                    <div
+                      className={cn(
+                        'mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-lg',
+                        M.color,
+                      )}
+                    >
                       <Icon className="h-4 w-4" />
                     </div>
                     <div className="min-w-0 flex-1">
                       <div className="flex items-center gap-2">
-                        <span className="truncate text-sm font-medium text-foreground">{n.title}</span>
-                        {!n.read && <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-brand-500" />}
+                        <span className="truncate text-sm font-medium text-foreground">
+                          {n.title}
+                        </span>
+                        {!n.read && (
+                          <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-brand-500" />
+                        )}
                       </div>
-                      <p className="mt-0.5 line-clamp-2 text-xs leading-relaxed text-muted-foreground">{n.desc}</p>
-                      <span className="mt-1 block text-[11px] text-muted-foreground/70">{n.time}</span>
+                      {n.summary && (
+                        <p className="mt-0.5 line-clamp-2 text-xs leading-relaxed text-muted-foreground">
+                          {n.summary}
+                        </p>
+                      )}
+                      <span className="mt-1 block text-[11px] text-muted-foreground/70">
+                        {formatTime(n.createTime)}
+                      </span>
                     </div>
                   </button>
                 )
