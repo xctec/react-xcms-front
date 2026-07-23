@@ -31,6 +31,24 @@ export function onUnauthorized(fn: () => void) {
   unauthorizedHandler = fn
 }
 
+/** 主动触发未授权流程：清理本地令牌并执行注册的重定向回调（默认无操作）。
+ *  供「HTTP 401」与「业务 errorNo === '401'」两类场景复用。 */
+export function triggerUnauthorized() {
+  clearTokens()
+  unauthorizedHandler?.()
+}
+
+/** 禁止访问回调：由 App 注册，用于跳到 403 错误页（已登录但无权限） */
+let forbiddenHandler: (() => void) | null = null
+export function onForbidden(fn: () => void) {
+  forbiddenHandler = fn
+}
+
+/** 主动触发禁止访问流程：仅跳转 403 页，不清令牌（用户已认证，仅权限不足） */
+export function triggerForbidden() {
+  forbiddenHandler?.()
+}
+
 /* ============================ 响应类型 ============================ */
 export interface ApiResult<T> {
   errorNo?: string
@@ -80,13 +98,15 @@ instance.interceptors.request.use((config) => {
   return config
 })
 
-// 响应拦截器：401（登录接口除外）统一清 token 并跳回登录页
+// 响应拦截器：401（登录接口除外）统一清 token 并跳回登录页；403 跳转到 403 错误页
 instance.interceptors.response.use(
   (resp) => resp,
   (err: AxiosError) => {
     const status = err.response?.status
     const url = err.config?.url || ''
-    if (status === 401 && !url.includes('/auth/login')) {
+    if (status === 403) {
+      forbiddenHandler?.()
+    } else if (status === 401 && !url.includes('/auth/login')) {
       clearTokens()
       unauthorizedHandler?.()
     }
@@ -113,6 +133,11 @@ function request<T = any>(method: Method, path: string, options: RequestOptions 
       const res = resp.data as ApiResult<T> | undefined
       // 业务错误：HTTP 200 但后端返回 errorNo 非 '0'（约定成功码为 '0'）
       if (res && typeof res === 'object' && 'errorNo' in res && res.errorNo != null && res.errorNo !== '0') {
+        // 统一拦截鉴权类业务码（仅非 silent 请求触发跳转，避免打断登录等静默流程）
+        if (!options.silent) {
+          if (res.errorNo === '401') triggerUnauthorized()
+          else if (res.errorNo === '403') triggerForbidden()
+        }
         notifyRequestError(
           { message: res.errorMsg || `操作失败（${res.errorNo}）`, code: res.errorNo, status: resp.status },
           options.silent,

@@ -3,6 +3,7 @@ import { Loader2 } from 'lucide-react'
 import type { RouteObject } from 'react-router-dom'
 import { NotFound } from '@/views/error/NotFound'
 import { Unauthorized } from '@/views/error/Unauthorized'
+import { Forbidden } from '@/views/error/Forbidden'
 
 const LoginLazy = lazy(() => import('@/views/login').then((m) => ({ default: m.Login })))
 // 已登录主框架：按需懒加载，避免把侧栏/顶栏（及其依赖的 Radix UI、cmdk、sonner 等）
@@ -39,6 +40,7 @@ export const routes: RouteObject[] = [
   },
   // 状态页：全屏渲染，不套用主框架布局
   { path: '/401', element: <Unauthorized /> },
+  { path: '/403', element: <Forbidden /> },
   { path: '/404', element: <NotFound /> },
   // 已登录主框架：懒加载，首屏（登录页）不必下载其依赖
   { path: '*', element: <Suspense fallback={<RouteFallback />}><AppLayoutLazy /></Suspense> },

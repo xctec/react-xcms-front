@@ -8,7 +8,7 @@ import { useBootstrap } from '@/hooks/useBootstrap'
 import { useMessageStream } from '@/hooks/useMessageStream'
 import { buildMenuRouteObjects } from '@/router/menuRoutes'
 import { Toaster } from '@/components/ui/sonner'
-import { getAccessToken, onUnauthorized } from '@/utils/request'
+import { getAccessToken, onUnauthorized, onForbidden } from '@/utils/request'
 import { NotFound } from '@/views/error/NotFound'
 import { useSystemStore } from '@/store/systemStore'
 import { useNoticeStore } from '@/store/noticeStore'
@@ -96,9 +96,11 @@ export function AppLayout() {
     return () => window.removeEventListener('xcms:toggle-sidebar', handler)
   }, [])
 
-  // 后端返回 401 时跳转到 401 专用页（页面内提供重新登录入口）
+  // 后端返回 401（HTTP 401 或业务 errorNo === '401'）时，清会话并跳回登录页
   useEffect(() => {
-    onUnauthorized(() => navigate('/401', { replace: true }))
+    onUnauthorized(() => navigate('/login', { replace: true }))
+    // 后端返回 403（HTTP 403 或业务 errorNo === '403'）时，跳到 403 禁止访问页（不清令牌）
+    onForbidden(() => navigate('/403', { replace: true }))
   }, [navigate])
 
   return (
